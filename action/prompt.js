@@ -1,3 +1,3 @@
-exports.get = function(req, res){
-    res.json('{"msg": "Hello GET /prompt"}');
-};
+exports.retrieve = "hello prompt"
+
+exports.create = "new prompt created"
