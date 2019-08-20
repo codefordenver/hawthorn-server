@@ -1,4 +1,4 @@
-const prompt = require('./action/prompt')
+const prompt = require('./actions/prompt')
 const { gql } = require('apollo-server-express');
 
 exports.typeDefs = gql`
