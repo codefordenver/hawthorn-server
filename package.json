@@ -2,21 +2,20 @@
   "name": "hawthorn-server",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/graphql": "^14.2.3",
-    "@types/node": "^12.7.2",
-    "apollo-server-express": "^2.8.1",
-    "express": "^4.17.1",
-    "graphql": "^14.4.2"
+    "graphql-yoga": "^1.18.3",
+    "prisma": "^1.34.8",
+    "prisma-client-lib": "^1.34.8"
   },
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.2"
   }
 }

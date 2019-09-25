@@ -1,0 +1,37 @@
+type Query {
+  publishedPosts: [Post!]!
+  post(postId: ID!): Post
+  postsByUser(userId: ID!): [Post!]!
+  publishedPrompts: [Prompt!]!
+}
+
+type Mutation {
+  createUser(name: String!): User
+  createDraftPost(title: String!, userId: ID!, promptId: ID!): Post
+  publishPost(postId: ID!): Post
+  createDraftPrompt(title: String!, userId: ID!): Prompt
+  publishPrompt(promptId: ID!): Prompt
+}
+
+type User {
+  id: ID!
+  email: String
+  name: String!
+  posts: [Post!]!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  published: Boolean!
+  author: User
+  prompt: Prompt!
+}
+
+type Prompt {
+  id: ID!
+  title: String!
+  published: Boolean!
+  author: User
+  posts: [Post!]!
+}
