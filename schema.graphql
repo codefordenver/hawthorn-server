@@ -3,6 +3,9 @@ type Query {
   post(postId: ID!): Post
   postsByUser(userId: ID!): [Post!]!
   publishedPrompts: [Prompt!]!
+  getUser(email: String!): FusionAuthUser
+  login(loginId: String!, password: String!): FusionAuthUser
+  logout: String
 }
 
 type Mutation {
@@ -11,6 +14,17 @@ type Mutation {
   publishPost(postId: ID!): Post
   createDraftPrompt(title: String!, userId: ID!): Prompt
   publishPrompt(promptId: ID!): Prompt
+  # TODO - updatePrompt
+  # TODO - updatePost
+}
+
+# TODO - replace legacy user with the FusionAuth user
+#   - get rid of user table and store a reference to the FA user id where needed
+type FusionAuthUser {
+  id: ID!
+  email: String
+  firstName: String
+  lastName: String
 }
 
 type User {

@@ -1,0 +1,27 @@
+- User
+  - [ ] FusionAuth user migration
+    - replace legacy user with the FusionAuth user
+    - get rid of user table and store a reference to the FA user id where needed
+  - [ ] createUser
+  - [ ] OAuth2 Authorization Flow for login
+  - [ ] deleteUser
+  - [ ] editUser
+  - [ ] define roles
+- Group
+  - [ ] Implement user grouping using FusionAuth groups
+- Prompt
+  - [ ] updatePrompt
+- Post
+  - [ ] updatePost
+- Authorization
+  - see getUser for simple auth check, then update
+  - [ ] common auth check functions
+    - [ ] validate tokens
+    - [ ] authentication protected requests
+    - [ ] role protected requests
+- [ ] Better error handling - apollo-errors?
+- [ ] Move application database to postgresql
+  - Use the same instance as FusionAuth db
+- [ ] Tests
+- [ ] Deploy somewhere
+- [ ] Automated build
