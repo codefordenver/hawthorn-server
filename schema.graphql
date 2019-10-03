@@ -3,34 +3,24 @@ type Query {
   post(postId: ID!): Post
   postsByUser(userId: ID!): [Post!]!
   publishedPrompts: [Prompt!]!
-  getUser(email: String!): FusionAuthUser
-  login(loginId: String!, password: String!): FusionAuthUser
+  user(id: String!): User!
+  login(loginId: String!, password: String!): User
   logout: String
 }
 
 type Mutation {
-  createUser(name: String!): User
-  createDraftPost(title: String!, userId: ID!, promptId: ID!): Post
+  createDraftPost(title: String!, userId: String!, promptId: ID!): Post
   publishPost(postId: ID!): Post
-  createDraftPrompt(title: String!, userId: ID!): Prompt
+  createDraftPrompt(title: String!, userId: String!): Prompt
   publishPrompt(promptId: ID!): Prompt
-  # TODO - updatePrompt
-  # TODO - updatePost
-}
-
-# TODO - replace legacy user with the FusionAuth user
-#   - get rid of user table and store a reference to the FA user id where needed
-type FusionAuthUser {
-  id: ID!
-  email: String
-  firstName: String
-  lastName: String
+  register(userName: String!, email: String, password: String!, firstName: String, lastName: String): User
 }
 
 type User {
-  id: ID!
+  id: String!
   email: String
-  name: String!
+  firstName: String
+  lastName: String
   posts: [Post!]!
 }
 
@@ -38,7 +28,8 @@ type Post {
   id: ID!
   title: String!
   published: Boolean!
-  author: User
+  authorId: String!
+  author: User!
   prompt: Prompt!
 }
 
@@ -46,6 +37,7 @@ type Prompt {
   id: ID!
   title: String!
   published: Boolean!
-  author: User
+  author: User!
+  authorId: String!
   posts: [Post!]!
 }

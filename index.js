@@ -8,10 +8,17 @@ dotenv.config();
 
 const client = new FusionAuthClient(
     process.env.FUSIONAUTH_API_KEY,
-    'http://localhost:9011'
+    process.env.FUSIONAUTH_ENDPOINT
 );
 
+
 const applicationId = process.env.FUSIONAUTH_APPLICATION_ID;
+
+const getUser = function(id) {
+  return client.retrieveUser(id).then(
+    clientResponse => clientResponse.successResponse.user
+  )
+}
 
 const resolvers = {
   Query: {
@@ -23,25 +30,12 @@ const resolvers = {
     },
     postsByUser(root, args, context) {
       return context.prisma
-        .user({
-          id: args.userId,
+        .posts({
+            authorId: root.id
         })
-        .posts()
     },
     publishedPrompts(root, args, context) {
       return context.prisma.prompts({ where: { published: true } })
-    },
-    getUser(root, args, context) {
-      if (context.request.session.user) {
-        return client.retrieveUserByEmail(args.email)
-               .then(function(clientResponse) {
-                 return clientResponse.successResponse.user
-               })
-               .catch(function(error) {
-                 throw new Error("Unexpected server error")
-               });
-       }
-       throw new Error("You must be logged in to do that!")
     },
     login(root, args, context) {
       if (context.request.session.user) {
@@ -66,15 +60,16 @@ const resolvers = {
     logout(root, args, context) {
       context.request.session.destroy()
       return "Successfully logged out"
+    },
+    user(root, args, context) {
+      return getUser(args.id)
     }
   },
   Mutation: {
     createDraftPost(root, args, context) {
       return context.prisma.createPost({
         title: args.title,
-        author: {
-          connect: { id: args.userId },
-        },
+        authorId: args.userId,
         prompt: {
           connect: { id: args.promptId }
         },
@@ -86,15 +81,33 @@ const resolvers = {
         data: { published: true },
       })
     },
-    createUser(root, args, context) {
-      return context.prisma.createUser({ name: args.name })
+    register(root, args, context) {
+      requestBody = {
+        "user": {
+          "email": args.email,
+          "username": args.userName,
+          "firstName": args.firstName,
+          "lastName": args.lastName,
+          "password": args.password
+        },
+        "sendSetPasswordEmail": false,
+        "skipVerification": false,
+        "registration": {
+          "applicationId": applicationId
+        }
+      }
+      return client.register(null, requestBody)
+        .then(function(clientResponse) {
+            return clientResponse.successResponse.user
+        })
+        .catch(function(error) {
+            throw new Error("Unexpected server error")
+        });
     },
     createDraftPrompt(root, args, context) {
       return context.prisma.createPrompt({
         title: args.title,
-        author: {
-          connect: { id: args.userId },
-        },
+        authorId: args.userId,
       })
     },
     publishPrompt(root, args, context) {
@@ -107,19 +120,14 @@ const resolvers = {
   User: {
     posts(root, args, context) {
       return context.prisma
-        .user({
-          id: root.id,
+        .posts({
+          authorId: root.id
         })
-        .posts()
     },
   },
   Post: {
-    author(root, args, context) {
-      return context.prisma
-        .post({
-          id: root.id,
-        })
-        .author()
+    author(root, args, context){
+      return getUser(root.authorId)
     },
     prompt(root, args, context) {
       return context.prisma
@@ -130,12 +138,8 @@ const resolvers = {
     }
   },
   Prompt: {
-    author(root, args, context) {
-      return context.prisma
-        .prompt({
-          id: root.id,
-        })
-        .author()
+    author(root, args, context){
+      return getUser(root.authorId)
     },
     posts(root, args, context) {
       return context.prisma

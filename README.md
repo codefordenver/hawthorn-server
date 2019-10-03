@@ -4,9 +4,11 @@
 
 ### Docker
 The following services run in docker containers:
-- prisma client
-- application database
-- 
+- prisma client - ORM for primary application database
+- application database - primary application data store
+- FusionAuth - user authentication and access management
+- FusionAuth database - user database
+- FusionAuth search - elastic search for querying users
 
 Run these services in the background with the command:
 `docker compose up -d`

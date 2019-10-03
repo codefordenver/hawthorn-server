@@ -1,15 +1,8 @@
-type User {
-  id: ID! @id
-  email: String @unique
-  name: String!
-  posts: [Post!]!
-}
-
 type Post {
   id: ID! @id
   title: String!
   published: Boolean! @default(value: false)
-  author: User @relation(link: INLINE)
+  authorId: String!
   prompt: Prompt @relation(link: INLINE)
 }
 
@@ -17,6 +10,6 @@ type Prompt {
   id: ID! @id
   title: String!
   published: Boolean! @default(value: false)
-  author: User @relation(link: INLINE)
+  authorId: String!
   posts: [Post!]!
 }
