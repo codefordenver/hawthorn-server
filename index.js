@@ -119,10 +119,7 @@ const resolvers = {
   },
   User: {
     posts(root, args, context) {
-      return context.prisma
-        .posts({
-          authorId: root.id
-        })
+      return context.prisma.posts({ where: { authorId: root.id } })
     },
   },
   Post: {
