@@ -1,5 +1,5 @@
 # Bugs
-- [ ] Resolving posts on user - "Could not find argument authorId for type Post"
+- [x] Resolving posts on user - "Could not find argument authorId for type Post"
 # User
   - [ ] FusionAuth user migration
     - [x] replace legacy user with the FusionAuth user
@@ -8,6 +8,7 @@
       - initial implementation using password grant
     - [ ] OAuth2 Authorization Grant for login
     - [ ] explore creating a custom UUID type for FA generated ID, currently using String
+      - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
     - [ ] Pull imageUrl from FusionAuth for avatar
   - [ ] deleteUser
   - [ ] editUser
