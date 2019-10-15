@@ -3,9 +3,8 @@ type Query {
   post(postId: ID!): Post
   postsByUser(userId: ID!): [Post!]!
   publishedPrompts: [Prompt!]!
+  login(code: String!): Token!
   user(id: String!): User!
-  login(loginId: String!, password: String!): User
-  logout: String
 }
 
 type Mutation {
@@ -13,15 +12,21 @@ type Mutation {
   publishPost(postId: ID!): Post
   createDraftPrompt(title: String!, userId: String!): Prompt
   publishPrompt(promptId: ID!): Prompt
-  register(userName: String!, email: String, password: String!, firstName: String, lastName: String): User
+  logout: String
 }
 
 type User {
   id: String!
   email: String
+  username: String
   firstName: String
   lastName: String
   posts: [Post!]!
+}
+
+type Token {
+  accessToken: String!
+  userId: String!
 }
 
 type Post {

@@ -9,19 +9,99 @@ dotenv.config();
 const client = new FusionAuthClient(
     process.env.FUSIONAUTH_API_KEY,
     process.env.FUSIONAUTH_ENDPOINT
-);
+)
 
-
-const applicationId = process.env.FUSIONAUTH_APPLICATION_ID;
+const fusionAuthClientId = process.env.FUSIONAUTH_CLIENT_ID;
+const fusionAuthSecret = process.env.FUSIONAUTH_CLIENT_SECRET;
+const fusionAuthRedirectUri = process.env.FUSIONAUTH_CLIENT_REDIRECT_URI;
+const fusionAuthApiKey = process.env.FUSIONAUTH_API_KEY;
+const fusionAuthEndpoint = process.env.FUSIONAUTH_ENDPOINT;
 
 const getUser = function(id) {
   return client.retrieveUser(id).then(
     clientResponse => clientResponse.successResponse.user
   )
+  .catch(error => {
+    throw new Error("Unexpected server error " + error)
+  })
+}
+
+const getTokenFromHeader = function(authorizationHeader) {
+  if (authorizationHeader != null) {
+    const parts = authorizationHeader.split(" ")
+    if (parts[0] === 'Bearer') {
+      return parts[1]
+    }
+  }
+  return null
+}
+
+const tokenMiddleware = async function(req, res, next) {
+  const token = getTokenFromHeader(req.headers.authorization)
+  if (token === null) {
+    next()
+  }
+  let formData = {
+    "client_id": fusionAuthClientId,
+    "token": token,
+  }
+  const introspectEndpoint = `${fusionAuthEndpoint}/oauth2/introspect`
+  const response = await fetch(introspectEndpoint, {
+      method: 'post',
+      body: new URLSearchParams(formData)
+    })
+  const body = await response.json();
+  if (body.error != null) {
+    throw new Error(body.error_description)
+  }
+
+  req.decodedJWT = body
+  next()
+}
+
+const _authorized = function(decodedJWT, role) {
+  if (decodedJWT === null) {
+    return false;
+  }
+  if (!decodedJWT.active) {
+    return false;
+  }
+
+  return decodedJWT.roles.indexOf(role) !== -1
+}
+
+class Token {
+  constructor(accessToken, userId) {
+    this.accessToken = accessToken
+    this.userId = userId
+  }
 }
 
 const resolvers = {
   Query: {
+    async login(root, args, context) {
+      let formData = {
+        "client_id": fusionAuthClientId,
+        "client_secret": fusionAuthSecret,
+        "code": args.code,
+        "grant_type": "authorization_code",
+        "redirect_uri": fusionAuthRedirectUri
+      }
+      const tokenEndpoint = `${fusionAuthEndpoint}/oauth2/token`
+      const response = await fetch(tokenEndpoint, {
+          method: 'post',
+          headers: {
+            'Bearer': fusionAuthApiKey
+          },
+          body: new URLSearchParams(formData)
+        })
+      const body = await response.json();
+      if (body.error != null) {
+        throw new Error(body.error_description)
+      }
+
+      return new Token(body.access_token, body.userId)
+    },
     publishedPosts(root, args, context) {
       return context.prisma.posts({ where: { published: true } })
     },
@@ -34,32 +114,12 @@ const resolvers = {
             authorId: root.id
         })
     },
-    publishedPrompts(root, args, context) {
-      return context.prisma.prompts({ where: { published: true } })
-    },
-    login(root, args, context) {
-      if (context.request.session.user) {
-          return context.request.session.user
-      } else {
-          const obj = {
-              'loginId': args.loginId,
-              'password': args.password,
-              'applicationId': applicationId
-          };
-          return client.login(obj)
-              .then(function(clientResponse) {
-                  context.request.session.user = clientResponse.successResponse.user
-                  context.request.session.token = clientResponse.successResponse.token
-                  return clientResponse.successResponse.user
-              })
-              .catch(function(error) {
-                  throw new Error("Unexpected server error")
-              });
+    async publishedPrompts(root, args, context) {
+      if (_authorized(context.request.decodedJWT, 'user')) {
+        return context.prisma.prompts({ where: { published: true } })
       }
-    },
-    logout(root, args, context) {
-      context.request.session.destroy()
-      return "Successfully logged out"
+
+      throw new Error("Unauthorized")
     },
     user(root, args, context) {
       return getUser(args.id)
@@ -75,34 +135,15 @@ const resolvers = {
         },
       })
     },
+    logout(root, args, context) {
+      context.request.session.destroy()
+      return "Successfully logged out"
+    },
     publishPost(root, args, context) {
       return context.prisma.updatePost({
         where: { id: args.postId },
         data: { published: true },
       })
-    },
-    register(root, args, context) {
-      requestBody = {
-        "user": {
-          "email": args.email,
-          "username": args.userName,
-          "firstName": args.firstName,
-          "lastName": args.lastName,
-          "password": args.password
-        },
-        "sendSetPasswordEmail": false,
-        "skipVerification": false,
-        "registration": {
-          "applicationId": applicationId
-        }
-      }
-      return client.register(null, requestBody)
-        .then(function(clientResponse) {
-            return clientResponse.successResponse.user
-        })
-        .catch(function(error) {
-            throw new Error("Unexpected server error")
-        });
     },
     createDraftPrompt(root, args, context) {
       return context.prisma.createPrompt({
@@ -159,12 +200,6 @@ const server = new GraphQLServer({
   },
 })
 
-server.express.use(
-  session({
-    secret: 'fusionauth',
-    resave: false,
-    saveUninitialized: true
-  })
-)
+server.express.use(tokenMiddleware)
 
 server.start(() => console.log('Server is running on http://localhost:4000'))
