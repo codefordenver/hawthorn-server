@@ -1,27 +1,27 @@
 # Bugs
-- [ ] tokenMiddleware being called twice per request from client
+- DONE
+- [x] tokenMiddleware being called twice per request from client
   - causing most mutation requests from playground to fail
   - error from logs: Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
   - deduplicate execution
-- [ ] Duplicated requests from client - same Post was inserted twice in the database
-- DONE
+- [x] Duplicated requests from client - same Post was inserted twice in the database
 - [x] Resolving posts on user - "Could not find argument authorId for type Post"
 # User
   - PHASE 1
-  - [ ] /login redirects to FusionAuth /oauth2/authorize
-  - [ ] FusionAuth redirect_uri is a hawthorn-server endpoint
-    - Currently implemented in /login
-  - [ ] /login returns an access_token
-  - [ ] Manage refresh tokens
-  - [ ] Maintain auth state with Token in cookie, localStorage, or session?
-    - [ ] explore creating a custom UUID type for FA generated ID, currently using String
-      - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
+  - [ ] logout
+  - [ ] What to use for SESSION_SECRET?
+  - [ ] Get new JWT w/ refresh token on JWT expiration
+    - [ ] Update JWT in cookie
+    - [ ] Redirect to login flow on expired refresh token
+  - [ ] explore creating a custom UUID type for FA generated ID, currently using String
+    - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
   - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar
   - [ ] deleteUser
   - [ ] editUser
   - DONE
+  - [x] /login puts access token and refresh token in cookie
   - [x] replace legacy user with the FusionAuth user
   - [x] get rid of user table and store a reference to the FA user id where needed
   - [x] createUser - create FA user - User no longer in prisma model
@@ -61,4 +61,5 @@
 - PHASE 2
 - [ ] Better error handling - apollo-errors?
 - [ ] Tests
+- [ ] Refactor index.js
 - [ ] Automate build

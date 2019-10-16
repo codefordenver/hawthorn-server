@@ -26,39 +26,6 @@ const getUser = function(id) {
   })
 }
 
-const getTokenFromHeader = function(authorizationHeader) {
-  if (authorizationHeader != null) {
-    const parts = authorizationHeader.split(" ")
-    if (parts[0] === 'Bearer') {
-      return parts[1]
-    }
-  }
-  return null
-}
-
-const tokenMiddleware = async function(req, res, next) {
-  const token = getTokenFromHeader(req.headers.authorization)
-  if (token === null) {
-    next()
-  }
-  let formData = {
-    "client_id": fusionAuthClientId,
-    "token": token,
-  }
-  const introspectEndpoint = `${fusionAuthEndpoint}/oauth2/introspect`
-  const response = await fetch(introspectEndpoint, {
-      method: 'post',
-      body: new URLSearchParams(formData)
-    })
-  const body = await response.json();
-  if (body.error != null) {
-    throw new Error(body.error_description)
-  }
-
-  req.decodedJWT = body
-  next()
-}
-
 const _authorized = function(decodedJWT, role) {
   if (decodedJWT === null) {
     return false;
@@ -68,13 +35,6 @@ const _authorized = function(decodedJWT, role) {
   }
 
   return decodedJWT.roles.indexOf(role) !== -1
-}
-
-class Token {
-  constructor(accessToken, userId) {
-    this.accessToken = accessToken
-    this.userId = userId
-  }
 }
 
 const resolvers = {
@@ -100,7 +60,10 @@ const resolvers = {
         throw new Error(body.error_description)
       }
 
-      return new Token(body.access_token, body.userId)
+      context.request.session.jwt = body.access_token
+      context.request.session.refreshToken = body.refresh_token
+
+      return getUser(body.userId)
     },
     publishedPosts(root, args, context) {
       return context.prisma.posts({ where: { published: true } })
@@ -189,6 +152,7 @@ const resolvers = {
   },
 }
 
+
 const server = new GraphQLServer({
   typeDefs: './schema.graphql',
   resolvers,
@@ -200,6 +164,52 @@ const server = new GraphQLServer({
   },
 })
 
-server.express.use(tokenMiddleware)
+const SESSION_SECRET = "lsdfjlkjlkewaqra";
 
-server.start(() => console.log('Server is running on http://localhost:4000'))
+server.express.use(
+  session({
+    name: "qid",
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+    }
+  })
+);
+
+server.express.use(async function(req, res, next) {
+  const token = req.session.jwt
+  if (token === null) {
+    next()
+  }
+  let formData = {
+    "client_id": fusionAuthClientId,
+    "token": token,
+  }
+  const introspectEndpoint = `${fusionAuthEndpoint}/oauth2/introspect`
+  const response = await fetch(introspectEndpoint, {
+      method: 'post',
+      body: new URLSearchParams(formData)
+    })
+  const body = await response.json();
+  if (body.error != null) {
+    throw new Error(body.error_description)
+  }
+
+  req.decodedJWT = body
+  next()
+})
+
+const opts = {
+  port: 4000,
+  cors: {
+    credentials: true,
+    origin: ["http://localhost:3000"]
+  }
+};
+
+server.start(opts,
+  () => console.log(`Server is running on http://localhost:${opts.port}`))

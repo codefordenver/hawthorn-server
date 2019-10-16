@@ -3,7 +3,7 @@ type Query {
   post(postId: ID!): Post
   postsByUser(userId: ID!): [Post!]!
   publishedPrompts: [Prompt!]!
-  login(code: String!): Token!
+  login(code: String!): User!
   user(id: String!): User!
 }
 
@@ -22,11 +22,6 @@ type User {
   firstName: String
   lastName: String
   posts: [Post!]!
-}
-
-type Token {
-  accessToken: String!
-  userId: String!
 }
 
 type Post {
