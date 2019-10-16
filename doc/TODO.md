@@ -37,6 +37,8 @@
 - PHASE 2
   - [ ] updatePost
 # Authorization
+- PHASE 1
+  - [ ] Permission requirements for all endpoints
 - DONE
   - [x] common auth check functions
     - [x] validate tokens
