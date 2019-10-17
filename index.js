@@ -65,6 +65,10 @@ const resolvers = {
 
       return getUser(body.userId)
     },
+    logout(root, args, context) {
+      context.request.session.destroy()
+      return true
+    },
     publishedPosts(root, args, context) {
       return context.prisma.posts({ where: { published: true } })
     },
@@ -97,10 +101,6 @@ const resolvers = {
           connect: { id: args.promptId }
         },
       })
-    },
-    logout(root, args, context) {
-      context.request.session.destroy()
-      return "Successfully logged out"
     },
     publishPost(root, args, context) {
       return context.prisma.updatePost({

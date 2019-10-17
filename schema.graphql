@@ -4,6 +4,7 @@ type Query {
   postsByUser(userId: ID!): [Post!]!
   publishedPrompts: [Prompt!]!
   login(code: String!): User!
+  logout: Boolean!
   user(id: String!): User!
 }
 
@@ -12,7 +13,6 @@ type Mutation {
   publishPost(postId: ID!): Post
   createDraftPrompt(title: String!, userId: String!): Prompt
   publishPrompt(promptId: ID!): Prompt
-  logout: String
 }
 
 type User {
