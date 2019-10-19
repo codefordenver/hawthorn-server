@@ -8,7 +8,6 @@
 - [x] Resolving posts on user - "Could not find argument authorId for type Post"
 # User
   - PHASE 1
-  - [ ] What to use for SESSION_SECRET?
   - [ ] Get new JWT w/ refresh token on JWT expiration
     - [ ] Update JWT in cookie
     - [ ] Redirect to login flow on expired refresh token
@@ -20,6 +19,7 @@
   - [ ] deleteUser
   - [ ] editUser
   - DONE
+  - [x] What to use for SESSION_SECRET?
   - [x] Expose non-sensitive FusionAuth config in endpoint
   - [x] logout
   - [x] /login puts access token and refresh token in cookie

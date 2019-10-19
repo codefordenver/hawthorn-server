@@ -17,6 +17,18 @@ const fusionAuthTenantId = process.env.FUSIONAUTH_TENANT_ID;
 const fusionAuthRedirectUri = process.env.FUSIONAUTH_CLIENT_REDIRECT_URI;
 const fusionAuthApiKey = process.env.FUSIONAUTH_API_KEY;
 const fusionAuthEndpoint = process.env.FUSIONAUTH_ENDPOINT;
+const sessionSecret = process.env.SESSION_SECRET;
+
+if (!fusionAuthClientId ||
+    !fusionAuthSecret ||
+    !fusionAuthTenantId ||
+    !fusionAuthRedirectUri ||
+    !fusionAuthApiKey ||
+    !fusionAuthEndpoint ||
+    !sessionSecret) {
+  console.info("Exiting - A required environment variable was not found")
+  process.exit(1)
+}
 
 const getUser = function(id) {
   return client.retrieveUser(id).then(
@@ -173,12 +185,11 @@ const server = new GraphQLServer({
   },
 })
 
-const SESSION_SECRET = "lsdfjlkjlkewaqra";
 
 server.express.use(
   session({
     name: "qid",
-    secret: SESSION_SECRET,
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
