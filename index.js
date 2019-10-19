@@ -13,6 +13,7 @@ const client = new FusionAuthClient(
 
 const fusionAuthClientId = process.env.FUSIONAUTH_CLIENT_ID;
 const fusionAuthSecret = process.env.FUSIONAUTH_CLIENT_SECRET;
+const fusionAuthTenantId = process.env.FUSIONAUTH_TENANT_ID;
 const fusionAuthRedirectUri = process.env.FUSIONAUTH_CLIENT_REDIRECT_URI;
 const fusionAuthApiKey = process.env.FUSIONAUTH_API_KEY;
 const fusionAuthEndpoint = process.env.FUSIONAUTH_ENDPOINT;
@@ -39,6 +40,14 @@ const _authorized = function(decodedJWT, role) {
 
 const resolvers = {
   Query: {
+    fusionAuthConfig() {
+      return {
+        endpoint: fusionAuthEndpoint,
+        clientId: fusionAuthClientId,
+        tenantId: fusionAuthTenantId,
+        redirectUri: fusionAuthRedirectUri
+      }
+    },
     async login(root, args, context) {
       let formData = {
         "client_id": fusionAuthClientId,
@@ -69,9 +78,6 @@ const resolvers = {
       context.request.session.destroy()
       return true
     },
-    publishedPosts(root, args, context) {
-      return context.prisma.posts({ where: { published: true } })
-    },
     post(root, args, context) {
       return context.prisma.post({ id: args.postId })
     },
@@ -81,7 +87,10 @@ const resolvers = {
             authorId: root.id
         })
     },
-    async publishedPrompts(root, args, context) {
+    publishedPosts(root, args, context) {
+      return context.prisma.posts({ where: { published: true } })
+    },
+    publishedPrompts(root, args, context) {
       if (_authorized(context.request.decodedJWT, 'user')) {
         return context.prisma.prompts({ where: { published: true } })
       }
@@ -102,16 +111,16 @@ const resolvers = {
         },
       })
     },
-    publishPost(root, args, context) {
-      return context.prisma.updatePost({
-        where: { id: args.postId },
-        data: { published: true },
-      })
-    },
     createDraftPrompt(root, args, context) {
       return context.prisma.createPrompt({
         title: args.title,
         authorId: args.userId,
+      })
+    },
+    publishPost(root, args, context) {
+      return context.prisma.updatePost({
+        where: { id: args.postId },
+        data: { published: true },
       })
     },
     publishPrompt(root, args, context) {

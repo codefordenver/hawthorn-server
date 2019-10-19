@@ -1,43 +1,51 @@
 type Query {
-  publishedPosts: [Post!]!
-  post(postId: ID!): Post
-  postsByUser(userId: ID!): [Post!]!
-  publishedPrompts: [Prompt!]!
+  fusionAuthConfig: FusionAuthConfig!
   login(code: String!): User!
   logout: Boolean!
+  post(postId: ID!): Post
+  postsByUser(userId: ID!): [Post!]!
+  publishedPosts: [Post!]!
+  publishedPrompts: [Prompt!]!
   user(id: String!): User!
 }
 
 type Mutation {
   createDraftPost(title: String!, userId: String!, promptId: ID!): Post
-  publishPost(postId: ID!): Post
   createDraftPrompt(title: String!, userId: String!): Prompt
+  publishPost(postId: ID!): Post
   publishPrompt(promptId: ID!): Prompt
+}
+
+type FusionAuthConfig {
+  endpoint: String!
+  clientId: String!
+  redirectUri: String!
+  tenantId: String!
+}
+
+type Post {
+  id: ID!
+  author: User!
+  authorId: String!
+  prompt: Prompt!
+  published: Boolean!
+  title: String!
+}
+
+type Prompt {
+  id: ID!
+  author: User!
+  authorId: String!
+  posts: [Post!]!
+  published: Boolean!
+  title: String!
 }
 
 type User {
   id: String!
   email: String
-  username: String
   firstName: String
   lastName: String
   posts: [Post!]!
-}
-
-type Post {
-  id: ID!
-  title: String!
-  published: Boolean!
-  authorId: String!
-  author: User!
-  prompt: Prompt!
-}
-
-type Prompt {
-  id: ID!
-  title: String!
-  published: Boolean!
-  author: User!
-  authorId: String!
-  posts: [Post!]!
+  username: String
 }
