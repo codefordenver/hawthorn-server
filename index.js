@@ -143,6 +143,10 @@ const resolvers = {
     },
   },
   User: {
+    // Pull random avatar from an open API
+    imageUrl: function(root) {
+      return `https://api.adorable.io/avatars/50/${root.id}.png`
+    },
     posts(root, args, context) {
       return context.prisma.posts({ where: { authorId: root.id } })
     },

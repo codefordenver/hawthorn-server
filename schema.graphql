@@ -43,9 +43,6 @@ type Prompt {
 
 type User {
   id: String!
-  email: String
-  firstName: String
-  lastName: String
+  imageUrl: String!
   posts: [Post!]!
-  username: String
 }

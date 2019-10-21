@@ -1,4 +1,5 @@
 # Bugs
+- [ ] User not being logged out - same user staying in session
 - DONE
 - [x] tokenMiddleware being called twice per request from client
   - causing most mutation requests from playground to fail
@@ -11,14 +12,17 @@
   - [ ] Get new JWT w/ refresh token on JWT expiration
     - [ ] Update JWT in cookie
     - [ ] Redirect to login flow on expired refresh token
-  - [ ] explore creating a custom UUID type for FA generated ID, currently using String
-    - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
   - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar
   - [ ] deleteUser
   - [ ] editUser
+  - [ ] explore creating a custom UUID type for FA generated ID, currently using String
+    - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
   - DONE
+  - [x] Trim User in schema to:
+    - id
+    - avatar - a random color initially.
   - [x] What to use for SESSION_SECRET?
   - [x] Expose non-sensitive FusionAuth config in endpoint
   - [x] logout
