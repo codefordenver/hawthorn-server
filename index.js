@@ -104,6 +104,7 @@ const resolvers = {
     },
     publishedPrompts(root, args, context) {
       if (_authorized(context.request.decodedJWT, 'user')) {
+
         return context.prisma.prompts({ where: { published: true } })
       }
 
@@ -114,32 +115,30 @@ const resolvers = {
     }
   },
   Mutation: {
-    createDraftPost(root, args, context) {
-      return context.prisma.createPost({
-        title: args.title,
-        authorId: args.userId,
-        prompt: {
-          connect: { id: args.promptId }
-        },
-      })
+    createPost(root, args, context) {
+      if (_authorized(context.request.decodedJWT, 'user')) {
+        return context.prisma.createPost({
+          title: args.title,
+          authorId: context.request.decodedJWT.sub,
+          published: true,
+          prompt: {
+            connect: { id: args.promptId }
+          },
+        })
+      }
+
+      throw new Error("Unauthorized")
     },
-    createDraftPrompt(root, args, context) {
-      return context.prisma.createPrompt({
-        title: args.title,
-        authorId: args.userId,
-      })
-    },
-    publishPost(root, args, context) {
-      return context.prisma.updatePost({
-        where: { id: args.postId },
-        data: { published: true },
-      })
-    },
-    publishPrompt(root, args, context) {
-      return context.prisma.updatePrompt({
-        where: { id: args.promptId },
-        data: { published: true },
-      })
+    createPrompt(root, args, context) {
+      if (_authorized(context.request.decodedJWT, 'user')) {
+        return context.prisma.createPrompt({
+          title: args.title,
+          authorId: context.request.decodedJWT.sub,
+          published: true,
+        })
+      }
+
+      throw new Error("Unauthorized")
     },
   },
   User: {

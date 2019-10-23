@@ -1,5 +1,5 @@
 # Bugs
-- [ ] User not being logged out - same user staying in session
+- [x] User not being logged out - same user staying in session
 - DONE
 - [x] tokenMiddleware being called twice per request from client
   - causing most mutation requests from playground to fail
@@ -12,6 +12,7 @@
   - [ ] Get new JWT w/ refresh token on JWT expiration
     - [ ] Update JWT in cookie
     - [ ] Redirect to login flow on expired refresh token
+  - [ ] Register with username only
   - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar

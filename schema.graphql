@@ -10,10 +10,8 @@ type Query {
 }
 
 type Mutation {
-  createDraftPost(title: String!, userId: String!, promptId: ID!): Post
-  createDraftPrompt(title: String!, userId: String!): Prompt
-  publishPost(postId: ID!): Post
-  publishPrompt(promptId: ID!): Prompt
+  createPost(title: String!, promptId: ID!): Post
+  createPrompt(title: String!): Prompt
 }
 
 type FusionAuthConfig {
