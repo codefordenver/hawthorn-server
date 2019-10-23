@@ -10,12 +10,15 @@
 # User
   - PHASE 1
   - [ ] Get new JWT w/ refresh token on JWT expiration
-    - [ ] Update JWT in cookie
+    - [x] Update JWT in cookie
     - [ ] Redirect to login flow on expired refresh token
+      - Key off of error_reason in refresh /oauth2/token response
+  - [ ] Store session to prevent drops on server restart
   - [ ] Register with username only
   - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar
+  - [ ] Pull FusionAuth integration out into a service
   - [ ] deleteUser
   - [ ] editUser
   - [ ] explore creating a custom UUID type for FA generated ID, currently using String
@@ -40,6 +43,8 @@
 - PHASE 2
   - [ ] updatePrompt
 # Post
+- PHASE 1
+  - [ ] Limit to 1 response per Prompt
 - PHASE 2
   - [ ] updatePost
 # Authorization

@@ -176,7 +176,6 @@ const resolvers = {
   },
 }
 
-
 const server = new GraphQLServer({
   typeDefs: './schema.graphql',
   resolvers,
@@ -187,7 +186,6 @@ const server = new GraphQLServer({
     }
   },
 })
-
 
 server.express.use(
   session({
@@ -203,26 +201,72 @@ server.express.use(
   })
 );
 
-server.express.use(async function(req, res, next) {
-  const token = req.session.jwt
-  if (token === null) {
-    next()
-  }
+const refreshAccessToken = async function(refreshToken) {
   let formData = {
     "client_id": fusionAuthClientId,
-    "token": token,
+    "client_secret": fusionAuthSecret,
+    "grant_type": "refresh_token",
+    "redirect_uri": fusionAuthRedirectUri,
+    "refresh_token": refreshToken
+  }
+  const tokenEndpoint = `${fusionAuthEndpoint}/oauth2/token`
+  const response = await fetch(tokenEndpoint, {
+      method: 'post',
+      headers: {
+        'Bearer': fusionAuthApiKey
+      },
+      body: new URLSearchParams(formData)
+    })
+  const body = await response.json();
+  if (body.error != null) {
+    // TODO - what is the error_reason for expired refresh token?
+    // if (body.error_reason === 'expired_refresh_token') {
+    //   throw new Error("Unauthorized")
+    // }
+    throw new Error(body.error_description)
+  }
+
+  return body.access_token
+}
+
+const introspect = async function(jwt) {
+  let formData = {
+    "client_id": fusionAuthClientId,
+    "token": jwt,
   }
   const introspectEndpoint = `${fusionAuthEndpoint}/oauth2/introspect`
   const response = await fetch(introspectEndpoint, {
       method: 'post',
       body: new URLSearchParams(formData)
     })
-  const body = await response.json();
-  if (body.error != null) {
-    throw new Error(body.error_description)
+  return response.json();
+}
+
+server.express.use(async function(req, res, next) {
+  const jwt = req.session.jwt
+  if (jwt === null) {
+    next()
+  }
+  let decodedJWT = await introspect(jwt);
+  if (decodedJWT.error != null) {
+    throw new Error(decodedJWT.error_description)
   }
 
-  req.decodedJWT = body
+  // Refresh the access token on the session if it has expired
+  if (!decodedJWT.active && req.session.refreshToken) {
+    const refreshedJwt = await refreshAccessToken(req.session.refreshToken)
+    if (refreshedJwt === null) {
+      next()
+    }
+    req.session.jwt = refreshedJwt
+
+    decodedJWT = await introspect(refreshedJwt);
+    if (decodedJWT.error != null) {
+      throw new Error(decodedJWT.error_description)
+    }
+  }
+
+  req.decodedJWT = decodedJWT
   next()
 })
 
