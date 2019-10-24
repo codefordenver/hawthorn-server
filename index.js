@@ -1,5 +1,6 @@
 const { prisma } = require('./generated/prisma-client')
 const { GraphQLServer } = require('graphql-yoga')
+const { AuthenticationError, ForbiddenError } = require('apollo-server')
 const session = require('express-session')
 const dotenv = require('dotenv');
 const { FusionAuthClient } = require('fusionauth-node-client')
@@ -39,15 +40,16 @@ const getUser = function(id) {
   })
 }
 
-const _authorized = function(decodedJWT, role) {
+const _requiresAuthentication = function(decodedJWT, role) {
   if (decodedJWT === null) {
-    return false;
+    throw new AuthenticationError('You must be logged in for that');
   }
   if (!decodedJWT.active) {
-    return false;
+    throw new AuthenticationError('Your session expired, please log back in');
   }
-
-  return decodedJWT.roles.indexOf(role) !== -1
+  if (decodedJWT.roles.indexOf(role) === -1) {
+    throw new ForbiddenError('You cannot see that')
+  }
 }
 
 const resolvers = {
@@ -103,12 +105,8 @@ const resolvers = {
       return context.prisma.posts({ where: { published: true } })
     },
     publishedPrompts(root, args, context) {
-      if (_authorized(context.request.decodedJWT, 'user')) {
-
-        return context.prisma.prompts({ where: { published: true } })
-      }
-
-      throw new Error("Unauthorized")
+      _requiresAuthentication(context.request.decodedJWT, 'user')
+      return context.prisma.prompts({ where: { published: true } })
     },
     user(root, args, context) {
       return getUser(args.id)
@@ -116,29 +114,23 @@ const resolvers = {
   },
   Mutation: {
     createPost(root, args, context) {
-      if (_authorized(context.request.decodedJWT, 'user')) {
-        return context.prisma.createPost({
-          title: args.title,
-          authorId: context.request.decodedJWT.sub,
-          published: true,
-          prompt: {
-            connect: { id: args.promptId }
-          },
-        })
-      }
-
-      throw new Error("Unauthorized")
+      _requiresAuthentication(context.request.decodedJWT, 'user')
+      return context.prisma.createPost({
+        title: args.title,
+        authorId: context.request.decodedJWT.sub,
+        published: true,
+        prompt: {
+          connect: { id: args.promptId }
+        },
+      })
     },
     createPrompt(root, args, context) {
-      if (_authorized(context.request.decodedJWT, 'user')) {
-        return context.prisma.createPrompt({
-          title: args.title,
-          authorId: context.request.decodedJWT.sub,
-          published: true,
-        })
-      }
-
-      throw new Error("Unauthorized")
+      _requiresAuthentication(context.request.decodedJWT, 'user')
+      return context.prisma.createPrompt({
+        title: args.title,
+        authorId: context.request.decodedJWT.sub,
+        published: true,
+      })
     },
   },
   User: {
@@ -219,11 +211,11 @@ const refreshAccessToken = async function(refreshToken) {
     })
   const body = await response.json();
   if (body.error != null) {
-    // TODO - what is the error_reason for expired refresh token?
-    // if (body.error_reason === 'expired_refresh_token') {
-    //   throw new Error("Unauthorized")
-    // }
-    throw new Error(body.error_description)
+    // Check if the refresh token expired
+    if (body.error_reason === 'refresh_token_not_found') {
+      throw new AuthenticationError('Your session expired, please log back in');
+    }
+    throw new Error("Error occurred trying to refresh the session:", body.error_description)
   }
 
   return body.access_token

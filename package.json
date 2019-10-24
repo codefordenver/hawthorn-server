@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-link": "^1.2.13",
+    "apollo-server": "^2.9.7",
     "dotenv": "^8.1.0",
     "express-session": "^1.17.0",
     "fusionauth-node-client": "^1.6.0",

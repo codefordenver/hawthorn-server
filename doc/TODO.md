@@ -9,12 +9,9 @@
 - [x] Resolving posts on user - "Could not find argument authorId for type Post"
 # User
   - PHASE 1
-  - [ ] Get new JWT w/ refresh token on JWT expiration
-    - [x] Update JWT in cookie
-    - [ ] Redirect to login flow on expired refresh token
-      - Key off of error_reason in refresh /oauth2/token response
   - [ ] Store session to prevent drops on server restart
   - [ ] Register with username only
+  - [ ] Hash userId on imageUrl
   - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar
@@ -24,6 +21,10 @@
   - [ ] explore creating a custom UUID type for FA generated ID, currently using String
     - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
   - DONE
+  - [x] Get new JWT w/ refresh token on JWT expiration
+    - [x] Update JWT in cookie
+    - [x] Redirect to login flow on expired refresh token
+      - Key off of error_reason in refresh /oauth2/token response
   - [x] Trim User in schema to:
     - id
     - avatar - a random color initially.
