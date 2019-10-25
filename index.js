@@ -96,7 +96,10 @@ const resolvers = {
       return true
     },
     publishedPrompts(root, args, context) {
-      return context.prisma.prompts({ where: { published: true } })
+      return context.prisma.prompts({
+        orderBy: "createdAt_DESC",
+        where: { published: true }
+      })
     }
   },
   Mutation: {
@@ -142,7 +145,9 @@ const resolvers = {
         .prompt({
           id: root.id,
         })
-        .posts()
+        .posts({
+          orderBy: "createdAt_DESC"
+        })
     }
   },
 }
