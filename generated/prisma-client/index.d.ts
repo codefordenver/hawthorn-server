@@ -143,16 +143,22 @@ export interface ClientConstructor<T> {
 export type PostOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
   | "title_ASC"
   | "title_DESC"
   | "published_ASC"
-  | "published_DESC"
-  | "authorId_ASC"
-  | "authorId_DESC";
+  | "published_DESC";
 
 export type PromptOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
   | "title_ASC"
   | "title_DESC"
   | "published_ASC"
@@ -175,6 +181,19 @@ export type PostWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
+export interface PostUpdateWithWhereUniqueWithoutPromptInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutPromptDataInput;
+}
+
+export interface PromptCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  published?: Maybe<Boolean>;
+  authorId: String;
+  posts?: Maybe<PostCreateManyWithoutPromptInput>;
+}
+
 export interface PostUpdateManyWithoutPromptInput {
   create?: Maybe<PostCreateWithoutPromptInput[] | PostCreateWithoutPromptInput>;
   delete?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
@@ -195,84 +214,9 @@ export interface PostUpdateManyWithoutPromptInput {
   >;
 }
 
-export interface PromptCreateInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  published?: Maybe<Boolean>;
-  authorId: String;
-  posts?: Maybe<PostCreateManyWithoutPromptInput>;
-}
-
-export interface PostUpdateManyMutationInput {
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-}
-
-export interface PromptSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PromptWhereInput>;
-  AND?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
-  OR?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
-  NOT?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
-}
-
-export interface PostCreateInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  published?: Maybe<Boolean>;
-  authorId: String;
-  prompt?: Maybe<PromptCreateOneWithoutPostsInput>;
-}
-
-export interface PromptUpdateManyMutationInput {
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-}
-
-export interface PromptCreateOneWithoutPostsInput {
-  create?: Maybe<PromptCreateWithoutPostsInput>;
-  connect?: Maybe<PromptWhereUniqueInput>;
-}
-
-export interface PostUpdateManyWithWhereNestedInput {
-  where: PostScalarWhereInput;
-  data: PostUpdateManyDataInput;
-}
-
-export interface PromptCreateWithoutPostsInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  published?: Maybe<Boolean>;
-  authorId: String;
-}
-
-export type PromptWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface PostUpdateInput {
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-  prompt?: Maybe<PromptUpdateOneWithoutPostsInput>;
-}
-
-export interface PostUpdateWithoutPromptDataInput {
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-}
-
-export interface PromptUpdateInput {
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-  posts?: Maybe<PostUpdateManyWithoutPromptInput>;
+export interface PromptUpsertWithoutPostsInput {
+  update: PromptUpdateWithoutPostsDataInput;
+  create: PromptCreateWithoutPostsInput;
 }
 
 export interface PromptWhereInput {
@@ -290,6 +234,22 @@ export interface PromptWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
   title?: Maybe<String>;
   title_not?: Maybe<String>;
   title_in?: Maybe<String[] | String>;
@@ -328,84 +288,32 @@ export interface PromptWhereInput {
   NOT?: Maybe<PromptWhereInput[] | PromptWhereInput>;
 }
 
-export interface PromptUpdateWithoutPostsDataInput {
-  title?: Maybe<String>;
+export interface PostSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<PostWhereInput>;
+  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+}
+
+export interface PostCreateInput {
+  id?: Maybe<ID_Input>;
+  title: String;
   published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
+  prompt?: Maybe<PromptCreateOneWithoutPostsInput>;
 }
 
 export interface PostUpdateManyDataInput {
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
 }
 
-export interface PostCreateManyWithoutPromptInput {
-  create?: Maybe<PostCreateWithoutPromptInput[] | PostCreateWithoutPromptInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-}
-
-export interface PostCreateWithoutPromptInput {
-  id?: Maybe<ID_Input>;
-  title: String;
-  published?: Maybe<Boolean>;
-  authorId: String;
-}
-
-export interface PostWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  published_not?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-  authorId_not?: Maybe<String>;
-  authorId_in?: Maybe<String[] | String>;
-  authorId_not_in?: Maybe<String[] | String>;
-  authorId_lt?: Maybe<String>;
-  authorId_lte?: Maybe<String>;
-  authorId_gt?: Maybe<String>;
-  authorId_gte?: Maybe<String>;
-  authorId_contains?: Maybe<String>;
-  authorId_not_contains?: Maybe<String>;
-  authorId_starts_with?: Maybe<String>;
-  authorId_not_starts_with?: Maybe<String>;
-  authorId_ends_with?: Maybe<String>;
-  authorId_not_ends_with?: Maybe<String>;
-  prompt?: Maybe<PromptWhereInput>;
-  AND?: Maybe<PostWhereInput[] | PostWhereInput>;
-  OR?: Maybe<PostWhereInput[] | PostWhereInput>;
-  NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
-}
-
-export interface PromptUpsertWithoutPostsInput {
-  update: PromptUpdateWithoutPostsDataInput;
-  create: PromptCreateWithoutPostsInput;
+export interface PromptCreateOneWithoutPostsInput {
+  create?: Maybe<PromptCreateWithoutPostsInput>;
+  connect?: Maybe<PromptWhereUniqueInput>;
 }
 
 export interface PostScalarWhereInput {
@@ -423,6 +331,22 @@ export interface PostScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
   title?: Maybe<String>;
   title_not?: Maybe<String>;
   title_in?: Maybe<String[] | String>;
@@ -439,39 +363,16 @@ export interface PostScalarWhereInput {
   title_not_ends_with?: Maybe<String>;
   published?: Maybe<Boolean>;
   published_not?: Maybe<Boolean>;
-  authorId?: Maybe<String>;
-  authorId_not?: Maybe<String>;
-  authorId_in?: Maybe<String[] | String>;
-  authorId_not_in?: Maybe<String[] | String>;
-  authorId_lt?: Maybe<String>;
-  authorId_lte?: Maybe<String>;
-  authorId_gt?: Maybe<String>;
-  authorId_gte?: Maybe<String>;
-  authorId_contains?: Maybe<String>;
-  authorId_not_contains?: Maybe<String>;
-  authorId_starts_with?: Maybe<String>;
-  authorId_not_starts_with?: Maybe<String>;
-  authorId_ends_with?: Maybe<String>;
-  authorId_not_ends_with?: Maybe<String>;
   AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
   OR?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
   NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
 }
 
-export interface PostSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PostWhereInput>;
-  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-}
-
-export interface PostUpdateWithWhereUniqueWithoutPromptInput {
-  where: PostWhereUniqueInput;
-  data: PostUpdateWithoutPromptDataInput;
+export interface PromptCreateWithoutPostsInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  published?: Maybe<Boolean>;
+  authorId: String;
 }
 
 export interface PostUpsertWithWhereUniqueWithoutPromptInput {
@@ -480,12 +381,133 @@ export interface PostUpsertWithWhereUniqueWithoutPromptInput {
   create: PostCreateWithoutPromptInput;
 }
 
+export interface PostUpdateInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+  prompt?: Maybe<PromptUpdateOneWithoutPostsInput>;
+}
+
+export interface PostWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  published?: Maybe<Boolean>;
+  published_not?: Maybe<Boolean>;
+  prompt?: Maybe<PromptWhereInput>;
+  AND?: Maybe<PostWhereInput[] | PostWhereInput>;
+  OR?: Maybe<PostWhereInput[] | PostWhereInput>;
+  NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
+}
+
+export interface PromptUpdateInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+  authorId?: Maybe<String>;
+  posts?: Maybe<PostUpdateManyWithoutPromptInput>;
+}
+
+export interface PromptUpdateManyMutationInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+  authorId?: Maybe<String>;
+}
+
+export interface PostCreateManyWithoutPromptInput {
+  create?: Maybe<PostCreateWithoutPromptInput[] | PostCreateWithoutPromptInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+}
+
+export interface PostUpdateManyMutationInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+}
+
+export interface PostCreateWithoutPromptInput {
+  id?: Maybe<ID_Input>;
+  title: String;
+  published?: Maybe<Boolean>;
+}
+
+export interface PromptUpdateWithoutPostsDataInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+  authorId?: Maybe<String>;
+}
+
+export interface PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput;
+  data: PostUpdateManyDataInput;
+}
+
+export interface PromptSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<PromptWhereInput>;
+  AND?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
+  OR?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
+  NOT?: Maybe<PromptSubscriptionWhereInput[] | PromptSubscriptionWhereInput>;
+}
+
+export interface PostUpdateWithoutPromptDataInput {
+  title?: Maybe<String>;
+  published?: Maybe<Boolean>;
+}
+
+export type PromptWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
 export interface NodeNode {
   id: ID_Output;
 }
 
 export interface PromptPreviousValues {
   id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   title: String;
   published: Boolean;
   authorId: String;
@@ -495,6 +517,8 @@ export interface PromptPreviousValuesPromise
   extends Promise<PromptPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   published: () => Promise<Boolean>;
   authorId: () => Promise<String>;
@@ -504,91 +528,94 @@ export interface PromptPreviousValuesSubscription
   extends Promise<AsyncIterator<PromptPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
   published: () => Promise<AsyncIterator<Boolean>>;
   authorId: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface Prompt {
+export interface PostPreviousValues {
   id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
   title: String;
   published: Boolean;
-  authorId: String;
 }
 
-export interface PromptPromise extends Promise<Prompt>, Fragmentable {
+export interface PostPreviousValuesPromise
+  extends Promise<PostPreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   published: () => Promise<Boolean>;
-  authorId: () => Promise<String>;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface PromptSubscription
-  extends Promise<AsyncIterator<Prompt>>,
+export interface PostPreviousValuesSubscription
+  extends Promise<AsyncIterator<PostPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
   published: () => Promise<AsyncIterator<Boolean>>;
-  authorId: () => Promise<AsyncIterator<String>>;
-  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface PromptNullablePromise
-  extends Promise<Prompt | null>,
-    Fragmentable {
+export interface Post {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  title: String;
+  published: Boolean;
+}
+
+export interface PostPromise extends Promise<Post>, Fragmentable {
   id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
   published: () => Promise<Boolean>;
-  authorId: () => Promise<String>;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
+  prompt: <T = PromptPromise>() => T;
+}
+
+export interface PostSubscription
+  extends Promise<AsyncIterator<Post>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  title: () => Promise<AsyncIterator<String>>;
+  published: () => Promise<AsyncIterator<Boolean>>;
+  prompt: <T = PromptSubscription>() => T;
+}
+
+export interface PostNullablePromise
+  extends Promise<Post | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  published: () => Promise<Boolean>;
+  prompt: <T = PromptPromise>() => T;
+}
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface PostEdge {
@@ -606,6 +633,31 @@ export interface PostEdgeSubscription
     Fragmentable {
   node: <T = PostSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PromptSubscriptionPayload {
+  mutation: MutationType;
+  node: Prompt;
+  updatedFields: String[];
+  previousValues: PromptPreviousValues;
+}
+
+export interface PromptSubscriptionPayloadPromise
+  extends Promise<PromptSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = PromptPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = PromptPreviousValuesPromise>() => T;
+}
+
+export interface PromptSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<PromptSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = PromptSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = PromptPreviousValuesSubscription>() => T;
 }
 
 export interface PostSubscriptionPayload {
@@ -654,80 +706,27 @@ export interface PostConnectionSubscription
   aggregate: <T = AggregatePostSubscription>() => T;
 }
 
-export interface Post {
-  id: ID_Output;
-  title: String;
-  published: Boolean;
-  authorId: String;
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
 }
 
-export interface PostPromise extends Promise<Post>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  authorId: () => Promise<String>;
-  prompt: <T = PromptPromise>() => T;
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
 }
 
-export interface PostSubscription
-  extends Promise<AsyncIterator<Post>>,
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-  authorId: () => Promise<AsyncIterator<String>>;
-  prompt: <T = PromptSubscription>() => T;
-}
-
-export interface PostNullablePromise
-  extends Promise<Post | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  authorId: () => Promise<String>;
-  prompt: <T = PromptPromise>() => T;
-}
-
-export interface PostPreviousValues {
-  id: ID_Output;
-  title: String;
-  published: Boolean;
-  authorId: String;
-}
-
-export interface PostPreviousValuesPromise
-  extends Promise<PostPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  title: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  authorId: () => Promise<String>;
-}
-
-export interface PostPreviousValuesSubscription
-  extends Promise<AsyncIterator<PostPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  title: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-  authorId: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregatePrompt {
-  count: Int;
-}
-
-export interface AggregatePromptPromise
-  extends Promise<AggregatePrompt>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregatePromptSubscription
-  extends Promise<AsyncIterator<AggregatePrompt>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface BatchPayload {
@@ -746,62 +745,87 @@ export interface BatchPayloadSubscription
   count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface PromptEdge {
-  node: Prompt;
-  cursor: String;
-}
-
-export interface PromptEdgePromise extends Promise<PromptEdge>, Fragmentable {
-  node: <T = PromptPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface PromptEdgeSubscription
-  extends Promise<AsyncIterator<PromptEdge>>,
-    Fragmentable {
-  node: <T = PromptSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregatePost {
+export interface AggregatePrompt {
   count: Int;
 }
 
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
+export interface AggregatePromptPromise
+  extends Promise<AggregatePrompt>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
+export interface AggregatePromptSubscription
+  extends Promise<AsyncIterator<AggregatePrompt>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface PromptSubscriptionPayload {
-  mutation: MutationType;
-  node: Prompt;
-  updatedFields: String[];
-  previousValues: PromptPreviousValues;
+export interface Prompt {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  title: String;
+  published: Boolean;
+  authorId: String;
 }
 
-export interface PromptSubscriptionPayloadPromise
-  extends Promise<PromptSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = PromptPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = PromptPreviousValuesPromise>() => T;
+export interface PromptPromise extends Promise<Prompt>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  published: () => Promise<Boolean>;
+  authorId: () => Promise<String>;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
-export interface PromptSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<PromptSubscriptionPayload>>,
+export interface PromptSubscription
+  extends Promise<AsyncIterator<Prompt>>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = PromptSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = PromptPreviousValuesSubscription>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  title: () => Promise<AsyncIterator<String>>;
+  published: () => Promise<AsyncIterator<Boolean>>;
+  authorId: () => Promise<AsyncIterator<String>>;
+  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface PromptNullablePromise
+  extends Promise<Prompt | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  title: () => Promise<String>;
+  published: () => Promise<Boolean>;
+  authorId: () => Promise<String>;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface PromptConnection {
@@ -825,6 +849,28 @@ export interface PromptConnectionSubscription
   aggregate: <T = AggregatePromptSubscription>() => T;
 }
 
+export interface PromptEdge {
+  node: Prompt;
+  cursor: String;
+}
+
+export interface PromptEdgePromise extends Promise<PromptEdge>, Fragmentable {
+  node: <T = PromptPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PromptEdgeSubscription
+  extends Promise<AsyncIterator<PromptEdge>>,
+    Fragmentable {
+  node: <T = PromptSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
+
 export type Long = string;
 
 /*
@@ -839,9 +885,14 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+DateTime scalar input type, allowing Date
 */
-export type Boolean = boolean;
+export type DateTimeInput = Date | string;
+
+/*
+DateTime scalar output type, which is always a string
+*/
+export type DateTimeOutput = string;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 

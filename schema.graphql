@@ -2,11 +2,7 @@ type Query {
   fusionAuthConfig: FusionAuthConfig!
   login(code: String!): User!
   logout: Boolean!
-  post(postId: ID!): Post
-  postsByUser(userId: ID!): [Post!]!
-  publishedPosts: [Post!]!
   publishedPrompts: [Prompt!]!
-  user(id: String!): User!
 }
 
 type Mutation {
@@ -23,8 +19,6 @@ type FusionAuthConfig {
 
 type Post {
   id: ID!
-  author: User!
-  authorId: String!
   prompt: Prompt!
   published: Boolean!
   title: String!
@@ -42,5 +36,4 @@ type Prompt {
 type User {
   id: String!
   imageUrl: String!
-  posts: [Post!]!
 }

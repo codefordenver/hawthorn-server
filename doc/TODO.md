@@ -10,9 +10,9 @@
 # User
   - PHASE 1
   - [ ] Store session to prevent drops on server restart
+  - PHASE 2
   - [ ] Register with username only
   - [ ] Hash userId on imageUrl
-  - PHASE 2
   - [ ] define roles
   - [ ] Pull imageUrl from FusionAuth for avatar
   - [ ] Pull FusionAuth integration out into a service
@@ -45,11 +45,12 @@
   - [ ] updatePrompt
 # Post
 - PHASE 1
-  - [ ] Limit to 1 response per Prompt
 - PHASE 2
+  - [ ] Limit to 1 response per User per Prompt
   - [ ] updatePost
 # Authorization
 - PHASE 1
+- PHASE 2
   - [ ] Permission requirements for all endpoints
 - DONE
   - [x] common auth check functions

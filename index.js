@@ -19,6 +19,9 @@ const fusionAuthRedirectUri = process.env.FUSIONAUTH_CLIENT_REDIRECT_URI;
 const fusionAuthApiKey = process.env.FUSIONAUTH_API_KEY;
 const fusionAuthEndpoint = process.env.FUSIONAUTH_ENDPOINT;
 const sessionSecret = process.env.SESSION_SECRET;
+const roles = {
+  facilitator: 'facilitator'
+}
 
 if (!fusionAuthClientId ||
     !fusionAuthSecret ||
@@ -92,32 +95,14 @@ const resolvers = {
       context.request.session.destroy()
       return true
     },
-    post(root, args, context) {
-      return context.prisma.post({ id: args.postId })
-    },
-    postsByUser(root, args, context) {
-      return context.prisma
-        .posts({
-            authorId: root.id
-        })
-    },
-    publishedPosts(root, args, context) {
-      return context.prisma.posts({ where: { published: true } })
-    },
     publishedPrompts(root, args, context) {
-      _requiresAuthentication(context.request.decodedJWT, 'user')
       return context.prisma.prompts({ where: { published: true } })
-    },
-    user(root, args, context) {
-      return getUser(args.id)
     }
   },
   Mutation: {
     createPost(root, args, context) {
-      _requiresAuthentication(context.request.decodedJWT, 'user')
       return context.prisma.createPost({
         title: args.title,
-        authorId: context.request.decodedJWT.sub,
         published: true,
         prompt: {
           connect: { id: args.promptId }
@@ -125,7 +110,7 @@ const resolvers = {
       })
     },
     createPrompt(root, args, context) {
-      _requiresAuthentication(context.request.decodedJWT, 'user')
+      _requiresAuthentication(context.request.decodedJWT, roles.facilitator)
       return context.prisma.createPrompt({
         title: args.title,
         authorId: context.request.decodedJWT.sub,
@@ -137,15 +122,9 @@ const resolvers = {
     // Pull random avatar from an open API
     imageUrl: function(root) {
       return `https://api.adorable.io/avatars/50/${root.id}.png`
-    },
-    posts(root, args, context) {
-      return context.prisma.posts({ where: { authorId: root.id } })
-    },
+    }
   },
   Post: {
-    author(root, args, context){
-      return getUser(root.authorId)
-    },
     prompt(root, args, context) {
       return context.prisma
         .post({
