@@ -2,26 +2,26 @@ version: '3'
 services:
   prisma:
     image: prismagraphql/prisma:1.34
+    depends_on:
+      - db
     restart: always
     ports:
       - '4466:4466'
+    networks:
+     - db
     environment:
       PRISMA_CONFIG: |
         port: 4466
         databases:
           default:
-            connector: mysql
-            host: mysql
-            port: 3306
-            user: root
-            password: prisma
-  mysql:
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: prisma
-    volumes:
-      - mysql:/var/lib/mysql
+            connector: postgres
+            host: db
+            port: 5432
+            user: ${POSTGRES_USER}
+            password: ${POSTGRES_PASSWORD}
+            migrations: true
+            managementSchema: management
+            database: root
 
   db:
     image: postgres:9.6
