@@ -1,7 +1,7 @@
 # Bugs
 # PHASE 1
-- [ ] Deploy somewhere
 # PHASE 2
+- [ ] CORS Access-Control-Allow-Origin configuration only allow frontend URL
 - [ ] Cleanup dependencies
 - [ ] Store session to prevent drops on server restart
 - [ ] Register with username only
@@ -26,6 +26,9 @@
 - [ ] Refactor index.js
 - [ ] Automate build
 # DONE
+- [x] CORS Access-Control-Allow-Origin configuration
+- [x] Make production docker-compose.yml with trimmed containers
+- [x] Deploy somewhere!
 - [x] User not being logged out - same user staying in session
 - [x] tokenMiddleware being called twice per request from client
   - causing most mutation requests from playground to fail
