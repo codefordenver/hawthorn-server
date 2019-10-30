@@ -11,7 +11,8 @@ The following services run in docker containers:
 - FusionAuth search - elastic search for querying users
 
 Run these services in the background with the command:
-`docker compose up -d`
+- Development - `docker compose up -d`
+- Production - `docker-compose -f docker-compose.yml -f docker-compose.production.yml up -d`
 
 ### Updating the data model
 Update `prisma.yml` to define changes to the data model.
