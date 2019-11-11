@@ -26,8 +26,8 @@ type Post {
 
 type Prompt {
   id: ID!
-  author: User!
-  authorId: String!
+  author: User
+  authorId: String
   posts: [Post!]!
   published: Boolean!
   title: String!

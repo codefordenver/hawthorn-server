@@ -292,7 +292,7 @@ type Prompt {
   updatedAt: DateTime!
   title: String!
   published: Boolean!
-  authorId: String!
+  authorId: String
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 
@@ -306,7 +306,7 @@ input PromptCreateInput {
   id: ID
   title: String!
   published: Boolean
-  authorId: String!
+  authorId: String
   posts: PostCreateManyWithoutPromptInput
 }
 
@@ -319,7 +319,7 @@ input PromptCreateWithoutPostsInput {
   id: ID
   title: String!
   published: Boolean
-  authorId: String!
+  authorId: String
 }
 
 type PromptEdge {
@@ -348,7 +348,7 @@ type PromptPreviousValues {
   updatedAt: DateTime!
   title: String!
   published: Boolean!
-  authorId: String!
+  authorId: String
 }
 
 type PromptSubscriptionPayload {

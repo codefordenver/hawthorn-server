@@ -43,6 +43,12 @@ const getUser = function(id) {
   })
 }
 
+// =======================================
+// Role authorization validation
+//
+// throws an AuthenticationError when the user must be logged in to access the requested resource
+// throws a ForbiddenError when the user must be logged in to access the requested resource
+// =======================================
 const _requiresAuthentication = function(decodedJWT, role) {
   if (decodedJWT === null) {
     throw new AuthenticationError('You must be logged in for that');
@@ -113,9 +119,9 @@ const resolvers = {
       })
     },
     createPrompt(root, args, context) {
-      _requiresAuthentication(context.request.decodedJWT, roles.facilitator)
       return context.prisma.createPrompt({
         title: args.title,
+        // authorId may be null
         authorId: context.request.decodedJWT.sub,
         published: true,
       })

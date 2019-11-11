@@ -190,7 +190,7 @@ export interface PromptCreateInput {
   id?: Maybe<ID_Input>;
   title: String;
   published?: Maybe<Boolean>;
-  authorId: String;
+  authorId?: Maybe<String>;
   posts?: Maybe<PostCreateManyWithoutPromptInput>;
 }
 
@@ -372,7 +372,7 @@ export interface PromptCreateWithoutPostsInput {
   id?: Maybe<ID_Input>;
   title: String;
   published?: Maybe<Boolean>;
-  authorId: String;
+  authorId?: Maybe<String>;
 }
 
 export interface PostUpsertWithWhereUniqueWithoutPromptInput {
@@ -510,7 +510,7 @@ export interface PromptPreviousValues {
   updatedAt: DateTimeOutput;
   title: String;
   published: Boolean;
-  authorId: String;
+  authorId?: String;
 }
 
 export interface PromptPreviousValuesPromise
@@ -767,7 +767,7 @@ export interface Prompt {
   updatedAt: DateTimeOutput;
   title: String;
   published: Boolean;
-  authorId: String;
+  authorId?: String;
 }
 
 export interface PromptPromise extends Promise<Prompt>, Fragmentable {

@@ -13,6 +13,6 @@ type Prompt {
   updatedAt: DateTime! @updatedAt
   title: String!
   published: Boolean! @default(value: false)
-  authorId: String!
+  authorId: String
   posts: [Post!]!
 }

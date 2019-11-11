@@ -1,6 +1,7 @@
 # Bugs
 # PHASE 1
 - [ ] Deploy production build
+  - [ ] Deploy to custom domain - hawth.org
 # PHASE 2
 - [ ] CORS Access-Control-Allow-Origin configuration only allow frontend URL
 - [ ] Cleanup dependencies
