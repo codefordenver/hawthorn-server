@@ -1,33 +1,23 @@
 # Bugs
-# PHASE 1
+# TODOs
 - [ ] Deploy production build
-  - [ ] Deploy to custom domain - hawth.org
-# PHASE 2
-- [ ] CORS Access-Control-Allow-Origin configuration only allow frontend URL
 - [ ] Cleanup dependencies
-- [ ] Store session to prevent drops on server restart
-- [ ] Register with username only
-- [ ] Hash userId on imageUrl
-- [ ] define roles
-- [ ] Pull imageUrl from FusionAuth for avatar
-- [ ] Pull FusionAuth integration out into a service
-- [ ] deleteUser
-- [ ] editUser
-- [ ] explore creating a custom UUID type for FA generated ID, currently using String
-  - FusionAuth's UUID type is not compatible with GraphQL ID type and vise-versa
-- [ ] Implement user grouping using FusionAuth groups
-- [ ] updatePrompt
-- [ ] Limit to 1 response per User per Prompt
-- [ ] updatePost
-- [ ] Permission requirements for all endpoints
-- [ ] How to update the datamodel
-- [ ] How to deploy new datamodel / issue data migrations
-- [ ] FusionAuth setup wizard, integration details - API key, Application ID
-- [ ] Better error handling - apollo-errors?
+- [ ] Audit public endpoints
+- [ ] Add a flag for abusive content on Prompts and Posts
+  - Use an enumerated type for different types of abuse?
 - [ ] Tests
 - [ ] Refactor index.js
 - [ ] Automate build
+- [ ] Store session to prevent drops on server restart
+  - Is this done?
+- [ ] Pull FusionAuth integration out into a service
+
+- Documentation
+  - [ ] FusionAuth setup wizard, integration details - API key, Application ID
+
 # DONE
+- [x] Better error handling
+- [x] Deploy to custom domain
 - [x] CORS Access-Control-Allow-Origin configuration
 - [x] Make production docker-compose.yml with trimmed containers
 - [x] Deploy somewhere!
