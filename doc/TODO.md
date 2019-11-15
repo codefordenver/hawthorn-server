@@ -1,7 +1,7 @@
 # Bugs
+
 # TODOs
 - [ ] Deploy production build
-- [ ] Cleanup dependencies
 - [ ] Audit public endpoints
 - [ ] Add a flag for abusive content on Prompts and Posts
   - Use an enumerated type for different types of abuse?
@@ -16,6 +16,7 @@
   - [ ] FusionAuth setup wizard, integration details - API key, Application ID
 
 # DONE
+- [x] Cleanup dependencies
 - [x] Better error handling
 - [x] Deploy to custom domain
 - [x] CORS Access-Control-Allow-Origin configuration
