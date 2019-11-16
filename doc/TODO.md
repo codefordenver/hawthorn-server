@@ -1,7 +1,6 @@
 # Bugs
 
 # TODOs
-- [ ] Deploy production build
 - [ ] Audit public endpoints
 - [ ] Add a flag for abusive content on Prompts and Posts
   - Use an enumerated type for different types of abuse?
@@ -16,6 +15,7 @@
   - [ ] FusionAuth setup wizard, integration details - API key, Application ID
 
 # DONE
+- [x] Deploy production build
 - [x] Cleanup dependencies
 - [x] Better error handling
 - [x] Deploy to custom domain

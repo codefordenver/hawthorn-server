@@ -1,8 +1,10 @@
 const { prisma } = require('./generated/prisma-client')
 const { GraphQLServer } = require('graphql-yoga')
 const { AuthenticationError, ForbiddenError } = require('apollo-server')
+const compression = require('compression')
+const helmet = require('helmet')
 const session = require('express-session')
-const dotenv = require('dotenv');
+const dotenv = require('dotenv')
 const { FusionAuthClient } = require('fusionauth-node-client')
 
 dotenv.config();
@@ -169,6 +171,9 @@ const server = new GraphQLServer({
   },
 })
 
+server.express.use(compression())
+server.express.use(helmet())
+
 server.express.use(
   session({
     name: "qid",
@@ -181,7 +186,7 @@ server.express.use(
       maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
     }
   })
-);
+)
 
 const refreshAccessToken = async function(refreshToken) {
   let formData = {
