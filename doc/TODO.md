@@ -4,6 +4,9 @@
 - [x] Moderation - manually publish Posts and Prompts
   - [x] Add a flag for abusive content on Prompts and Posts
     - [ ] Prisma deploy production
+  - [ ] Enable firewall access to production FusionAuth
+    - [ ] Setup subdomain
+  - [ ] Add 'moderator' role to production FusionAuth
 - [ ] Tests
 - [ ] Refactor index.js
 - [ ] Automate build
