@@ -22,7 +22,7 @@ const fusionAuthApiKey = process.env.FUSIONAUTH_API_KEY;
 const fusionAuthEndpoint = process.env.FUSIONAUTH_ENDPOINT;
 const sessionSecret = process.env.SESSION_SECRET;
 const roles = {
-  facilitator: 'facilitator'
+  moderator: 'moderator'
 }
 
 if (!fusionAuthClientId ||
@@ -37,12 +37,15 @@ if (!fusionAuthClientId ||
 }
 
 const getUser = function(id) {
-  return client.retrieveUser(id).then(
-    clientResponse => clientResponse.successResponse.user
-  )
-  .catch(error => {
-    throw new Error("Unexpected server error " + error)
-  })
+  if (id !== null) {
+    return client.retrieveUser(id).then(
+      clientResponse => clientResponse.successResponse.user
+    )
+    .catch(error => {
+      throw new Error("Unexpected server error " + JSON.stringify(error))
+    })
+  }
+  return null
 }
 
 // =======================================
@@ -106,7 +109,10 @@ const resolvers = {
     publishedPrompts(root, args, context) {
       return context.prisma.prompts({
         orderBy: "createdAt_DESC",
-        where: { published: true }
+        where: {
+          abusive: false,
+          published: true
+        }
       })
     }
   },
@@ -114,10 +120,28 @@ const resolvers = {
     createPost(root, args, context) {
       return context.prisma.createPost({
         title: args.title,
-        published: true,
+        published: false,
         prompt: {
           connect: { id: args.promptId }
         },
+      })
+    },
+    flagPostForAbuse(root, args, context) {
+      _requiresAuthentication(context.request.decodedJWT, roles.moderator)
+      return context.prisma.updatePost({
+        data: {
+          abusive: true
+        },
+        where: { id: args.postId }
+      })
+    },
+    publishPost(root, args, context) {
+      _requiresAuthentication(context.request.decodedJWT, roles.moderator)
+      return context.prisma.updatePost({
+        data: {
+          published: true
+        },
+        where: { id: args.postId }
       })
     },
     createPrompt(root, args, context) {
@@ -125,7 +149,25 @@ const resolvers = {
         title: args.title,
         // authorId may be null
         authorId: context.request.decodedJWT.sub,
-        published: true,
+        published: false,
+      })
+    },
+    flagPromptForAbuse(root, args, context) {
+      _requiresAuthentication(context.request.decodedJWT, roles.moderator)
+      return context.prisma.updatePrompt({
+        data: {
+          abusive: true
+        },
+        where: { id: args.promptId }
+      })
+    },
+    publishPrompt(root, args, context) {
+      _requiresAuthentication(context.request.decodedJWT, roles.moderator)
+      return context.prisma.updatePrompt({
+        data: {
+          published: true
+        },
+        where: { id: args.promptId }
       })
     },
   },
@@ -151,10 +193,14 @@ const resolvers = {
     posts(root, args, context) {
       return context.prisma
         .prompt({
-          id: root.id,
+          id: root.id
         })
         .posts({
-          orderBy: "createdAt_DESC"
+          orderBy: "createdAt_DESC",
+          where: {
+            abusive: false,
+            published: true
+          }
         })
     }
   },

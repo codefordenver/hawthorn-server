@@ -143,6 +143,8 @@ export interface ClientConstructor<T> {
 export type PostOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "abusive_ASC"
+  | "abusive_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -155,6 +157,8 @@ export type PostOrderByInput =
 export type PromptOrderByInput =
   | "id_ASC"
   | "id_DESC"
+  | "abusive_ASC"
+  | "abusive_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -188,6 +192,7 @@ export interface PostUpdateWithWhereUniqueWithoutPromptInput {
 
 export interface PromptCreateInput {
   id?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
   title: String;
   published?: Maybe<Boolean>;
   authorId?: Maybe<String>;
@@ -234,6 +239,8 @@ export interface PromptWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -301,12 +308,14 @@ export interface PostSubscriptionWhereInput {
 
 export interface PostCreateInput {
   id?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
   title: String;
   published?: Maybe<Boolean>;
   prompt?: Maybe<PromptCreateOneWithoutPostsInput>;
 }
 
 export interface PostUpdateManyDataInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
@@ -331,6 +340,8 @@ export interface PostScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -370,6 +381,7 @@ export interface PostScalarWhereInput {
 
 export interface PromptCreateWithoutPostsInput {
   id?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
   title: String;
   published?: Maybe<Boolean>;
   authorId?: Maybe<String>;
@@ -382,6 +394,7 @@ export interface PostUpsertWithWhereUniqueWithoutPromptInput {
 }
 
 export interface PostUpdateInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
   prompt?: Maybe<PromptUpdateOneWithoutPostsInput>;
@@ -402,6 +415,8 @@ export interface PostWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -441,6 +456,7 @@ export interface PostWhereInput {
 }
 
 export interface PromptUpdateInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
   authorId?: Maybe<String>;
@@ -448,6 +464,7 @@ export interface PromptUpdateInput {
 }
 
 export interface PromptUpdateManyMutationInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
   authorId?: Maybe<String>;
@@ -459,17 +476,20 @@ export interface PostCreateManyWithoutPromptInput {
 }
 
 export interface PostUpdateManyMutationInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
 
 export interface PostCreateWithoutPromptInput {
   id?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
   title: String;
   published?: Maybe<Boolean>;
 }
 
 export interface PromptUpdateWithoutPostsDataInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
   authorId?: Maybe<String>;
@@ -492,6 +512,7 @@ export interface PromptSubscriptionWhereInput {
 }
 
 export interface PostUpdateWithoutPromptDataInput {
+  abusive?: Maybe<Boolean>;
   title?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
@@ -506,6 +527,7 @@ export interface NodeNode {
 
 export interface PromptPreviousValues {
   id: ID_Output;
+  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   title: String;
@@ -517,6 +539,7 @@ export interface PromptPreviousValuesPromise
   extends Promise<PromptPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -528,6 +551,7 @@ export interface PromptPreviousValuesSubscription
   extends Promise<AsyncIterator<PromptPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
@@ -537,6 +561,7 @@ export interface PromptPreviousValuesSubscription
 
 export interface PostPreviousValues {
   id: ID_Output;
+  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   title: String;
@@ -547,6 +572,7 @@ export interface PostPreviousValuesPromise
   extends Promise<PostPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -557,6 +583,7 @@ export interface PostPreviousValuesSubscription
   extends Promise<AsyncIterator<PostPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
@@ -565,6 +592,7 @@ export interface PostPreviousValuesSubscription
 
 export interface Post {
   id: ID_Output;
+  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   title: String;
@@ -573,6 +601,7 @@ export interface Post {
 
 export interface PostPromise extends Promise<Post>, Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -584,6 +613,7 @@ export interface PostSubscription
   extends Promise<AsyncIterator<Post>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
@@ -595,6 +625,7 @@ export interface PostNullablePromise
   extends Promise<Post | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -763,6 +794,7 @@ export interface AggregatePromptSubscription
 
 export interface Prompt {
   id: ID_Output;
+  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
   title: String;
@@ -772,6 +804,7 @@ export interface Prompt {
 
 export interface PromptPromise extends Promise<Prompt>, Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -792,6 +825,7 @@ export interface PromptSubscription
   extends Promise<AsyncIterator<Prompt>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   title: () => Promise<AsyncIterator<String>>;
@@ -812,6 +846,7 @@ export interface PromptNullablePromise
   extends Promise<Prompt | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
+  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
   title: () => Promise<String>;
@@ -867,9 +902,9 @@ export interface PromptEdgeSubscription
 }
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
-export type Boolean = boolean;
+export type String = string;
 
 export type Long = string;
 
@@ -880,11 +915,6 @@ export type ID_Input = string | number;
 export type ID_Output = string;
 
 /*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-*/
-export type String = string;
-
-/*
 DateTime scalar input type, allowing Date
 */
 export type DateTimeInput = Date | string;
@@ -893,6 +923,11 @@ export type DateTimeInput = Date | string;
 DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
+
+/*
+The `Boolean` scalar type represents `true` or `false`.
+*/
+export type Boolean = boolean;
 
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 

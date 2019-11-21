@@ -1,20 +1,22 @@
 # Bugs
 
 # TODOs
-- [ ] Audit public endpoints
-- [ ] Add a flag for abusive content on Prompts and Posts
-  - Use an enumerated type for different types of abuse?
+- [x] Moderation - manually publish Posts and Prompts
+  - [x] Add a flag for abusive content on Prompts and Posts
+    - [ ] Prisma deploy production
 - [ ] Tests
 - [ ] Refactor index.js
 - [ ] Automate build
 - [ ] Store session to prevent drops on server restart
   - Is this done?
+- [ ] Paginate publishedPrompts response
 - [ ] Pull FusionAuth integration out into a service
 
 - Documentation
   - [ ] FusionAuth setup wizard, integration details - API key, Application ID
 
 # DONE
+- [x] Audit public endpoints
 - [x] Deploy production build
 - [x] Cleanup dependencies
 - [x] Better error handling

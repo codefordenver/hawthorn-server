@@ -6,8 +6,12 @@ type Query {
 }
 
 type Mutation {
-  createPost(title: String!, promptId: ID!): Post
-  createPrompt(title: String!): Prompt
+  createPost(title: String!, promptId: ID!): Post!
+  flagPostForAbuse(postId: ID!): Post!
+  publishPost(postId: ID!): Post!
+  createPrompt(title: String!): Prompt!
+  flagPromptForAbuse(promptId: ID!): Prompt!
+  publishPrompt(promptId: ID!): Prompt!
 }
 
 type FusionAuthConfig {
@@ -19,6 +23,7 @@ type FusionAuthConfig {
 
 type Post {
   id: ID!
+  abusive: Boolean!
   prompt: Prompt!
   published: Boolean!
   title: String!
@@ -26,6 +31,7 @@ type Post {
 
 type Prompt {
   id: ID!
+  abusive: Boolean!
   author: User
   authorId: String
   posts: [Post!]!
@@ -35,5 +41,5 @@ type Prompt {
 
 type User {
   id: String!
-  imageUrl: String!
+  imageUrl: String
 }

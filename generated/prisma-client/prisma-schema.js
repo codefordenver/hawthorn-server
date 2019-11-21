@@ -53,6 +53,7 @@ type PageInfo {
 
 type Post {
   id: ID!
+  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
@@ -68,6 +69,7 @@ type PostConnection {
 
 input PostCreateInput {
   id: ID
+  abusive: Boolean
   title: String!
   published: Boolean
   prompt: PromptCreateOneWithoutPostsInput
@@ -80,6 +82,7 @@ input PostCreateManyWithoutPromptInput {
 
 input PostCreateWithoutPromptInput {
   id: ID
+  abusive: Boolean
   title: String!
   published: Boolean
 }
@@ -92,6 +95,8 @@ type PostEdge {
 enum PostOrderByInput {
   id_ASC
   id_DESC
+  abusive_ASC
+  abusive_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -104,6 +109,7 @@ enum PostOrderByInput {
 
 type PostPreviousValues {
   id: ID!
+  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
@@ -125,6 +131,8 @@ input PostScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  abusive: Boolean
+  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -181,17 +189,20 @@ input PostSubscriptionWhereInput {
 }
 
 input PostUpdateInput {
+  abusive: Boolean
   title: String
   published: Boolean
   prompt: PromptUpdateOneWithoutPostsInput
 }
 
 input PostUpdateManyDataInput {
+  abusive: Boolean
   title: String
   published: Boolean
 }
 
 input PostUpdateManyMutationInput {
+  abusive: Boolean
   title: String
   published: Boolean
 }
@@ -214,6 +225,7 @@ input PostUpdateManyWithWhereNestedInput {
 }
 
 input PostUpdateWithoutPromptDataInput {
+  abusive: Boolean
   title: String
   published: Boolean
 }
@@ -244,6 +256,8 @@ input PostWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  abusive: Boolean
+  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -288,6 +302,7 @@ input PostWhereUniqueInput {
 
 type Prompt {
   id: ID!
+  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
@@ -304,6 +319,7 @@ type PromptConnection {
 
 input PromptCreateInput {
   id: ID
+  abusive: Boolean
   title: String!
   published: Boolean
   authorId: String
@@ -317,6 +333,7 @@ input PromptCreateOneWithoutPostsInput {
 
 input PromptCreateWithoutPostsInput {
   id: ID
+  abusive: Boolean
   title: String!
   published: Boolean
   authorId: String
@@ -330,6 +347,8 @@ type PromptEdge {
 enum PromptOrderByInput {
   id_ASC
   id_DESC
+  abusive_ASC
+  abusive_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -344,6 +363,7 @@ enum PromptOrderByInput {
 
 type PromptPreviousValues {
   id: ID!
+  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
@@ -370,6 +390,7 @@ input PromptSubscriptionWhereInput {
 }
 
 input PromptUpdateInput {
+  abusive: Boolean
   title: String
   published: Boolean
   authorId: String
@@ -377,6 +398,7 @@ input PromptUpdateInput {
 }
 
 input PromptUpdateManyMutationInput {
+  abusive: Boolean
   title: String
   published: Boolean
   authorId: String
@@ -392,6 +414,7 @@ input PromptUpdateOneWithoutPostsInput {
 }
 
 input PromptUpdateWithoutPostsDataInput {
+  abusive: Boolean
   title: String
   published: Boolean
   authorId: String
@@ -417,6 +440,8 @@ input PromptWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
+  abusive: Boolean
+  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
