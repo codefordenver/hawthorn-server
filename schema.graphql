@@ -1,7 +1,10 @@
+scalar DateTime
+
 type Query {
   fusionAuthConfig: FusionAuthConfig!
   login(code: String!): User!
   logout: Boolean!
+  moderatablePrompts: [Prompt!]!
   publishedPrompts: [Prompt!]!
 }
 
@@ -24,9 +27,11 @@ type FusionAuthConfig {
 type Post {
   id: ID!
   abusive: Boolean!
+  createdAt: DateTime!
   prompt: Prompt!
   published: Boolean!
   title: String!
+  updatedAt: DateTime!
 }
 
 type Prompt {
@@ -34,9 +39,11 @@ type Prompt {
   abusive: Boolean!
   author: User
   authorId: String
+  createdAt: DateTime!
   posts: [Post!]!
   published: Boolean!
   title: String!
+  updatedAt: DateTime!
 }
 
 type User {

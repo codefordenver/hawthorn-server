@@ -114,6 +114,16 @@ const resolvers = {
           published: true
         }
       })
+    },
+    moderatablePrompts(root, args, context) {
+      //_requiresAuthentication(context.request.decodedJWT, roles.moderator)
+      return context.prisma.prompts({
+        orderBy: "createdAt_DESC",
+        where: {
+          abusive: false,
+          published: false
+        }
+      })
     }
   },
   Mutation: {
