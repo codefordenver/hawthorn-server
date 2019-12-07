@@ -1,4 +1,3 @@
-const { prisma } = require('./generated/prisma-client')
 const { GraphQLServer } = require('graphql-yoga')
 const { AuthenticationError, ForbiddenError } = require('apollo-server')
 const compression = require('compression')
@@ -6,6 +5,8 @@ const helmet = require('helmet')
 const session = require('express-session')
 const dotenv = require('dotenv')
 const { FusionAuthClient } = require('fusionauth-node-client')
+const { prisma } = require('./generated/prisma-client')
+const { typeDefs } = require('./typeDefs')
 
 dotenv.config();
 
@@ -217,7 +218,7 @@ const resolvers = {
 }
 
 const server = new GraphQLServer({
-  typeDefs: './schema.graphql',
+  typeDefs: typeDefs,
   resolvers,
   context: request => {
     return {

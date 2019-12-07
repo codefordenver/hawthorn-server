@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=producion pm2 start index.js --watch",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production pm2 start src --watch",
+    "dev": "nodemon src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
     "dotenv": "^8.1.0",
     "express-session": "^1.17.0",
     "fusionauth-node-client": "^1.6.0",
+    "graphql-tag": "^2.10.1",
     "graphql-yoga": "^1.18.3",
     "helmet": "^3.21.2",
     "prisma": "^1.34.10",
