@@ -7,8 +7,8 @@
   - [ ] Enable firewall access to production FusionAuth
     - [ ] Setup subdomain
   - [ ] Add 'moderator' role to production FusionAuth
+- [ ] Move all TODOs into Github issues
 - [ ] Tests
-- [ ] Refactor index.js
 - [ ] Automate build
 - [ ] Store session to prevent drops on server restart
   - Is this done?
@@ -19,6 +19,7 @@
   - [ ] FusionAuth setup wizard, integration details - API key, Application ID
 
 # DONE
+- [x] Refactor index.js
 - [x] Audit public endpoints
 - [x] Deploy production build
 - [x] Cleanup dependencies
