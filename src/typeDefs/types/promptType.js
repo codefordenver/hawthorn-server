@@ -4,8 +4,6 @@ const promptType = gql`
   type Prompt {
     id: ID!
     abusive: Boolean!
-    author: User
-    authorId: String
     createdAt: DateTime!
     posts: [Post!]!
     published: Boolean!
@@ -16,4 +14,4 @@ const promptType = gql`
 
 module.exports = {
   promptType,
-};
+}

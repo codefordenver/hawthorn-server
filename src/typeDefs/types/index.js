@@ -1,11 +1,7 @@
-const { fusionAuthConfigType } = require("./fusionAuthConfigType");
-const { postType } = require("./postType");
-const { promptType } = require("./promptType");
-const { userType } = require("./userType");
+const { postType } = require("./postType")
+const { promptType } = require("./promptType")
 
 module.exports = {
-  fusionAuthConfigType,
   postType,
   promptType,
-  userType,
-};
+}

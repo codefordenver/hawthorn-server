@@ -15,4 +15,4 @@ const postType = gql`
 
 module.exports = {
   postType,
-};
+}
