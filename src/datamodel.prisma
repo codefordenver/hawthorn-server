@@ -3,7 +3,7 @@ type Post {
   abusive: Boolean! @default(value: false)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  title: String!
+  content: String!
   published: Boolean! @default(value: false)
   thread: Thread @relation(link: INLINE)
 }

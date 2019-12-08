@@ -56,7 +56,7 @@ type Post {
   abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  title: String!
+  content: String!
   published: Boolean!
   thread: Thread
 }
@@ -70,7 +70,7 @@ type PostConnection {
 input PostCreateInput {
   id: ID
   abusive: Boolean
-  title: String!
+  content: String!
   published: Boolean
   thread: ThreadCreateOneWithoutPostsInput
 }
@@ -83,7 +83,7 @@ input PostCreateManyWithoutThreadInput {
 input PostCreateWithoutThreadInput {
   id: ID
   abusive: Boolean
-  title: String!
+  content: String!
   published: Boolean
 }
 
@@ -101,8 +101,8 @@ enum PostOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  title_ASC
-  title_DESC
+  content_ASC
+  content_DESC
   published_ASC
   published_DESC
 }
@@ -112,7 +112,7 @@ type PostPreviousValues {
   abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  title: String!
+  content: String!
   published: Boolean!
 }
 
@@ -149,20 +149,20 @@ input PostScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  title: String
-  title_not: String
-  title_in: [String!]
-  title_not_in: [String!]
-  title_lt: String
-  title_lte: String
-  title_gt: String
-  title_gte: String
-  title_contains: String
-  title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
   published: Boolean
   published_not: Boolean
   AND: [PostScalarWhereInput!]
@@ -190,20 +190,20 @@ input PostSubscriptionWhereInput {
 
 input PostUpdateInput {
   abusive: Boolean
-  title: String
+  content: String
   published: Boolean
   thread: ThreadUpdateOneWithoutPostsInput
 }
 
 input PostUpdateManyDataInput {
   abusive: Boolean
-  title: String
+  content: String
   published: Boolean
 }
 
 input PostUpdateManyMutationInput {
   abusive: Boolean
-  title: String
+  content: String
   published: Boolean
 }
 
@@ -226,7 +226,7 @@ input PostUpdateManyWithWhereNestedInput {
 
 input PostUpdateWithoutThreadDataInput {
   abusive: Boolean
-  title: String
+  content: String
   published: Boolean
 }
 
@@ -274,20 +274,20 @@ input PostWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  title: String
-  title_not: String
-  title_in: [String!]
-  title_not_in: [String!]
-  title_lt: String
-  title_lte: String
-  title_gt: String
-  title_gte: String
-  title_contains: String
-  title_not_contains: String
-  title_starts_with: String
-  title_not_starts_with: String
-  title_ends_with: String
-  title_not_ends_with: String
+  content: String
+  content_not: String
+  content_in: [String!]
+  content_not_in: [String!]
+  content_lt: String
+  content_lte: String
+  content_gt: String
+  content_gte: String
+  content_contains: String
+  content_not_contains: String
+  content_starts_with: String
+  content_not_starts_with: String
+  content_ends_with: String
+  content_not_ends_with: String
   published: Boolean
   published_not: Boolean
   thread: ThreadWhereInput

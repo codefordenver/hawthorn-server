@@ -8,7 +8,7 @@ const postType = gql`
     createdAt: DateTime!
     thread: Thread!
     published: Boolean!
-    title: String!
+    content: String!
     updatedAt: DateTime!
   }
 `

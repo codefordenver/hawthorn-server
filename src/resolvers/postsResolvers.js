@@ -11,7 +11,7 @@ const postsResolvers = {
   Mutation: {
     createPost(root, args, context) {
       return context.prisma.createPost({
-        title: args.title,
+        content: args.content,
         published: true,
         thread: {
           connect: { id: args.threadId }

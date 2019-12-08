@@ -149,8 +149,8 @@ export type PostOrderByInput =
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC"
-  | "title_ASC"
-  | "title_DESC"
+  | "content_ASC"
+  | "content_DESC"
   | "published_ASC"
   | "published_DESC";
 
@@ -292,14 +292,14 @@ export interface PostSubscriptionWhereInput {
 export interface PostCreateInput {
   id?: Maybe<ID_Input>;
   abusive?: Maybe<Boolean>;
-  title: String;
+  content: String;
   published?: Maybe<Boolean>;
   thread?: Maybe<ThreadCreateOneWithoutPostsInput>;
 }
 
 export interface PostUpdateManyDataInput {
   abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
+  content?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
 
@@ -341,20 +341,20 @@ export interface PostScalarWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
+  content?: Maybe<String>;
+  content_not?: Maybe<String>;
+  content_in?: Maybe<String[] | String>;
+  content_not_in?: Maybe<String[] | String>;
+  content_lt?: Maybe<String>;
+  content_lte?: Maybe<String>;
+  content_gt?: Maybe<String>;
+  content_gte?: Maybe<String>;
+  content_contains?: Maybe<String>;
+  content_not_contains?: Maybe<String>;
+  content_starts_with?: Maybe<String>;
+  content_not_starts_with?: Maybe<String>;
+  content_ends_with?: Maybe<String>;
+  content_not_ends_with?: Maybe<String>;
   published?: Maybe<Boolean>;
   published_not?: Maybe<Boolean>;
   AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
@@ -377,7 +377,7 @@ export interface PostUpsertWithWhereUniqueWithoutThreadInput {
 
 export interface PostUpdateInput {
   abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
+  content?: Maybe<String>;
   published?: Maybe<Boolean>;
   thread?: Maybe<ThreadUpdateOneWithoutPostsInput>;
 }
@@ -415,20 +415,20 @@ export interface PostWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
+  content?: Maybe<String>;
+  content_not?: Maybe<String>;
+  content_in?: Maybe<String[] | String>;
+  content_not_in?: Maybe<String[] | String>;
+  content_lt?: Maybe<String>;
+  content_lte?: Maybe<String>;
+  content_gt?: Maybe<String>;
+  content_gte?: Maybe<String>;
+  content_contains?: Maybe<String>;
+  content_not_contains?: Maybe<String>;
+  content_starts_with?: Maybe<String>;
+  content_not_starts_with?: Maybe<String>;
+  content_ends_with?: Maybe<String>;
+  content_not_ends_with?: Maybe<String>;
   published?: Maybe<Boolean>;
   published_not?: Maybe<Boolean>;
   thread?: Maybe<ThreadWhereInput>;
@@ -457,14 +457,14 @@ export interface PostCreateManyWithoutThreadInput {
 
 export interface PostUpdateManyMutationInput {
   abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
+  content?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
 
 export interface PostCreateWithoutThreadInput {
   id?: Maybe<ID_Input>;
   abusive?: Maybe<Boolean>;
-  title: String;
+  content: String;
   published?: Maybe<Boolean>;
 }
 
@@ -492,7 +492,7 @@ export interface ThreadSubscriptionWhereInput {
 
 export interface PostUpdateWithoutThreadDataInput {
   abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
+  content?: Maybe<String>;
   published?: Maybe<Boolean>;
 }
 
@@ -540,7 +540,7 @@ export interface PostPreviousValues {
   abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  title: String;
+  content: String;
   published: Boolean;
 }
 
@@ -551,7 +551,7 @@ export interface PostPreviousValuesPromise
   abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
+  content: () => Promise<String>;
   published: () => Promise<Boolean>;
 }
 
@@ -562,7 +562,7 @@ export interface PostPreviousValuesSubscription
   abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
   published: () => Promise<AsyncIterator<Boolean>>;
 }
 
@@ -571,7 +571,7 @@ export interface Post {
   abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  title: String;
+  content: String;
   published: Boolean;
 }
 
@@ -580,7 +580,7 @@ export interface PostPromise extends Promise<Post>, Fragmentable {
   abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
+  content: () => Promise<String>;
   published: () => Promise<Boolean>;
   thread: <T = ThreadPromise>() => T;
 }
@@ -592,7 +592,7 @@ export interface PostSubscription
   abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  title: () => Promise<AsyncIterator<String>>;
+  content: () => Promise<AsyncIterator<String>>;
   published: () => Promise<AsyncIterator<Boolean>>;
   thread: <T = ThreadSubscription>() => T;
 }
@@ -604,7 +604,7 @@ export interface PostNullablePromise
   abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
+  content: () => Promise<String>;
   published: () => Promise<Boolean>;
   thread: <T = ThreadPromise>() => T;
 }
