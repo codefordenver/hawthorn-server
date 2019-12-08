@@ -5,16 +5,15 @@ type Post {
   updatedAt: DateTime! @updatedAt
   title: String!
   published: Boolean! @default(value: false)
-  prompt: Prompt @relation(link: INLINE)
+  thread: Thread @relation(link: INLINE)
 }
 
-type Prompt {
+type Thread {
   id: ID! @id
   abusive: Boolean! @default(value: false)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
   title: String!
   published: Boolean! @default(value: false)
-  authorId: String
   posts: [Post!]!
 }

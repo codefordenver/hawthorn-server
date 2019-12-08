@@ -6,7 +6,7 @@ const postType = gql`
     id: ID!
     abusive: Boolean!
     createdAt: DateTime!
-    prompt: Prompt!
+    thread: Thread!
     published: Boolean!
     title: String!
     updatedAt: DateTime!

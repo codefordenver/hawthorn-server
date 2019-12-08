@@ -1,7 +1,7 @@
 const { postType } = require("./postType")
-const { promptType } = require("./promptType")
+const { threadType } = require("./threadType")
 
 module.exports = {
   postType,
-  promptType,
+  threadType,
 }

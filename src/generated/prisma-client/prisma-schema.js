@@ -7,7 +7,7 @@ module.exports = {
   count: Int!
 }
 
-type AggregatePrompt {
+type AggregateThread {
   count: Int!
 }
 
@@ -26,12 +26,12 @@ type Mutation {
   upsertPost(where: PostWhereUniqueInput!, create: PostCreateInput!, update: PostUpdateInput!): Post!
   deletePost(where: PostWhereUniqueInput!): Post
   deleteManyPosts(where: PostWhereInput): BatchPayload!
-  createPrompt(data: PromptCreateInput!): Prompt!
-  updatePrompt(data: PromptUpdateInput!, where: PromptWhereUniqueInput!): Prompt
-  updateManyPrompts(data: PromptUpdateManyMutationInput!, where: PromptWhereInput): BatchPayload!
-  upsertPrompt(where: PromptWhereUniqueInput!, create: PromptCreateInput!, update: PromptUpdateInput!): Prompt!
-  deletePrompt(where: PromptWhereUniqueInput!): Prompt
-  deleteManyPrompts(where: PromptWhereInput): BatchPayload!
+  createThread(data: ThreadCreateInput!): Thread!
+  updateThread(data: ThreadUpdateInput!, where: ThreadWhereUniqueInput!): Thread
+  updateManyThreads(data: ThreadUpdateManyMutationInput!, where: ThreadWhereInput): BatchPayload!
+  upsertThread(where: ThreadWhereUniqueInput!, create: ThreadCreateInput!, update: ThreadUpdateInput!): Thread!
+  deleteThread(where: ThreadWhereUniqueInput!): Thread
+  deleteManyThreads(where: ThreadWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -58,7 +58,7 @@ type Post {
   updatedAt: DateTime!
   title: String!
   published: Boolean!
-  prompt: Prompt
+  thread: Thread
 }
 
 type PostConnection {
@@ -72,15 +72,15 @@ input PostCreateInput {
   abusive: Boolean
   title: String!
   published: Boolean
-  prompt: PromptCreateOneWithoutPostsInput
+  thread: ThreadCreateOneWithoutPostsInput
 }
 
-input PostCreateManyWithoutPromptInput {
-  create: [PostCreateWithoutPromptInput!]
+input PostCreateManyWithoutThreadInput {
+  create: [PostCreateWithoutThreadInput!]
   connect: [PostWhereUniqueInput!]
 }
 
-input PostCreateWithoutPromptInput {
+input PostCreateWithoutThreadInput {
   id: ID
   abusive: Boolean
   title: String!
@@ -192,7 +192,7 @@ input PostUpdateInput {
   abusive: Boolean
   title: String
   published: Boolean
-  prompt: PromptUpdateOneWithoutPostsInput
+  thread: ThreadUpdateOneWithoutPostsInput
 }
 
 input PostUpdateManyDataInput {
@@ -207,14 +207,14 @@ input PostUpdateManyMutationInput {
   published: Boolean
 }
 
-input PostUpdateManyWithoutPromptInput {
-  create: [PostCreateWithoutPromptInput!]
+input PostUpdateManyWithoutThreadInput {
+  create: [PostCreateWithoutThreadInput!]
   delete: [PostWhereUniqueInput!]
   connect: [PostWhereUniqueInput!]
   set: [PostWhereUniqueInput!]
   disconnect: [PostWhereUniqueInput!]
-  update: [PostUpdateWithWhereUniqueWithoutPromptInput!]
-  upsert: [PostUpsertWithWhereUniqueWithoutPromptInput!]
+  update: [PostUpdateWithWhereUniqueWithoutThreadInput!]
+  upsert: [PostUpsertWithWhereUniqueWithoutThreadInput!]
   deleteMany: [PostScalarWhereInput!]
   updateMany: [PostUpdateManyWithWhereNestedInput!]
 }
@@ -224,21 +224,21 @@ input PostUpdateManyWithWhereNestedInput {
   data: PostUpdateManyDataInput!
 }
 
-input PostUpdateWithoutPromptDataInput {
+input PostUpdateWithoutThreadDataInput {
   abusive: Boolean
   title: String
   published: Boolean
 }
 
-input PostUpdateWithWhereUniqueWithoutPromptInput {
+input PostUpdateWithWhereUniqueWithoutThreadInput {
   where: PostWhereUniqueInput!
-  data: PostUpdateWithoutPromptDataInput!
+  data: PostUpdateWithoutThreadDataInput!
 }
 
-input PostUpsertWithWhereUniqueWithoutPromptInput {
+input PostUpsertWithWhereUniqueWithoutThreadInput {
   where: PostWhereUniqueInput!
-  update: PostUpdateWithoutPromptDataInput!
-  create: PostCreateWithoutPromptInput!
+  update: PostUpdateWithoutThreadDataInput!
+  create: PostCreateWithoutThreadInput!
 }
 
 input PostWhereInput {
@@ -290,7 +290,7 @@ input PostWhereInput {
   title_not_ends_with: String
   published: Boolean
   published_not: Boolean
-  prompt: PromptWhereInput
+  thread: ThreadWhereInput
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
   NOT: [PostWhereInput!]
@@ -300,51 +300,63 @@ input PostWhereUniqueInput {
   id: ID
 }
 
-type Prompt {
+type Query {
+  post(where: PostWhereUniqueInput!): Post
+  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
+  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
+  thread(where: ThreadWhereUniqueInput!): Thread
+  threads(where: ThreadWhereInput, orderBy: ThreadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thread]!
+  threadsConnection(where: ThreadWhereInput, orderBy: ThreadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ThreadConnection!
+  node(id: ID!): Node
+}
+
+type Subscription {
+  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
+  thread(where: ThreadSubscriptionWhereInput): ThreadSubscriptionPayload
+}
+
+type Thread {
   id: ID!
   abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
   published: Boolean!
-  authorId: String
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
 
-type PromptConnection {
+type ThreadConnection {
   pageInfo: PageInfo!
-  edges: [PromptEdge]!
-  aggregate: AggregatePrompt!
+  edges: [ThreadEdge]!
+  aggregate: AggregateThread!
 }
 
-input PromptCreateInput {
+input ThreadCreateInput {
   id: ID
   abusive: Boolean
   title: String!
   published: Boolean
-  authorId: String
-  posts: PostCreateManyWithoutPromptInput
+  posts: PostCreateManyWithoutThreadInput
 }
 
-input PromptCreateOneWithoutPostsInput {
-  create: PromptCreateWithoutPostsInput
-  connect: PromptWhereUniqueInput
+input ThreadCreateOneWithoutPostsInput {
+  create: ThreadCreateWithoutPostsInput
+  connect: ThreadWhereUniqueInput
 }
 
-input PromptCreateWithoutPostsInput {
+input ThreadCreateWithoutPostsInput {
   id: ID
   abusive: Boolean
   title: String!
   published: Boolean
-  authorId: String
 }
 
-type PromptEdge {
-  node: Prompt!
+type ThreadEdge {
+  node: Thread!
   cursor: String!
 }
 
-enum PromptOrderByInput {
+enum ThreadOrderByInput {
   id_ASC
   id_DESC
   abusive_ASC
@@ -357,75 +369,69 @@ enum PromptOrderByInput {
   title_DESC
   published_ASC
   published_DESC
-  authorId_ASC
-  authorId_DESC
 }
 
-type PromptPreviousValues {
+type ThreadPreviousValues {
   id: ID!
   abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
   published: Boolean!
-  authorId: String
 }
 
-type PromptSubscriptionPayload {
+type ThreadSubscriptionPayload {
   mutation: MutationType!
-  node: Prompt
+  node: Thread
   updatedFields: [String!]
-  previousValues: PromptPreviousValues
+  previousValues: ThreadPreviousValues
 }
 
-input PromptSubscriptionWhereInput {
+input ThreadSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: PromptWhereInput
-  AND: [PromptSubscriptionWhereInput!]
-  OR: [PromptSubscriptionWhereInput!]
-  NOT: [PromptSubscriptionWhereInput!]
+  node: ThreadWhereInput
+  AND: [ThreadSubscriptionWhereInput!]
+  OR: [ThreadSubscriptionWhereInput!]
+  NOT: [ThreadSubscriptionWhereInput!]
 }
 
-input PromptUpdateInput {
+input ThreadUpdateInput {
   abusive: Boolean
   title: String
   published: Boolean
-  authorId: String
-  posts: PostUpdateManyWithoutPromptInput
+  posts: PostUpdateManyWithoutThreadInput
 }
 
-input PromptUpdateManyMutationInput {
+input ThreadUpdateManyMutationInput {
   abusive: Boolean
   title: String
   published: Boolean
-  authorId: String
 }
 
-input PromptUpdateOneWithoutPostsInput {
-  create: PromptCreateWithoutPostsInput
-  update: PromptUpdateWithoutPostsDataInput
-  upsert: PromptUpsertWithoutPostsInput
+input ThreadUpdateOneWithoutPostsInput {
+  create: ThreadCreateWithoutPostsInput
+  update: ThreadUpdateWithoutPostsDataInput
+  upsert: ThreadUpsertWithoutPostsInput
   delete: Boolean
   disconnect: Boolean
-  connect: PromptWhereUniqueInput
+  connect: ThreadWhereUniqueInput
 }
 
-input PromptUpdateWithoutPostsDataInput {
+input ThreadUpdateWithoutPostsDataInput {
   abusive: Boolean
   title: String
   published: Boolean
-  authorId: String
 }
 
-input PromptUpsertWithoutPostsInput {
-  update: PromptUpdateWithoutPostsDataInput!
-  create: PromptCreateWithoutPostsInput!
+input ThreadUpsertWithoutPostsInput {
+  update: ThreadUpdateWithoutPostsDataInput!
+  create: ThreadCreateWithoutPostsInput!
 }
 
-input PromptWhereInput {
+input ThreadWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -474,45 +480,16 @@ input PromptWhereInput {
   title_not_ends_with: String
   published: Boolean
   published_not: Boolean
-  authorId: String
-  authorId_not: String
-  authorId_in: [String!]
-  authorId_not_in: [String!]
-  authorId_lt: String
-  authorId_lte: String
-  authorId_gt: String
-  authorId_gte: String
-  authorId_contains: String
-  authorId_not_contains: String
-  authorId_starts_with: String
-  authorId_not_starts_with: String
-  authorId_ends_with: String
-  authorId_not_ends_with: String
   posts_every: PostWhereInput
   posts_some: PostWhereInput
   posts_none: PostWhereInput
-  AND: [PromptWhereInput!]
-  OR: [PromptWhereInput!]
-  NOT: [PromptWhereInput!]
+  AND: [ThreadWhereInput!]
+  OR: [ThreadWhereInput!]
+  NOT: [ThreadWhereInput!]
 }
 
-input PromptWhereUniqueInput {
+input ThreadWhereUniqueInput {
   id: ID
-}
-
-type Query {
-  post(where: PostWhereUniqueInput!): Post
-  posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
-  postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
-  prompt(where: PromptWhereUniqueInput!): Prompt
-  prompts(where: PromptWhereInput, orderBy: PromptOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Prompt]!
-  promptsConnection(where: PromptWhereInput, orderBy: PromptOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PromptConnection!
-  node(id: ID!): Node
-}
-
-type Subscription {
-  post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
-  prompt(where: PromptSubscriptionWhereInput): PromptSubscriptionPayload
 }
 `
       }

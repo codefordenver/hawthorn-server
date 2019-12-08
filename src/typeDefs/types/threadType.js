@@ -1,7 +1,7 @@
 const gql = require('graphql-tag')
 
-const promptType = gql`
-  type Prompt {
+const threadType = gql`
+  type Thread {
     id: ID!
     abusive: Boolean!
     createdAt: DateTime!
@@ -13,5 +13,5 @@ const promptType = gql`
 `
 
 module.exports = {
-  promptType,
+  threadType,
 }

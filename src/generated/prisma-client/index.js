@@ -9,7 +9,7 @@ var models = [
     embedded: false
   },
   {
-    name: "Prompt",
+    name: "Thread",
     embedded: false
   }
 ];

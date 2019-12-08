@@ -1,9 +1,9 @@
 const { query } = require('./query')
 const { mutation } = require('./mutation')
-const { fusionAuthConfigType, postType, promptType, userType } = require('./types')
+const { postType, threadType } = require('./types')
 
-const typeDefs = [query, mutation, fusionAuthConfigType, postType, promptType, userType]
+const typeDefs = [query, mutation, postType, threadType]
 
 module.exports = {
   typeDefs,
-};
+}

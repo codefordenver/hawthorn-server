@@ -1,9 +1,7 @@
-const { fusionAuthResolvers } = require('./fusionAuthResolvers');
 const { postsResolvers } = require('./postsResolvers');
-const { promptsResolvers } = require('./promptsResolvers');
-const { usersResolvers } = require('./usersResolvers');
+const { threadsResolvers } = require('./threadsResolvers');
 
-const resolvers = [fusionAuthResolvers, postsResolvers, promptsResolvers, usersResolvers];
+const resolvers = [postsResolvers, threadsResolvers];
 
 module.exports = {
   resolvers,
