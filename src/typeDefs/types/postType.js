@@ -4,12 +4,13 @@ const postType = gql`
   scalar DateTime
   type Post {
     id: ID!
-    abusive: Boolean!
     createdAt: DateTime!
-    thread: Thread!
-    published: Boolean!
-    content: String!
     updatedAt: DateTime!
+
+    abusive: Boolean!
+    content: String!
+    published: Boolean!
+    thread: Thread!
   }
 `
 

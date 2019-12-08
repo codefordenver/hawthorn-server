@@ -3,12 +3,14 @@ const gql = require('graphql-tag')
 const threadType = gql`
   type Thread {
     id: ID!
-    abusive: Boolean!
     createdAt: DateTime!
+    updatedAt: DateTime!
+
+    abusive: Boolean!
+    group: Group!
     posts: [Post!]!
     published: Boolean!
     title: String!
-    updatedAt: DateTime!
   }
 `
 

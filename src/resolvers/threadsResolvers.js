@@ -1,5 +1,12 @@
 const threadsResolvers = {
   Thread: {
+    group(root, args, context) {
+      return context.prisma
+        .thread({
+          id: root.id
+        })
+        .group()
+    },
     posts(root, args, context) {
       return context.prisma
         .thread({
@@ -28,8 +35,11 @@ const threadsResolvers = {
   Mutation: {
     createThread(root, args, context) {
       return context.prisma.createThread({
-        title: args.title,
+        group: {
+          connect: { id: args.groupId }
+        },
         published: true,
+        title: args.title,
       })
     },
   }

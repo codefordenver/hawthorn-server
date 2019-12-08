@@ -1,8 +1,9 @@
 type Post {
   id: ID! @id
-  abusive: Boolean! @default(value: false)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+
+  abusive: Boolean! @default(value: false)
   content: String!
   published: Boolean! @default(value: false)
   thread: Thread @relation(link: INLINE)
@@ -10,10 +11,22 @@ type Post {
 
 type Thread {
   id: ID! @id
-  abusive: Boolean! @default(value: false)
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
-  title: String!
-  published: Boolean! @default(value: false)
+
+  abusive: Boolean! @default(value: false)
+  group: Group @relation(link: INLINE)
   posts: [Post!]!
+  published: Boolean! @default(value: false)
+  title: String!
+}
+
+type Group {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  description: String!
+  name: String!
+  threads: [Thread!]!
 }

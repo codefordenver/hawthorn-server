@@ -16,6 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  group: (where?: GroupWhereInput) => Promise<boolean>;
   post: (where?: PostWhereInput) => Promise<boolean>;
   thread: (where?: ThreadWhereInput) => Promise<boolean>;
 }
@@ -39,6 +40,25 @@ export interface Prisma {
    * Queries
    */
 
+  group: (where: GroupWhereUniqueInput) => GroupNullablePromise;
+  groups: (args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Group>;
+  groupsConnection: (args?: {
+    where?: GroupWhereInput;
+    orderBy?: GroupOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => GroupConnectionPromise;
   post: (where: PostWhereUniqueInput) => PostNullablePromise;
   posts: (args?: {
     where?: PostWhereInput;
@@ -83,6 +103,22 @@ export interface Prisma {
    * Mutations
    */
 
+  createGroup: (data: GroupCreateInput) => GroupPromise;
+  updateGroup: (args: {
+    data: GroupUpdateInput;
+    where: GroupWhereUniqueInput;
+  }) => GroupPromise;
+  updateManyGroups: (args: {
+    data: GroupUpdateManyMutationInput;
+    where?: GroupWhereInput;
+  }) => BatchPayloadPromise;
+  upsertGroup: (args: {
+    where: GroupWhereUniqueInput;
+    create: GroupCreateInput;
+    update: GroupUpdateInput;
+  }) => GroupPromise;
+  deleteGroup: (where: GroupWhereUniqueInput) => GroupPromise;
+  deleteManyGroups: (where?: GroupWhereInput) => BatchPayloadPromise;
   createPost: (data: PostCreateInput) => PostPromise;
   updatePost: (args: {
     data: PostUpdateInput;
@@ -124,6 +160,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  group: (
+    where?: GroupSubscriptionWhereInput
+  ) => GroupSubscriptionPayloadSubscription;
   post: (
     where?: PostSubscriptionWhereInput
   ) => PostSubscriptionPayloadSubscription;
@@ -140,153 +179,62 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type PostOrderByInput =
+export type ThreadOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "abusive_ASC"
-  | "abusive_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC"
+  | "abusive_ASC"
+  | "abusive_DESC"
+  | "published_ASC"
+  | "published_DESC"
+  | "title_ASC"
+  | "title_DESC";
+
+export type PostOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC"
+  | "abusive_ASC"
+  | "abusive_DESC"
   | "content_ASC"
   | "content_DESC"
   | "published_ASC"
   | "published_DESC";
 
-export type ThreadOrderByInput =
+export type GroupOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "abusive_ASC"
-  | "abusive_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC"
-  | "title_ASC"
-  | "title_DESC"
-  | "published_ASC"
-  | "published_DESC";
+  | "description_ASC"
+  | "description_DESC"
+  | "name_ASC"
+  | "name_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
-
-export interface ThreadUpdateOneWithoutPostsInput {
-  create?: Maybe<ThreadCreateWithoutPostsInput>;
-  update?: Maybe<ThreadUpdateWithoutPostsDataInput>;
-  upsert?: Maybe<ThreadUpsertWithoutPostsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<ThreadWhereUniqueInput>;
-}
-
-export type PostWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
 
 export interface PostUpdateWithWhereUniqueWithoutThreadInput {
   where: PostWhereUniqueInput;
   data: PostUpdateWithoutThreadDataInput;
 }
 
-export interface ThreadCreateInput {
-  id?: Maybe<ID_Input>;
-  abusive?: Maybe<Boolean>;
-  title: String;
-  published?: Maybe<Boolean>;
-  posts?: Maybe<PostCreateManyWithoutThreadInput>;
-}
+export type GroupWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
 
-export interface PostUpdateManyWithoutThreadInput {
-  create?: Maybe<PostCreateWithoutThreadInput[] | PostCreateWithoutThreadInput>;
-  delete?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  set?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  disconnect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  update?: Maybe<
-    | PostUpdateWithWhereUniqueWithoutThreadInput[]
-    | PostUpdateWithWhereUniqueWithoutThreadInput
+export interface ThreadCreateManyWithoutGroupInput {
+  create?: Maybe<
+    ThreadCreateWithoutGroupInput[] | ThreadCreateWithoutGroupInput
   >;
-  upsert?: Maybe<
-    | PostUpsertWithWhereUniqueWithoutThreadInput[]
-    | PostUpsertWithWhereUniqueWithoutThreadInput
-  >;
-  deleteMany?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  updateMany?: Maybe<
-    PostUpdateManyWithWhereNestedInput[] | PostUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface ThreadUpsertWithoutPostsInput {
-  update: ThreadUpdateWithoutPostsDataInput;
-  create: ThreadCreateWithoutPostsInput;
-}
-
-export interface ThreadWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  abusive?: Maybe<Boolean>;
-  abusive_not?: Maybe<Boolean>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  title?: Maybe<String>;
-  title_not?: Maybe<String>;
-  title_in?: Maybe<String[] | String>;
-  title_not_in?: Maybe<String[] | String>;
-  title_lt?: Maybe<String>;
-  title_lte?: Maybe<String>;
-  title_gt?: Maybe<String>;
-  title_gte?: Maybe<String>;
-  title_contains?: Maybe<String>;
-  title_not_contains?: Maybe<String>;
-  title_starts_with?: Maybe<String>;
-  title_not_starts_with?: Maybe<String>;
-  title_ends_with?: Maybe<String>;
-  title_not_ends_with?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  published_not?: Maybe<Boolean>;
-  posts_every?: Maybe<PostWhereInput>;
-  posts_some?: Maybe<PostWhereInput>;
-  posts_none?: Maybe<PostWhereInput>;
-  AND?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
-  OR?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
-  NOT?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
-}
-
-export interface PostSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PostWhereInput>;
-  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
 }
 
 export interface PostCreateInput {
@@ -297,15 +245,12 @@ export interface PostCreateInput {
   thread?: Maybe<ThreadCreateOneWithoutPostsInput>;
 }
 
-export interface PostUpdateManyDataInput {
+export interface ThreadCreateWithoutGroupInput {
+  id?: Maybe<ID_Input>;
   abusive?: Maybe<Boolean>;
-  content?: Maybe<String>;
+  posts?: Maybe<PostCreateManyWithoutThreadInput>;
   published?: Maybe<Boolean>;
-}
-
-export interface ThreadCreateOneWithoutPostsInput {
-  create?: Maybe<ThreadCreateWithoutPostsInput>;
-  connect?: Maybe<ThreadWhereUniqueInput>;
+  title: String;
 }
 
 export interface PostScalarWhereInput {
@@ -323,8 +268,6 @@ export interface PostScalarWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  abusive?: Maybe<Boolean>;
-  abusive_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -341,6 +284,8 @@ export interface PostScalarWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
   content?: Maybe<String>;
   content_not?: Maybe<String>;
   content_in?: Maybe<String[] | String>;
@@ -362,17 +307,194 @@ export interface PostScalarWhereInput {
   NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
 }
 
-export interface ThreadCreateWithoutPostsInput {
+export interface PostCreateManyWithoutThreadInput {
+  create?: Maybe<PostCreateWithoutThreadInput[] | PostCreateWithoutThreadInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+}
+
+export interface ThreadWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
+  group?: Maybe<GroupWhereInput>;
+  posts_every?: Maybe<PostWhereInput>;
+  posts_some?: Maybe<PostWhereInput>;
+  posts_none?: Maybe<PostWhereInput>;
+  published?: Maybe<Boolean>;
+  published_not?: Maybe<Boolean>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  AND?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
+  OR?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
+  NOT?: Maybe<ThreadWhereInput[] | ThreadWhereInput>;
+}
+
+export interface PostCreateWithoutThreadInput {
   id?: Maybe<ID_Input>;
   abusive?: Maybe<Boolean>;
-  title: String;
+  content: String;
   published?: Maybe<Boolean>;
 }
 
-export interface PostUpsertWithWhereUniqueWithoutThreadInput {
-  where: PostWhereUniqueInput;
-  update: PostUpdateWithoutThreadDataInput;
-  create: PostCreateWithoutThreadInput;
+export interface PostSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<PostWhereInput>;
+  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+}
+
+export interface GroupUpdateInput {
+  description?: Maybe<String>;
+  name?: Maybe<String>;
+  threads?: Maybe<ThreadUpdateManyWithoutGroupInput>;
+}
+
+export interface ThreadUpdateManyMutationInput {
+  abusive?: Maybe<Boolean>;
+  published?: Maybe<Boolean>;
+  title?: Maybe<String>;
+}
+
+export interface ThreadUpdateManyWithoutGroupInput {
+  create?: Maybe<
+    ThreadCreateWithoutGroupInput[] | ThreadCreateWithoutGroupInput
+  >;
+  delete?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  connect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  set?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  disconnect?: Maybe<ThreadWhereUniqueInput[] | ThreadWhereUniqueInput>;
+  update?: Maybe<
+    | ThreadUpdateWithWhereUniqueWithoutGroupInput[]
+    | ThreadUpdateWithWhereUniqueWithoutGroupInput
+  >;
+  upsert?: Maybe<
+    | ThreadUpsertWithWhereUniqueWithoutGroupInput[]
+    | ThreadUpsertWithWhereUniqueWithoutGroupInput
+  >;
+  deleteMany?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
+  updateMany?: Maybe<
+    | ThreadUpdateManyWithWhereNestedInput[]
+    | ThreadUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ThreadCreateInput {
+  id?: Maybe<ID_Input>;
+  abusive?: Maybe<Boolean>;
+  group?: Maybe<GroupCreateOneWithoutThreadsInput>;
+  posts?: Maybe<PostCreateManyWithoutThreadInput>;
+  published?: Maybe<Boolean>;
+  title: String;
+}
+
+export interface ThreadUpdateWithWhereUniqueWithoutGroupInput {
+  where: ThreadWhereUniqueInput;
+  data: ThreadUpdateWithoutGroupDataInput;
+}
+
+export interface ThreadUpsertWithoutPostsInput {
+  update: ThreadUpdateWithoutPostsDataInput;
+  create: ThreadCreateWithoutPostsInput;
+}
+
+export interface ThreadUpdateWithoutGroupDataInput {
+  abusive?: Maybe<Boolean>;
+  posts?: Maybe<PostUpdateManyWithoutThreadInput>;
+  published?: Maybe<Boolean>;
+  title?: Maybe<String>;
+}
+
+export type PostWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface PostUpdateManyWithoutThreadInput {
+  create?: Maybe<PostCreateWithoutThreadInput[] | PostCreateWithoutThreadInput>;
+  delete?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  set?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  disconnect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  update?: Maybe<
+    | PostUpdateWithWhereUniqueWithoutThreadInput[]
+    | PostUpdateWithWhereUniqueWithoutThreadInput
+  >;
+  upsert?: Maybe<
+    | PostUpsertWithWhereUniqueWithoutThreadInput[]
+    | PostUpsertWithWhereUniqueWithoutThreadInput
+  >;
+  deleteMany?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  updateMany?: Maybe<
+    PostUpdateManyWithWhereNestedInput[] | PostUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface GroupUpdateOneWithoutThreadsInput {
+  create?: Maybe<GroupCreateWithoutThreadsInput>;
+  update?: Maybe<GroupUpdateWithoutThreadsDataInput>;
+  upsert?: Maybe<GroupUpsertWithoutThreadsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export interface GroupCreateOneWithoutThreadsInput {
+  create?: Maybe<GroupCreateWithoutThreadsInput>;
+  connect?: Maybe<GroupWhereUniqueInput>;
+}
+
+export type ThreadWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface PostUpdateWithoutThreadDataInput {
+  abusive?: Maybe<Boolean>;
+  content?: Maybe<String>;
+  published?: Maybe<Boolean>;
 }
 
 export interface PostUpdateInput {
@@ -380,6 +502,12 @@ export interface PostUpdateInput {
   content?: Maybe<String>;
   published?: Maybe<Boolean>;
   thread?: Maybe<ThreadUpdateOneWithoutPostsInput>;
+}
+
+export interface PostUpsertWithWhereUniqueWithoutThreadInput {
+  where: PostWhereUniqueInput;
+  update: PostUpdateWithoutThreadDataInput;
+  create: PostCreateWithoutThreadInput;
 }
 
 export interface PostWhereInput {
@@ -397,8 +525,6 @@ export interface PostWhereInput {
   id_not_starts_with?: Maybe<ID_Input>;
   id_ends_with?: Maybe<ID_Input>;
   id_not_ends_with?: Maybe<ID_Input>;
-  abusive?: Maybe<Boolean>;
-  abusive_not?: Maybe<Boolean>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -415,6 +541,8 @@ export interface PostWhereInput {
   updatedAt_lte?: Maybe<DateTimeInput>;
   updatedAt_gt?: Maybe<DateTimeInput>;
   updatedAt_gte?: Maybe<DateTimeInput>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
   content?: Maybe<String>;
   content_not?: Maybe<String>;
   content_in?: Maybe<String[] | String>;
@@ -437,22 +565,87 @@ export interface PostWhereInput {
   NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
 }
 
-export interface ThreadUpdateInput {
-  abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
-  posts?: Maybe<PostUpdateManyWithoutThreadInput>;
+export interface GroupWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  threads_every?: Maybe<ThreadWhereInput>;
+  threads_some?: Maybe<ThreadWhereInput>;
+  threads_none?: Maybe<ThreadWhereInput>;
+  AND?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  OR?: Maybe<GroupWhereInput[] | GroupWhereInput>;
+  NOT?: Maybe<GroupWhereInput[] | GroupWhereInput>;
 }
 
-export interface ThreadUpdateManyMutationInput {
-  abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
-  published?: Maybe<Boolean>;
+export interface GroupSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<GroupWhereInput>;
+  AND?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  OR?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
+  NOT?: Maybe<GroupSubscriptionWhereInput[] | GroupSubscriptionWhereInput>;
 }
 
-export interface PostCreateManyWithoutThreadInput {
-  create?: Maybe<PostCreateWithoutThreadInput[] | PostCreateWithoutThreadInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+export interface PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput;
+  data: PostUpdateManyDataInput;
 }
 
 export interface PostUpdateManyMutationInput {
@@ -461,22 +654,133 @@ export interface PostUpdateManyMutationInput {
   published?: Maybe<Boolean>;
 }
 
-export interface PostCreateWithoutThreadInput {
+export interface PostUpdateManyDataInput {
+  abusive?: Maybe<Boolean>;
+  content?: Maybe<String>;
+  published?: Maybe<Boolean>;
+}
+
+export interface GroupUpdateWithoutThreadsDataInput {
+  description?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface ThreadUpsertWithWhereUniqueWithoutGroupInput {
+  where: ThreadWhereUniqueInput;
+  update: ThreadUpdateWithoutGroupDataInput;
+  create: ThreadCreateWithoutGroupInput;
+}
+
+export interface ThreadUpdateOneWithoutPostsInput {
+  create?: Maybe<ThreadCreateWithoutPostsInput>;
+  update?: Maybe<ThreadUpdateWithoutPostsDataInput>;
+  upsert?: Maybe<ThreadUpsertWithoutPostsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<ThreadWhereUniqueInput>;
+}
+
+export interface ThreadScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  abusive?: Maybe<Boolean>;
+  abusive_not?: Maybe<Boolean>;
+  published?: Maybe<Boolean>;
+  published_not?: Maybe<Boolean>;
+  title?: Maybe<String>;
+  title_not?: Maybe<String>;
+  title_in?: Maybe<String[] | String>;
+  title_not_in?: Maybe<String[] | String>;
+  title_lt?: Maybe<String>;
+  title_lte?: Maybe<String>;
+  title_gt?: Maybe<String>;
+  title_gte?: Maybe<String>;
+  title_contains?: Maybe<String>;
+  title_not_contains?: Maybe<String>;
+  title_starts_with?: Maybe<String>;
+  title_not_starts_with?: Maybe<String>;
+  title_ends_with?: Maybe<String>;
+  title_not_ends_with?: Maybe<String>;
+  AND?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
+  OR?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
+  NOT?: Maybe<ThreadScalarWhereInput[] | ThreadScalarWhereInput>;
+}
+
+export interface GroupCreateInput {
+  id?: Maybe<ID_Input>;
+  description: String;
+  name: String;
+  threads?: Maybe<ThreadCreateManyWithoutGroupInput>;
+}
+
+export interface ThreadUpdateManyWithWhereNestedInput {
+  where: ThreadScalarWhereInput;
+  data: ThreadUpdateManyDataInput;
+}
+
+export interface ThreadUpdateInput {
+  abusive?: Maybe<Boolean>;
+  group?: Maybe<GroupUpdateOneWithoutThreadsInput>;
+  posts?: Maybe<PostUpdateManyWithoutThreadInput>;
+  published?: Maybe<Boolean>;
+  title?: Maybe<String>;
+}
+
+export interface ThreadCreateOneWithoutPostsInput {
+  create?: Maybe<ThreadCreateWithoutPostsInput>;
+  connect?: Maybe<ThreadWhereUniqueInput>;
+}
+
+export interface ThreadCreateWithoutPostsInput {
   id?: Maybe<ID_Input>;
   abusive?: Maybe<Boolean>;
-  content: String;
+  group?: Maybe<GroupCreateOneWithoutThreadsInput>;
   published?: Maybe<Boolean>;
+  title: String;
 }
 
-export interface ThreadUpdateWithoutPostsDataInput {
+export interface GroupUpdateManyMutationInput {
+  description?: Maybe<String>;
+  name?: Maybe<String>;
+}
+
+export interface ThreadUpdateManyDataInput {
   abusive?: Maybe<Boolean>;
-  title?: Maybe<String>;
   published?: Maybe<Boolean>;
+  title?: Maybe<String>;
 }
 
-export interface PostUpdateManyWithWhereNestedInput {
-  where: PostScalarWhereInput;
-  data: PostUpdateManyDataInput;
+export interface GroupUpsertWithoutThreadsInput {
+  update: GroupUpdateWithoutThreadsDataInput;
+  create: GroupCreateWithoutThreadsInput;
 }
 
 export interface ThreadSubscriptionWhereInput {
@@ -490,15 +794,18 @@ export interface ThreadSubscriptionWhereInput {
   NOT?: Maybe<ThreadSubscriptionWhereInput[] | ThreadSubscriptionWhereInput>;
 }
 
-export interface PostUpdateWithoutThreadDataInput {
-  abusive?: Maybe<Boolean>;
-  content?: Maybe<String>;
-  published?: Maybe<Boolean>;
+export interface GroupCreateWithoutThreadsInput {
+  id?: Maybe<ID_Input>;
+  description: String;
+  name: String;
 }
 
-export type ThreadWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
+export interface ThreadUpdateWithoutPostsDataInput {
+  abusive?: Maybe<Boolean>;
+  group?: Maybe<GroupUpdateOneWithoutThreadsInput>;
+  published?: Maybe<Boolean>;
+  title?: Maybe<String>;
+}
 
 export interface NodeNode {
   id: ID_Output;
@@ -506,211 +813,120 @@ export interface NodeNode {
 
 export interface ThreadPreviousValues {
   id: ID_Output;
-  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  title: String;
+  abusive: Boolean;
   published: Boolean;
+  title: String;
 }
 
 export interface ThreadPreviousValuesPromise
   extends Promise<ThreadPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
+  abusive: () => Promise<Boolean>;
   published: () => Promise<Boolean>;
+  title: () => Promise<String>;
 }
 
 export interface ThreadPreviousValuesSubscription
   extends Promise<AsyncIterator<ThreadPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
+  published: () => Promise<AsyncIterator<Boolean>>;
   title: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
 }
 
-export interface PostPreviousValues {
-  id: ID_Output;
-  abusive: Boolean;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  content: String;
-  published: Boolean;
-}
-
-export interface PostPreviousValuesPromise
-  extends Promise<PostPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  content: () => Promise<String>;
-  published: () => Promise<Boolean>;
-}
-
-export interface PostPreviousValuesSubscription
-  extends Promise<AsyncIterator<PostPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  abusive: () => Promise<AsyncIterator<Boolean>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  content: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-}
-
-export interface Post {
-  id: ID_Output;
-  abusive: Boolean;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-  content: String;
-  published: Boolean;
-}
-
-export interface PostPromise extends Promise<Post>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  content: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  thread: <T = ThreadPromise>() => T;
-}
-
-export interface PostSubscription
-  extends Promise<AsyncIterator<Post>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  abusive: () => Promise<AsyncIterator<Boolean>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  content: () => Promise<AsyncIterator<String>>;
-  published: () => Promise<AsyncIterator<Boolean>>;
-  thread: <T = ThreadSubscription>() => T;
-}
-
-export interface PostNullablePromise
-  extends Promise<Post | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  content: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  thread: <T = ThreadPromise>() => T;
-}
-
-export interface AggregatePost {
-  count: Int;
-}
-
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface PostEdge {
-  node: Post;
+export interface GroupEdge {
+  node: Group;
   cursor: String;
 }
 
-export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
-  node: <T = PostPromise>() => T;
+export interface GroupEdgePromise extends Promise<GroupEdge>, Fragmentable {
+  node: <T = GroupPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface PostEdgeSubscription
-  extends Promise<AsyncIterator<PostEdge>>,
+export interface GroupEdgeSubscription
+  extends Promise<AsyncIterator<GroupEdge>>,
     Fragmentable {
-  node: <T = PostSubscription>() => T;
+  node: <T = GroupSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ThreadSubscriptionPayload {
-  mutation: MutationType;
-  node: Thread;
-  updatedFields: String[];
-  previousValues: ThreadPreviousValues;
+export interface Thread {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  abusive: Boolean;
+  published: Boolean;
+  title: String;
 }
 
-export interface ThreadSubscriptionPayloadPromise
-  extends Promise<ThreadSubscriptionPayload>,
+export interface ThreadPromise extends Promise<Thread>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  abusive: () => Promise<Boolean>;
+  group: <T = GroupPromise>() => T;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  published: () => Promise<Boolean>;
+  title: () => Promise<String>;
+}
+
+export interface ThreadSubscription
+  extends Promise<AsyncIterator<Thread>>,
     Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = ThreadPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = ThreadPreviousValuesPromise>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
+  group: <T = GroupSubscription>() => T;
+  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  published: () => Promise<AsyncIterator<Boolean>>;
+  title: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ThreadSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ThreadSubscriptionPayload>>,
+export interface ThreadNullablePromise
+  extends Promise<Thread | null>,
     Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ThreadSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ThreadPreviousValuesSubscription>() => T;
-}
-
-export interface PostSubscriptionPayload {
-  mutation: MutationType;
-  node: Post;
-  updatedFields: String[];
-  previousValues: PostPreviousValues;
-}
-
-export interface PostSubscriptionPayloadPromise
-  extends Promise<PostSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = PostPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = PostPreviousValuesPromise>() => T;
-}
-
-export interface PostSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<PostSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = PostSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = PostPreviousValuesSubscription>() => T;
-}
-
-export interface PostConnection {
-  pageInfo: PageInfo;
-  edges: PostEdge[];
-}
-
-export interface PostConnectionPromise
-  extends Promise<PostConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<PostEdge>>() => T;
-  aggregate: <T = AggregatePostPromise>() => T;
-}
-
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  abusive: () => Promise<Boolean>;
+  group: <T = GroupPromise>() => T;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  published: () => Promise<Boolean>;
+  title: () => Promise<String>;
 }
 
 export interface PageInfo {
@@ -734,6 +950,27 @@ export interface PageInfoSubscription
   hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
   startCursor: () => Promise<AsyncIterator<String>>;
   endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GroupConnection {
+  pageInfo: PageInfo;
+  edges: GroupEdge[];
+}
+
+export interface GroupConnectionPromise
+  extends Promise<GroupConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<GroupEdge>>() => T;
+  aggregate: <T = AggregateGroupPromise>() => T;
+}
+
+export interface GroupConnectionSubscription
+  extends Promise<AsyncIterator<GroupConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<GroupEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateGroupSubscription>() => T;
 }
 
 export interface BatchPayload {
@@ -768,71 +1005,35 @@ export interface AggregateThreadSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface Thread {
+export interface PostPreviousValues {
   id: ID_Output;
-  abusive: Boolean;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
-  title: String;
+  abusive: Boolean;
+  content: String;
   published: Boolean;
 }
 
-export interface ThreadPromise extends Promise<Thread>, Fragmentable {
+export interface PostPreviousValuesPromise
+  extends Promise<PostPreviousValues>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
+  abusive: () => Promise<Boolean>;
+  content: () => Promise<String>;
   published: () => Promise<Boolean>;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
-export interface ThreadSubscription
-  extends Promise<AsyncIterator<Thread>>,
+export interface PostPreviousValuesSubscription
+  extends Promise<AsyncIterator<PostPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  abusive: () => Promise<AsyncIterator<Boolean>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  title: () => Promise<AsyncIterator<String>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
+  content: () => Promise<AsyncIterator<String>>;
   published: () => Promise<AsyncIterator<Boolean>>;
-  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface ThreadNullablePromise
-  extends Promise<Thread | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  abusive: () => Promise<Boolean>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-  title: () => Promise<String>;
-  published: () => Promise<Boolean>;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
 export interface ThreadConnection {
@@ -856,6 +1057,285 @@ export interface ThreadConnectionSubscription
   aggregate: <T = AggregateThreadSubscription>() => T;
 }
 
+export interface Post {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  abusive: Boolean;
+  content: String;
+  published: Boolean;
+}
+
+export interface PostPromise extends Promise<Post>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  abusive: () => Promise<Boolean>;
+  content: () => Promise<String>;
+  published: () => Promise<Boolean>;
+  thread: <T = ThreadPromise>() => T;
+}
+
+export interface PostSubscription
+  extends Promise<AsyncIterator<Post>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  abusive: () => Promise<AsyncIterator<Boolean>>;
+  content: () => Promise<AsyncIterator<String>>;
+  published: () => Promise<AsyncIterator<Boolean>>;
+  thread: <T = ThreadSubscription>() => T;
+}
+
+export interface PostNullablePromise
+  extends Promise<Post | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  abusive: () => Promise<Boolean>;
+  content: () => Promise<String>;
+  published: () => Promise<Boolean>;
+  thread: <T = ThreadPromise>() => T;
+}
+
+export interface PostEdge {
+  node: Post;
+  cursor: String;
+}
+
+export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
+  node: <T = PostPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PostEdgeSubscription
+  extends Promise<AsyncIterator<PostEdge>>,
+    Fragmentable {
+  node: <T = PostSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface AggregateGroup {
+  count: Int;
+}
+
+export interface AggregateGroupPromise
+  extends Promise<AggregateGroup>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateGroupSubscription
+  extends Promise<AsyncIterator<AggregateGroup>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface GroupPreviousValues {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  description: String;
+  name: String;
+}
+
+export interface GroupPreviousValuesPromise
+  extends Promise<GroupPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  description: () => Promise<String>;
+  name: () => Promise<String>;
+}
+
+export interface GroupPreviousValuesSubscription
+  extends Promise<AsyncIterator<GroupPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  description: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+}
+
+export interface GroupSubscriptionPayload {
+  mutation: MutationType;
+  node: Group;
+  updatedFields: String[];
+  previousValues: GroupPreviousValues;
+}
+
+export interface GroupSubscriptionPayloadPromise
+  extends Promise<GroupSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = GroupPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = GroupPreviousValuesPromise>() => T;
+}
+
+export interface GroupSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<GroupSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = GroupSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = GroupPreviousValuesSubscription>() => T;
+}
+
+export interface Group {
+  id: ID_Output;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
+  description: String;
+  name: String;
+}
+
+export interface GroupPromise extends Promise<Group>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  description: () => Promise<String>;
+  name: () => Promise<String>;
+  threads: <T = FragmentableArray<Thread>>(args?: {
+    where?: ThreadWhereInput;
+    orderBy?: ThreadOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface GroupSubscription
+  extends Promise<AsyncIterator<Group>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  description: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  threads: <T = Promise<AsyncIterator<ThreadSubscription>>>(args?: {
+    where?: ThreadWhereInput;
+    orderBy?: ThreadOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface GroupNullablePromise
+  extends Promise<Group | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
+  description: () => Promise<String>;
+  name: () => Promise<String>;
+  threads: <T = FragmentableArray<Thread>>(args?: {
+    where?: ThreadWhereInput;
+    orderBy?: ThreadOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface PostSubscriptionPayload {
+  mutation: MutationType;
+  node: Post;
+  updatedFields: String[];
+  previousValues: PostPreviousValues;
+}
+
+export interface PostSubscriptionPayloadPromise
+  extends Promise<PostSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = PostPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = PostPreviousValuesPromise>() => T;
+}
+
+export interface PostSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<PostSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = PostSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = PostPreviousValuesSubscription>() => T;
+}
+
+export interface ThreadSubscriptionPayload {
+  mutation: MutationType;
+  node: Thread;
+  updatedFields: String[];
+  previousValues: ThreadPreviousValues;
+}
+
+export interface ThreadSubscriptionPayloadPromise
+  extends Promise<ThreadSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = ThreadPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = ThreadPreviousValuesPromise>() => T;
+}
+
+export interface ThreadSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ThreadSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = ThreadSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = ThreadPreviousValuesSubscription>() => T;
+}
+
+export interface PostConnection {
+  pageInfo: PageInfo;
+  edges: PostEdge[];
+}
+
+export interface PostConnectionPromise
+  extends Promise<PostConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PostEdge>>() => T;
+  aggregate: <T = AggregatePostPromise>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface ThreadEdge {
   node: Thread;
   cursor: String;
@@ -874,9 +1354,9 @@ export interface ThreadEdgeSubscription
 }
 
 /*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+The `Boolean` scalar type represents `true` or `false`.
 */
-export type String = string;
+export type Boolean = boolean;
 
 export type Long = string;
 
@@ -885,6 +1365,11 @@ The `ID` scalar type represents a unique identifier, often used to refetch an ob
 */
 export type ID_Input = string | number;
 export type ID_Output = string;
+
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+*/
+export type Int = number;
 
 /*
 DateTime scalar input type, allowing Date
@@ -897,14 +1382,9 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
-export type Boolean = boolean;
-
-/*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
-*/
-export type Int = number;
+export type String = string;
 
 /**
  * Model Metadata
@@ -917,6 +1397,10 @@ export const models: Model[] = [
   },
   {
     name: "Thread",
+    embedded: false
+  },
+  {
+    name: "Group",
     embedded: false
   }
 ];

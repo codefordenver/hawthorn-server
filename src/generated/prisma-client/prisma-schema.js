@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregatePost {
+/* GraphQL */ `type AggregateGroup {
+  count: Int!
+}
+
+type AggregatePost {
   count: Int!
 }
 
@@ -17,9 +21,193 @@ type BatchPayload {
 
 scalar DateTime
 
+type Group {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+  name: String!
+  threads(where: ThreadWhereInput, orderBy: ThreadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thread!]
+}
+
+type GroupConnection {
+  pageInfo: PageInfo!
+  edges: [GroupEdge]!
+  aggregate: AggregateGroup!
+}
+
+input GroupCreateInput {
+  id: ID
+  description: String!
+  name: String!
+  threads: ThreadCreateManyWithoutGroupInput
+}
+
+input GroupCreateOneWithoutThreadsInput {
+  create: GroupCreateWithoutThreadsInput
+  connect: GroupWhereUniqueInput
+}
+
+input GroupCreateWithoutThreadsInput {
+  id: ID
+  description: String!
+  name: String!
+}
+
+type GroupEdge {
+  node: Group!
+  cursor: String!
+}
+
+enum GroupOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  description_ASC
+  description_DESC
+  name_ASC
+  name_DESC
+}
+
+type GroupPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  description: String!
+  name: String!
+}
+
+type GroupSubscriptionPayload {
+  mutation: MutationType!
+  node: Group
+  updatedFields: [String!]
+  previousValues: GroupPreviousValues
+}
+
+input GroupSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: GroupWhereInput
+  AND: [GroupSubscriptionWhereInput!]
+  OR: [GroupSubscriptionWhereInput!]
+  NOT: [GroupSubscriptionWhereInput!]
+}
+
+input GroupUpdateInput {
+  description: String
+  name: String
+  threads: ThreadUpdateManyWithoutGroupInput
+}
+
+input GroupUpdateManyMutationInput {
+  description: String
+  name: String
+}
+
+input GroupUpdateOneWithoutThreadsInput {
+  create: GroupCreateWithoutThreadsInput
+  update: GroupUpdateWithoutThreadsDataInput
+  upsert: GroupUpsertWithoutThreadsInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: GroupWhereUniqueInput
+}
+
+input GroupUpdateWithoutThreadsDataInput {
+  description: String
+  name: String
+}
+
+input GroupUpsertWithoutThreadsInput {
+  update: GroupUpdateWithoutThreadsDataInput!
+  create: GroupCreateWithoutThreadsInput!
+}
+
+input GroupWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  threads_every: ThreadWhereInput
+  threads_some: ThreadWhereInput
+  threads_none: ThreadWhereInput
+  AND: [GroupWhereInput!]
+  OR: [GroupWhereInput!]
+  NOT: [GroupWhereInput!]
+}
+
+input GroupWhereUniqueInput {
+  id: ID
+}
+
 scalar Long
 
 type Mutation {
+  createGroup(data: GroupCreateInput!): Group!
+  updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
+  updateManyGroups(data: GroupUpdateManyMutationInput!, where: GroupWhereInput): BatchPayload!
+  upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
+  deleteGroup(where: GroupWhereUniqueInput!): Group
+  deleteManyGroups(where: GroupWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
@@ -53,9 +241,9 @@ type PageInfo {
 
 type Post {
   id: ID!
-  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  abusive: Boolean!
   content: String!
   published: Boolean!
   thread: Thread
@@ -95,12 +283,12 @@ type PostEdge {
 enum PostOrderByInput {
   id_ASC
   id_DESC
-  abusive_ASC
-  abusive_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  abusive_ASC
+  abusive_DESC
   content_ASC
   content_DESC
   published_ASC
@@ -109,9 +297,9 @@ enum PostOrderByInput {
 
 type PostPreviousValues {
   id: ID!
-  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
+  abusive: Boolean!
   content: String!
   published: Boolean!
 }
@@ -131,8 +319,6 @@ input PostScalarWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  abusive: Boolean
-  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -149,6 +335,8 @@ input PostScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  abusive: Boolean
+  abusive_not: Boolean
   content: String
   content_not: String
   content_in: [String!]
@@ -256,8 +444,6 @@ input PostWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  abusive: Boolean
-  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -274,6 +460,8 @@ input PostWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  abusive: Boolean
+  abusive_not: Boolean
   content: String
   content_not: String
   content_in: [String!]
@@ -301,6 +489,9 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  group(where: GroupWhereUniqueInput!): Group
+  groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
+  groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
@@ -311,18 +502,20 @@ type Query {
 }
 
 type Subscription {
+  group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   thread(where: ThreadSubscriptionWhereInput): ThreadSubscriptionPayload
 }
 
 type Thread {
   id: ID!
-  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  title: String!
-  published: Boolean!
+  abusive: Boolean!
+  group: Group
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
+  published: Boolean!
+  title: String!
 }
 
 type ThreadConnection {
@@ -334,9 +527,15 @@ type ThreadConnection {
 input ThreadCreateInput {
   id: ID
   abusive: Boolean
-  title: String!
-  published: Boolean
+  group: GroupCreateOneWithoutThreadsInput
   posts: PostCreateManyWithoutThreadInput
+  published: Boolean
+  title: String!
+}
+
+input ThreadCreateManyWithoutGroupInput {
+  create: [ThreadCreateWithoutGroupInput!]
+  connect: [ThreadWhereUniqueInput!]
 }
 
 input ThreadCreateOneWithoutPostsInput {
@@ -344,11 +543,20 @@ input ThreadCreateOneWithoutPostsInput {
   connect: ThreadWhereUniqueInput
 }
 
+input ThreadCreateWithoutGroupInput {
+  id: ID
+  abusive: Boolean
+  posts: PostCreateManyWithoutThreadInput
+  published: Boolean
+  title: String!
+}
+
 input ThreadCreateWithoutPostsInput {
   id: ID
   abusive: Boolean
-  title: String!
+  group: GroupCreateOneWithoutThreadsInput
   published: Boolean
+  title: String!
 }
 
 type ThreadEdge {
@@ -359,25 +567,79 @@ type ThreadEdge {
 enum ThreadOrderByInput {
   id_ASC
   id_DESC
-  abusive_ASC
-  abusive_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  title_ASC
-  title_DESC
+  abusive_ASC
+  abusive_DESC
   published_ASC
   published_DESC
+  title_ASC
+  title_DESC
 }
 
 type ThreadPreviousValues {
   id: ID!
-  abusive: Boolean!
   createdAt: DateTime!
   updatedAt: DateTime!
-  title: String!
+  abusive: Boolean!
   published: Boolean!
+  title: String!
+}
+
+input ThreadScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  abusive: Boolean
+  abusive_not: Boolean
+  published: Boolean
+  published_not: Boolean
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  AND: [ThreadScalarWhereInput!]
+  OR: [ThreadScalarWhereInput!]
+  NOT: [ThreadScalarWhereInput!]
 }
 
 type ThreadSubscriptionPayload {
@@ -400,15 +662,39 @@ input ThreadSubscriptionWhereInput {
 
 input ThreadUpdateInput {
   abusive: Boolean
-  title: String
-  published: Boolean
+  group: GroupUpdateOneWithoutThreadsInput
   posts: PostUpdateManyWithoutThreadInput
+  published: Boolean
+  title: String
+}
+
+input ThreadUpdateManyDataInput {
+  abusive: Boolean
+  published: Boolean
+  title: String
 }
 
 input ThreadUpdateManyMutationInput {
   abusive: Boolean
-  title: String
   published: Boolean
+  title: String
+}
+
+input ThreadUpdateManyWithoutGroupInput {
+  create: [ThreadCreateWithoutGroupInput!]
+  delete: [ThreadWhereUniqueInput!]
+  connect: [ThreadWhereUniqueInput!]
+  set: [ThreadWhereUniqueInput!]
+  disconnect: [ThreadWhereUniqueInput!]
+  update: [ThreadUpdateWithWhereUniqueWithoutGroupInput!]
+  upsert: [ThreadUpsertWithWhereUniqueWithoutGroupInput!]
+  deleteMany: [ThreadScalarWhereInput!]
+  updateMany: [ThreadUpdateManyWithWhereNestedInput!]
+}
+
+input ThreadUpdateManyWithWhereNestedInput {
+  where: ThreadScalarWhereInput!
+  data: ThreadUpdateManyDataInput!
 }
 
 input ThreadUpdateOneWithoutPostsInput {
@@ -420,15 +706,34 @@ input ThreadUpdateOneWithoutPostsInput {
   connect: ThreadWhereUniqueInput
 }
 
+input ThreadUpdateWithoutGroupDataInput {
+  abusive: Boolean
+  posts: PostUpdateManyWithoutThreadInput
+  published: Boolean
+  title: String
+}
+
 input ThreadUpdateWithoutPostsDataInput {
   abusive: Boolean
-  title: String
+  group: GroupUpdateOneWithoutThreadsInput
   published: Boolean
+  title: String
+}
+
+input ThreadUpdateWithWhereUniqueWithoutGroupInput {
+  where: ThreadWhereUniqueInput!
+  data: ThreadUpdateWithoutGroupDataInput!
 }
 
 input ThreadUpsertWithoutPostsInput {
   update: ThreadUpdateWithoutPostsDataInput!
   create: ThreadCreateWithoutPostsInput!
+}
+
+input ThreadUpsertWithWhereUniqueWithoutGroupInput {
+  where: ThreadWhereUniqueInput!
+  update: ThreadUpdateWithoutGroupDataInput!
+  create: ThreadCreateWithoutGroupInput!
 }
 
 input ThreadWhereInput {
@@ -446,8 +751,6 @@ input ThreadWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  abusive: Boolean
-  abusive_not: Boolean
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -464,6 +767,14 @@ input ThreadWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  abusive: Boolean
+  abusive_not: Boolean
+  group: GroupWhereInput
+  posts_every: PostWhereInput
+  posts_some: PostWhereInput
+  posts_none: PostWhereInput
+  published: Boolean
+  published_not: Boolean
   title: String
   title_not: String
   title_in: [String!]
@@ -478,11 +789,6 @@ input ThreadWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
-  published: Boolean
-  published_not: Boolean
-  posts_every: PostWhereInput
-  posts_some: PostWhereInput
-  posts_none: PostWhereInput
   AND: [ThreadWhereInput!]
   OR: [ThreadWhereInput!]
   NOT: [ThreadWhereInput!]
