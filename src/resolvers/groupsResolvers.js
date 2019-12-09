@@ -15,6 +15,11 @@ const groupsResolvers = {
     }
   },
   Query: {
+    group(root, args, context) {
+      return context.prisma.group({
+        id: args.id,
+      })
+    },
     groups(root, args, context) {
       return context.prisma.groups({
         orderBy: "createdAt_DESC",

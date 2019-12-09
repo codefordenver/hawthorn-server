@@ -22,13 +22,9 @@ const threadsResolvers = {
     }
   },
   Query: {
-    publishedThreads(root, args, context) {
-      return context.prisma.threads({
-        orderBy: "createdAt_DESC",
-        where: {
-          abusive: false,
-          published: true
-        }
+    thread(root, args, context) {
+      return context.prisma.thread({
+        id: args.id,
       })
     },
   },

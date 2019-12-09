@@ -2,8 +2,9 @@ const gql = require('graphql-tag')
 
 const query = gql`
   type Query {
-    publishedThreads: [Thread!]!
+    group(id: ID!): Group
     groups: [Group!]!
+    thread(id: ID!): Thread
   }
 `
 
