@@ -2,7 +2,6 @@ const { GraphQLServer } = require('graphql-yoga')
 const compression = require('compression')
 const helmet = require('helmet')
 const { prisma } = require('./generated/prisma-client')
-const { config } = require('./config')
 const { typeDefs } = require('./typeDefs')
 const { resolvers } = require('./resolvers')
 

@@ -8,7 +8,7 @@ This backend process serves a [GraphQL](https://graphql.org/) API on port `:4000
 The following software must be installed prior to running `hawthorn-server`:
 * [git](https://git-scm.com/downloads) - This is for version control
 * [Node.js](https://nodejs.org/en/) - Node is used for running `hawthorn-server` and installing dependent JavaScript packages using the `npm` command.
-* [Docker](https://docs.docker.com/install/) - This is for running [FusionAuth](https://fusionauth.io/), [PostgreSQL](https://www.postgresql.org/), [ElasticSearch](https://www.elastic.co/products/elasticsearch), and [Prisma](https://www.prisma.io/) (you only need to install Docker manually, not these other things)
+* [Docker](https://docs.docker.com/install/) - [PostgreSQL](https://www.postgresql.org/) and [Prisma](https://www.prisma.io/) (you only need to install Docker manually, not these other things)
 * [Prisma CLI](https://www.prisma.io/docs/prisma-cli-and-configuration/using-the-prisma-cli-alx4/#installation) - The `prisma` CLI tool is used for deploying the database schema to the database, and for generating an interface for our `hawthorn-server` to interact with the database through.
 
 ## Set up a development environment
@@ -36,9 +36,7 @@ docker-compose ps
        Name                      Command               State                       Ports
 -------------------------------------------------------------------------------------------------------------
 server_db_1           docker-entrypoint.sh postgres    Up      0.0.0.0:5432->5432/tcp
-server_fusionauth_1   /bin/sh -c /usr/local/fusi ...   Up      0.0.0.0:9011->9011/tcp
 server_prisma_1       /bin/sh -c /app/start.sh         Up      0.0.0.0:4466->4466/tcp
-server_search_1       /usr/local/bin/docker-entr ...   Up      0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp
 ```
 
 ### Deploy the database schema
@@ -98,9 +96,7 @@ prisma generate
 ### Docker
 The following services run in docker containers:
 - prisma client - ORM for primary application database
-- postgresql - primary application data store.  This maintains databases for both `hawthorn-server` and FusionAuth
-- FusionAuth - user authentication and access management.  This is necessary for privileged application access for content moderation.
-- FusionAuth search - elastic search for querying users
+- postgresql - primary application data store.
 
 Run these services in the background with the command:
 ```sh
