@@ -8,6 +8,7 @@ This backend process serves a [GraphQL](https://graphql.org/) API on port `:4000
 The following software must be installed prior to running `hawthorn-server`:
 * [git](https://git-scm.com/downloads) - This is for version control
 * [Node.js](https://nodejs.org/en/) - Node is used for running `hawthorn-server` and installing dependent JavaScript packages using the `npm` command.
+* [nodemon](https://www.npmjs.com/package/nodemon) - This is for running your development server and hot-swapping for code changes
 * [Docker](https://docs.docker.com/install/) - [PostgreSQL](https://www.postgresql.org/) and [Prisma](https://www.prisma.io/) (you only need to install Docker manually, not these other things)
 * [Prisma CLI](https://www.prisma.io/docs/prisma-cli-and-configuration/using-the-prisma-cli-alx4/#installation) - The `prisma` CLI tool is used for deploying the database schema to the database, and for generating an interface for our `hawthorn-server` to interact with the database through.
 
@@ -21,6 +22,21 @@ Download the source code and change directories into your freshly cloned `hawtho
 git clone git@github.com:trex/hawthorn-server.git && cd hawthorn-server
 #If your `git` is configured with HTTPS:
 git clone https://github.com/trex/hawthorn-server.git && cd hawthorn-server
+```
+
+### Create a `.env` file
+The Docker containers use environment variables for configuring their services, these are read from a `.env` file.
+
+Create `.env` in the project root directory:
+```
+touch .env
+```
+
+Paste the following contents into `.env` in your text editor:
+```
+# PostgreSQL
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
 ```
 
 ### Download and run the Docker containers
@@ -40,17 +56,12 @@ server_prisma_1       /bin/sh -c /app/start.sh         Up      0.0.0.0:4466->446
 ```
 
 ### Deploy the database schema
-The following command will deploy the database schema to the database:
+The following command will deploy the database schema to the database, and generate JavaScript code that we will call to interact with our database:
 ```sh
 prisma deploy
 ```
 
-You can test that the schema was successfully deployed by navigating your browser to [http://localhost:4466/]().  You should see a Prisma admin interface, click the "SCHEMA" and "DOCS" tabs on the righthand side to see the possible queries and mutations we can make against our data access layer, and the various data we can expect to be returned.  This defines the interface `hawthorn-server` will use to query and mutate data in the database.
-
-The following command will generate JavaScript code that we will call to interact with our database:
-```sh
-prisma generate
-```
+You can test that the schema was successfully deployed by navigating your browser to [http://localhost:4466/](http://localhost:4466/).  You should see a Prisma admin interface, click the "SCHEMA" and "DOCS" tabs on the righthand side to see the possible queries and mutations we can make against our data access layer, and the various data we can expect to be returned.  This defines the interface `hawthorn-server` will use to query and mutate data in the database.
 
 ### Install Node and JavaScript packages
 The following command installs the required packages that are specified in `package.json`:
@@ -64,7 +75,7 @@ Finally, start the `hawthorn-server` process:
 npm run dev
 ```
 
-You can test that everything is working by navigating your browser to [http://localhost:4000/]().  You should see a GraphQL admin interface, that looks similar to the Prisma admin interface.
+You can test that everything is working by navigating your browser to [http://localhost:4000/](http://localhost:4000/).  You should see a GraphQL admin interface, that looks similar to the Prisma admin interface.
 
 You will notice that the "DOCS" and "SCHEMA" tabs on the right show much less information than they did in the Prisma interface.   Here, the "SCHEMA" and "DOCS" tabs show the possible queries and mutations we can make against our GraphQL API layer. This defines the interface client applications ([hawthorn-client](https://github.com/trex/hawthorn-client)) use to talk to `hawthorn-server`.
 
