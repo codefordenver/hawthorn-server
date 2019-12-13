@@ -1,3 +1,5 @@
+const { filterText } = require('../services/moderator');
+
 const threadsResolvers = {
   Thread: {
     group(root, args, context) {
@@ -30,12 +32,21 @@ const threadsResolvers = {
   },
   Mutation: {
     createThread(root, args, context) {
-      return context.prisma.createThread({
+      let thread = {
         group: {
           connect: { id: args.groupId }
         },
-        published: true,
         title: args.title,
+      }
+      return filterText(context.config.cleanspeak, args.title).then(function(filter) {
+        if (filter === false) {
+          thread.published = true
+        } else {
+          thread.abusive = true
+          thread.published = false
+        }
+
+        return context.prisma.createThread(thread)
       })
     },
   }
