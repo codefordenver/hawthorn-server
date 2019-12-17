@@ -1,6 +1,6 @@
 const groupsResolvers = {
   Group: {
-    threads(root, args, context) {
+    threads(root, args, context, info) {
       return context.prisma
         .group({
           id: root.id
@@ -8,10 +8,9 @@ const groupsResolvers = {
         .threads({
           orderBy: "createdAt_DESC",
           where: {
-            abusive: false,
-            published: true
+            moderation: null
           }
-        })
+        }, info)
     }
   },
   Query: {

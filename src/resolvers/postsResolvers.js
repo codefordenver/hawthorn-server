@@ -1,7 +1,14 @@
-const { filterText } = require('../services/moderator');
+const { filterText, moderationStatus } = require('../services/moderator');
 
 const postsResolvers = {
   Post: {
+    moderation(root, args, context) {
+      return context.prisma
+        .post({
+          id: root.id
+        })
+        .moderation()
+    },
     thread(root, args, context) {
       return context.prisma
         .post({
@@ -19,14 +26,18 @@ const postsResolvers = {
         },
       }
       return filterText(context.config.cleanspeak, args.content).then(function(filter) {
-        if (filter === false) {
-          post.published = true
+        if (filter === true) {
+          return context.prisma.createPost({
+            moderation: {
+              create: {
+                status: "TRIGGERED_CONTENT_FILTER"
+              }
+            },
+            ...post
+          })
         } else {
-          post.abusive = true
-          post.published = false
+          return context.prisma.createPost(post)
         }
-
-        return context.prisma.createPost(post)
       })
     },
   }

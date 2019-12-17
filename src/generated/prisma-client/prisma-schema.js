@@ -7,6 +7,10 @@ module.exports = {
   count: Int!
 }
 
+type AggregateModeration {
+  count: Int!
+}
+
 type AggregatePost {
   count: Int!
 }
@@ -201,6 +205,145 @@ input GroupWhereUniqueInput {
 
 scalar Long
 
+type Moderation {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  status: ModerationStatus!
+}
+
+type ModerationConnection {
+  pageInfo: PageInfo!
+  edges: [ModerationEdge]!
+  aggregate: AggregateModeration!
+}
+
+input ModerationCreateInput {
+  id: ID
+  status: ModerationStatus!
+}
+
+input ModerationCreateOneInput {
+  create: ModerationCreateInput
+  connect: ModerationWhereUniqueInput
+}
+
+type ModerationEdge {
+  node: Moderation!
+  cursor: String!
+}
+
+enum ModerationOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  status_ASC
+  status_DESC
+}
+
+type ModerationPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  status: ModerationStatus!
+}
+
+enum ModerationStatus {
+  TRIGGERED_CONTENT_FILTER
+  APPROVED_BY_MODERATOR
+}
+
+type ModerationSubscriptionPayload {
+  mutation: MutationType!
+  node: Moderation
+  updatedFields: [String!]
+  previousValues: ModerationPreviousValues
+}
+
+input ModerationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ModerationWhereInput
+  AND: [ModerationSubscriptionWhereInput!]
+  OR: [ModerationSubscriptionWhereInput!]
+  NOT: [ModerationSubscriptionWhereInput!]
+}
+
+input ModerationUpdateDataInput {
+  status: ModerationStatus
+}
+
+input ModerationUpdateInput {
+  status: ModerationStatus
+}
+
+input ModerationUpdateManyMutationInput {
+  status: ModerationStatus
+}
+
+input ModerationUpdateOneInput {
+  create: ModerationCreateInput
+  update: ModerationUpdateDataInput
+  upsert: ModerationUpsertNestedInput
+  delete: Boolean
+  disconnect: Boolean
+  connect: ModerationWhereUniqueInput
+}
+
+input ModerationUpsertNestedInput {
+  update: ModerationUpdateDataInput!
+  create: ModerationCreateInput!
+}
+
+input ModerationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  status: ModerationStatus
+  status_not: ModerationStatus
+  status_in: [ModerationStatus!]
+  status_not_in: [ModerationStatus!]
+  AND: [ModerationWhereInput!]
+  OR: [ModerationWhereInput!]
+  NOT: [ModerationWhereInput!]
+}
+
+input ModerationWhereUniqueInput {
+  id: ID
+}
+
 type Mutation {
   createGroup(data: GroupCreateInput!): Group!
   updateGroup(data: GroupUpdateInput!, where: GroupWhereUniqueInput!): Group
@@ -208,6 +351,12 @@ type Mutation {
   upsertGroup(where: GroupWhereUniqueInput!, create: GroupCreateInput!, update: GroupUpdateInput!): Group!
   deleteGroup(where: GroupWhereUniqueInput!): Group
   deleteManyGroups(where: GroupWhereInput): BatchPayload!
+  createModeration(data: ModerationCreateInput!): Moderation!
+  updateModeration(data: ModerationUpdateInput!, where: ModerationWhereUniqueInput!): Moderation
+  updateManyModerations(data: ModerationUpdateManyMutationInput!, where: ModerationWhereInput): BatchPayload!
+  upsertModeration(where: ModerationWhereUniqueInput!, create: ModerationCreateInput!, update: ModerationUpdateInput!): Moderation!
+  deleteModeration(where: ModerationWhereUniqueInput!): Moderation
+  deleteManyModerations(where: ModerationWhereInput): BatchPayload!
   createPost(data: PostCreateInput!): Post!
   updatePost(data: PostUpdateInput!, where: PostWhereUniqueInput!): Post
   updateManyPosts(data: PostUpdateManyMutationInput!, where: PostWhereInput): BatchPayload!
@@ -243,9 +392,8 @@ type Post {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  abusive: Boolean!
   content: String!
-  published: Boolean!
+  moderation: Moderation
   thread: Thread
 }
 
@@ -257,9 +405,8 @@ type PostConnection {
 
 input PostCreateInput {
   id: ID
-  abusive: Boolean
   content: String!
-  published: Boolean
+  moderation: ModerationCreateOneInput
   thread: ThreadCreateOneWithoutPostsInput
 }
 
@@ -270,9 +417,8 @@ input PostCreateManyWithoutThreadInput {
 
 input PostCreateWithoutThreadInput {
   id: ID
-  abusive: Boolean
   content: String!
-  published: Boolean
+  moderation: ModerationCreateOneInput
 }
 
 type PostEdge {
@@ -287,21 +433,15 @@ enum PostOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  abusive_ASC
-  abusive_DESC
   content_ASC
   content_DESC
-  published_ASC
-  published_DESC
 }
 
 type PostPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  abusive: Boolean!
   content: String!
-  published: Boolean!
 }
 
 input PostScalarWhereInput {
@@ -335,8 +475,6 @@ input PostScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  abusive: Boolean
-  abusive_not: Boolean
   content: String
   content_not: String
   content_in: [String!]
@@ -351,8 +489,6 @@ input PostScalarWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
-  published: Boolean
-  published_not: Boolean
   AND: [PostScalarWhereInput!]
   OR: [PostScalarWhereInput!]
   NOT: [PostScalarWhereInput!]
@@ -377,22 +513,17 @@ input PostSubscriptionWhereInput {
 }
 
 input PostUpdateInput {
-  abusive: Boolean
   content: String
-  published: Boolean
+  moderation: ModerationUpdateOneInput
   thread: ThreadUpdateOneWithoutPostsInput
 }
 
 input PostUpdateManyDataInput {
-  abusive: Boolean
   content: String
-  published: Boolean
 }
 
 input PostUpdateManyMutationInput {
-  abusive: Boolean
   content: String
-  published: Boolean
 }
 
 input PostUpdateManyWithoutThreadInput {
@@ -413,9 +544,8 @@ input PostUpdateManyWithWhereNestedInput {
 }
 
 input PostUpdateWithoutThreadDataInput {
-  abusive: Boolean
   content: String
-  published: Boolean
+  moderation: ModerationUpdateOneInput
 }
 
 input PostUpdateWithWhereUniqueWithoutThreadInput {
@@ -460,8 +590,6 @@ input PostWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  abusive: Boolean
-  abusive_not: Boolean
   content: String
   content_not: String
   content_in: [String!]
@@ -476,8 +604,7 @@ input PostWhereInput {
   content_not_starts_with: String
   content_ends_with: String
   content_not_ends_with: String
-  published: Boolean
-  published_not: Boolean
+  moderation: ModerationWhereInput
   thread: ThreadWhereInput
   AND: [PostWhereInput!]
   OR: [PostWhereInput!]
@@ -492,6 +619,9 @@ type Query {
   group(where: GroupWhereUniqueInput!): Group
   groups(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Group]!
   groupsConnection(where: GroupWhereInput, orderBy: GroupOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): GroupConnection!
+  moderation(where: ModerationWhereUniqueInput!): Moderation
+  moderations(where: ModerationWhereInput, orderBy: ModerationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Moderation]!
+  moderationsConnection(where: ModerationWhereInput, orderBy: ModerationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ModerationConnection!
   post(where: PostWhereUniqueInput!): Post
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post]!
   postsConnection(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): PostConnection!
@@ -503,6 +633,7 @@ type Query {
 
 type Subscription {
   group(where: GroupSubscriptionWhereInput): GroupSubscriptionPayload
+  moderation(where: ModerationSubscriptionWhereInput): ModerationSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   thread(where: ThreadSubscriptionWhereInput): ThreadSubscriptionPayload
 }
@@ -511,10 +642,9 @@ type Thread {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  abusive: Boolean!
   group: Group
+  moderation: Moderation
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
-  published: Boolean!
   title: String!
 }
 
@@ -526,10 +656,9 @@ type ThreadConnection {
 
 input ThreadCreateInput {
   id: ID
-  abusive: Boolean
   group: GroupCreateOneWithoutThreadsInput
+  moderation: ModerationCreateOneInput
   posts: PostCreateManyWithoutThreadInput
-  published: Boolean
   title: String!
 }
 
@@ -545,17 +674,15 @@ input ThreadCreateOneWithoutPostsInput {
 
 input ThreadCreateWithoutGroupInput {
   id: ID
-  abusive: Boolean
+  moderation: ModerationCreateOneInput
   posts: PostCreateManyWithoutThreadInput
-  published: Boolean
   title: String!
 }
 
 input ThreadCreateWithoutPostsInput {
   id: ID
-  abusive: Boolean
   group: GroupCreateOneWithoutThreadsInput
-  published: Boolean
+  moderation: ModerationCreateOneInput
   title: String!
 }
 
@@ -571,10 +698,6 @@ enum ThreadOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
-  abusive_ASC
-  abusive_DESC
-  published_ASC
-  published_DESC
   title_ASC
   title_DESC
 }
@@ -583,8 +706,6 @@ type ThreadPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
-  abusive: Boolean!
-  published: Boolean!
   title: String!
 }
 
@@ -619,10 +740,6 @@ input ThreadScalarWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  abusive: Boolean
-  abusive_not: Boolean
-  published: Boolean
-  published_not: Boolean
   title: String
   title_not: String
   title_in: [String!]
@@ -661,22 +778,17 @@ input ThreadSubscriptionWhereInput {
 }
 
 input ThreadUpdateInput {
-  abusive: Boolean
   group: GroupUpdateOneWithoutThreadsInput
+  moderation: ModerationUpdateOneInput
   posts: PostUpdateManyWithoutThreadInput
-  published: Boolean
   title: String
 }
 
 input ThreadUpdateManyDataInput {
-  abusive: Boolean
-  published: Boolean
   title: String
 }
 
 input ThreadUpdateManyMutationInput {
-  abusive: Boolean
-  published: Boolean
   title: String
 }
 
@@ -707,16 +819,14 @@ input ThreadUpdateOneWithoutPostsInput {
 }
 
 input ThreadUpdateWithoutGroupDataInput {
-  abusive: Boolean
+  moderation: ModerationUpdateOneInput
   posts: PostUpdateManyWithoutThreadInput
-  published: Boolean
   title: String
 }
 
 input ThreadUpdateWithoutPostsDataInput {
-  abusive: Boolean
   group: GroupUpdateOneWithoutThreadsInput
-  published: Boolean
+  moderation: ModerationUpdateOneInput
   title: String
 }
 
@@ -767,14 +877,11 @@ input ThreadWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  abusive: Boolean
-  abusive_not: Boolean
   group: GroupWhereInput
+  moderation: ModerationWhereInput
   posts_every: PostWhereInput
   posts_some: PostWhereInput
   posts_none: PostWhereInput
-  published: Boolean
-  published_not: Boolean
   title: String
   title_not: String
   title_in: [String!]

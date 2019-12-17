@@ -1,3 +1,8 @@
+const moderationStatus = {
+    TRIGGERED_AUTOMATED_FILTER: 0,
+    APPROVED_BY_MODERATOR: 1
+}
+
 const filterText = async function(cleanspeakConfig, text) {
   const data = {
     "content": {
@@ -35,4 +40,5 @@ const filterText = async function(cleanspeakConfig, text) {
 
 module.exports = {
   filterText,
+  moderationStatus,
 };

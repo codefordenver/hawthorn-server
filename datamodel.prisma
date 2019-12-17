@@ -1,24 +1,14 @@
-type Post {
-  id: ID! @id
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-
-  abusive: Boolean! @default(value: false)
-  content: String!
-  published: Boolean! @default(value: false)
-  thread: Thread @relation(link: INLINE)
+enum ModerationStatus {
+  TRIGGERED_CONTENT_FILTER,
+  APPROVED_BY_MODERATOR
 }
 
-type Thread {
+type Moderation {
   id: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 
-  abusive: Boolean! @default(value: false)
-  group: Group @relation(link: INLINE)
-  posts: [Post!]!
-  published: Boolean! @default(value: false)
-  title: String!
+  status: ModerationStatus!
 }
 
 type Group {
@@ -29,4 +19,25 @@ type Group {
   description: String!
   name: String!
   threads: [Thread!]!
+}
+
+type Post {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  content: String!
+  moderation: Moderation
+  thread: Thread @relation(link: INLINE)
+}
+
+type Thread {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  group: Group @relation(link: INLINE)
+  moderation: Moderation
+  posts: [Post!]!
+  title: String!
 }
