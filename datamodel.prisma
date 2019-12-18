@@ -17,6 +17,7 @@ type Group {
   updatedAt: DateTime! @updatedAt
 
   description: String!
+  moderation: Moderation
   name: String!
   threads: [Thread!]!
 }

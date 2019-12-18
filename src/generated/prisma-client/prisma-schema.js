@@ -30,6 +30,7 @@ type Group {
   createdAt: DateTime!
   updatedAt: DateTime!
   description: String!
+  moderation: Moderation
   name: String!
   threads(where: ThreadWhereInput, orderBy: ThreadOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Thread!]
 }
@@ -43,6 +44,7 @@ type GroupConnection {
 input GroupCreateInput {
   id: ID
   description: String!
+  moderation: ModerationCreateOneInput
   name: String!
   threads: ThreadCreateManyWithoutGroupInput
 }
@@ -55,6 +57,7 @@ input GroupCreateOneWithoutThreadsInput {
 input GroupCreateWithoutThreadsInput {
   id: ID
   description: String!
+  moderation: ModerationCreateOneInput
   name: String!
 }
 
@@ -104,6 +107,7 @@ input GroupSubscriptionWhereInput {
 
 input GroupUpdateInput {
   description: String
+  moderation: ModerationUpdateOneInput
   name: String
   threads: ThreadUpdateManyWithoutGroupInput
 }
@@ -124,6 +128,7 @@ input GroupUpdateOneWithoutThreadsInput {
 
 input GroupUpdateWithoutThreadsDataInput {
   description: String
+  moderation: ModerationUpdateOneInput
   name: String
 }
 
@@ -177,6 +182,7 @@ input GroupWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
+  moderation: ModerationWhereInput
   name: String
   name_not: String
   name_in: [String!]
