@@ -8,6 +8,7 @@ const groupType = gql`
 
     description: String!
     name: String!
+    moderation: Moderation
     threads: [Thread!]!
   }
 `

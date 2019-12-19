@@ -7,9 +7,8 @@ const postType = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
 
-    abusive: Boolean!
     content: String!
-    published: Boolean!
+    moderation: Moderation
     thread: Thread!
   }
 `

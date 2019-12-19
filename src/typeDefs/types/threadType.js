@@ -6,10 +6,9 @@ const threadType = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
 
-    abusive: Boolean!
     group: Group!
     posts: [Post!]!
-    published: Boolean!
+    moderation: Moderation
     title: String!
   }
 `

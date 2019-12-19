@@ -4,6 +4,10 @@ const helmet = require('helmet')
 const { prisma } = require('./generated/prisma-client')
 const { typeDefs } = require('./typeDefs')
 const { resolvers } = require('./resolvers')
+const { dotenv } = require('dotenv')
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
 const server = new GraphQLServer({
   typeDefs: typeDefs,
@@ -12,10 +16,16 @@ const server = new GraphQLServer({
     return {
       ...request,
       prisma,
+      config: {
+        cleanspeak: {
+          apiKey: process.env.CLEANSPEAK_API_KEY,
+          applicationId: process.env.APPLICATION_ID,
+          baseUrl: process.env.CLEANSPEAK_BASE_URL
+        }
+      },
     }
   },
 })
-
 server.express.use(compression())
 server.express.use(helmet())
 

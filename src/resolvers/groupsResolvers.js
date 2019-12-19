@@ -1,6 +1,15 @@
+const { filterText, moderationStatus } = require('../services/moderator');
+
 const groupsResolvers = {
   Group: {
-    threads(root, args, context) {
+    moderation(root, args, context) {
+      return context.prisma
+        .group({
+          id: root.id
+        })
+        .moderation()
+    },
+    threads(root, args, context, info) {
       return context.prisma
         .group({
           id: root.id
@@ -8,10 +17,9 @@ const groupsResolvers = {
         .threads({
           orderBy: "createdAt_DESC",
           where: {
-            abusive: false,
-            published: true
+            moderation: null
           }
-        })
+        }, info)
     }
   },
   Query: {
@@ -23,14 +31,32 @@ const groupsResolvers = {
     groups(root, args, context) {
       return context.prisma.groups({
         orderBy: "createdAt_DESC",
+        where: {
+          moderation: null
+        },
       })
     },
   },
   Mutation: {
     createGroup(root, args, context) {
-      return context.prisma.createGroup({
+      let group = {
         name: args.name,
         description: args.description,
+      }
+      const groupText = `${args.name}\n${args.description}`
+      return filterText(context.config.cleanspeak, groupText).then(function(filter) {
+        if (filter === true) {
+          return context.prisma.createGroup({
+            moderation: {
+              create: {
+                status: "TRIGGERED_CONTENT_FILTER"
+              }
+            },
+            ...group
+          })
+        } else {
+          return context.prisma.createGroup(group)
+        }
       })
     },
   }
