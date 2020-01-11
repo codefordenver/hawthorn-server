@@ -1,3 +1,5 @@
+const uuidv1 = require('uuid/v1')
+
 const moderationStatus = {
     TRIGGERED_AUTOMATED_FILTER: 0,
     APPROVED_BY_MODERATOR: 1
@@ -19,7 +21,7 @@ const filterText = async function(cleanspeakConfig, text) {
   }
 
   try {
-    const url = cleanspeakConfig.baseUrl + '/content/item/moderate'
+    const url = `${cleanspeakConfig.baseUrl}/content/item/moderate/${uuidv1()}`
     const response = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -29,7 +31,7 @@ const filterText = async function(cleanspeakConfig, text) {
       }
     });
     const responseBody = await response.json();
-    if (responseBody.contentAction === 'reject') {
+    if (response.status === 200 && responseBody.contentAction !== 'allow') {
       return true
     }
   } catch (error) {
