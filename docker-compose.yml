@@ -37,80 +37,9 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  search:
-    image: docker.elastic.co/elasticsearch/elasticsearch:6.3.1
-    environment:
-      - "cluster.name=cleanspeak"
-      - "bootstrap.memory_lock=true"
-      - "ES_JAVA_OPTS=${ES_JAVA_OPTS}"
-    ports:
-      - 9200:9200
-      - 9300:9300
-    networks:
-      - search
-    restart: unless-stopped
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-
-  cleanspeak-webservice:
-    image: cleanspeak/cleanspeak-webservice:latest
-    depends_on:
-      - db
-      - search
-    environment:
-      - "DATABASE_URL=jdbc:postgresql://db:5432/cleanspeak"
-      - "DATABASE_ROOT_USER=${POSTGRES_USER}"
-      - "DATABASE_ROOT_PASSWORD=${POSTGRES_PASSWORD}"
-      - "DATABASE_USER=${DATABASE_USER}"
-      - "DATABASE_PASSWORD=${DATABASE_PASSWORD}"
-      - "CLEANSPEAK_MEMORY=${CLEANSPEAK_MEMORY}"
-      - "CLEANSPEAK_SEARCH_SERVERS=http://search:9200"
-      - "CLEANSPEAK_URL=http://cleanspeak-ws:8001"
-      - "LICENSE_ID=${LICENSE_ID}"
-    networks:
-      - db
-      - search
-    restart: unless-stopped
-    ports:
-      - 8001:8001
-    volumes:
-      - cs_config:/usr/local/inversoft/config
-
-  cleanspeak-management-interface:
-    image: cleanspeak/cleanspeak-management-interface:latest
-    depends_on:
-      - db
-      - search
-    environment:
-      - "DATABASE_URL=jdbc:postgresql://db:5432/cleanspeak"
-      - "DATABASE_ROOT_USER=${POSTGRES_USER}"
-      - "DATABASE_ROOT_PASSWORD=${POSTGRES_PASSWORD}"
-      - "DATABASE_USER=${DATABASE_USER}"
-      - "DATABASE_PASSWORD=${DATABASE_PASSWORD}"
-      - "CLEANSPEAK_MEMORY=${CLEANSPEAK_MEMORY}"
-      - "CLEANSPEAK_SEARCH_SERVERS=http://search:9200"
-      - "CLEANSPEAK_URL=http://cleanspeak-mi:9011"
-      - "LICENSE_ID=${LICENSE_ID}"
-    networks:
-      - db
-      - search
-    restart: unless-stopped
-    ports:
-      - 8011:8011
-    volumes:
-      - cs_config:/usr/local/inversoft/config
-
 networks:
   db:
-    driver: bridge
-  search:
     driver: bridge
 
 volumes:
   db_data:
-  es_data:
-  cs_config:
