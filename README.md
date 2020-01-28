@@ -27,16 +27,9 @@ git clone https://github.com/trex/hawthorn-server.git && cd hawthorn-server
 ### Create a `.env` file
 The Docker containers use environment variables for configuring their services, these are read from a `.env` file.
 
-Create `.env` in the project root directory:
+Create `.env` by copying the `example.env`, then ask @trex for the values to substitute:
 ```
-touch .env
-```
-
-Paste the following contents into `.env` in your text editor:
-```
-# PostgreSQL
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
+cp example.env .env
 ```
 
 ### Download and run the Docker containers

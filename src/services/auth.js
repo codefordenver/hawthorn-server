@@ -64,6 +64,7 @@ class AuthClient {
 
     context.request.session.jwt = body.access_token
     context.request.session.refreshToken = body.refresh_token
+    context.request.session.userId = body.userId
 
     return this.getUser(body.userId)
   }
@@ -83,6 +84,39 @@ class AuthClient {
     if (decodedJWT.roles.indexOf(role) === -1) {
       throw new ForbiddenError('You cannot see that')
     }
+  }
+
+  async register(email, password, username) {
+    const registerEndpoint = `${this.fusionAuthConfig.endpoint}/api/user/registration`
+    const postBody = {
+    	"registration": {
+    		"applicationId": `${this.fusionAuthConfig.clientId}`,
+    	},
+    	"user": {
+    		"email": `${email}`,
+    		"password": `${password}`,
+    		"username": `${username}`
+    	}
+    }
+    const response = await fetch(registerEndpoint, {
+        method: 'post',
+        headers: {
+          'Authorization': this.fusionAuthConfig.apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(postBody)
+      })
+    const body = await response.json();
+
+    if (body.fieldErrors != null) {
+      for (let errorKey in body.fieldErrors) {
+        // Return the first field error for now
+        // TODO - update to return all field errors so the user can correct all at once, and not piecemeal
+        throw new Error(body.fieldErrors[errorKey][0].message)
+      }
+    }
+
+    return body.user.id
   }
 
   async refreshAccessToken(context, refreshToken) {

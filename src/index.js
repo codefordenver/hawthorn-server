@@ -48,7 +48,7 @@ server.express.use(compression())
 server.express.use(helmet())
 server.express.use(
   session({
-    name: "qid",
+    name: "hawthorn.sid",
     secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
