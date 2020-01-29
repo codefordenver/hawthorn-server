@@ -1,5 +1,6 @@
 const compression = require('compression')
 const helmet = require('helmet')
+const redis = require('redis')
 const session = require('express-session')
 const { dotenv } = require('dotenv')
 
@@ -8,6 +9,9 @@ const { prisma } = require('./generated/prisma-client')
 const { resolvers } = require('./resolvers')
 const { typeDefs } = require('./typeDefs')
 const { AuthClient } = require('./services/auth')
+
+let RedisStore = require('connect-redis')(session)
+let redisClient = redis.createClient()
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
@@ -55,8 +59,9 @@ server.express.use(
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
-    }
+      maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    },
+    store: new RedisStore({ client: redisClient })
   })
 )
 
@@ -78,7 +83,6 @@ server.express.use(async function(req, res, next) {
       next()
     }
     req.session.jwt = refreshedJwt
-
     decodedJWT = await authClient.introspect(refreshedJwt);
     if (decodedJWT.error != null) {
       throw new Error(decodedJWT.error_description)

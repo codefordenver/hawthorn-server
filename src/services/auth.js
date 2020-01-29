@@ -119,7 +119,7 @@ class AuthClient {
     return body.user.id
   }
 
-  async refreshAccessToken(context, refreshToken) {
+  async refreshAccessToken(refreshToken) {
     let formData = {
       "client_id":  this.fusionAuthConfig.clientId,
       "client_secret":  this.fusionAuthConfig.clientSecret,
