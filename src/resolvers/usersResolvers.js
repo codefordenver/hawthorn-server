@@ -2,12 +2,7 @@ const { getUser } = require('../services/auth')
 
 const usersResolvers = {
   User: {
-    // TODO - populate from FusionAuth?
-
-    // Pull random avatar from an open API
-    imageUrl: function(root) {
-      return `https://api.adorable.io/avatars/50/${root.id}.png`
-    }
+    // Fields map to the fields returned from FusionAuth
   },
   Query: {
     async account(root, args, context) {

@@ -87,6 +87,7 @@ class AuthClient {
   }
 
   async register(email, password, username) {
+    const randomImageUrl = `https://api.adorable.io/avatars/50/${Math.round(Math.random() * 10000000)}.png`
     const registerEndpoint = `${this.fusionAuthConfig.endpoint}/api/user/registration`
     const postBody = {
     	"registration": {
@@ -94,6 +95,7 @@ class AuthClient {
     	},
     	"user": {
     		"email": `${email}`,
+        "imageUrl": randomImageUrl,
     		"password": `${password}`,
     		"username": `${username}`
     	}
