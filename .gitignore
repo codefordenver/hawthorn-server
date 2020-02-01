@@ -16,6 +16,9 @@ node_modules/
 # TypeScript v1 declaration files
 typings/
 
+# Generated files
+src/generated/
+
 # TypeScript cache
 *.tsbuildinfo
 
