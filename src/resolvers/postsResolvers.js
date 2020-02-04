@@ -1,4 +1,4 @@
-const { filterText, moderationStatus } = require('../services/moderator');
+const { filterText } = require('../services/moderator');
 
 const postsResolvers = {
   Post: {

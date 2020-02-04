@@ -72,7 +72,7 @@ class AuthClient {
   // throws an AuthenticationError when the user must be logged in to access the requested resource
   // throws a ForbiddenError when the user must be logged in to access the requested resource
   // =======================================
-  requiresAuthentication(decodedJWT, role) {
+  static requiresAuthentication(decodedJWT, role) {
     if (decodedJWT === null) {
       throw new AuthenticationError('You must be logged in for that');
     }

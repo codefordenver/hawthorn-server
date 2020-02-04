@@ -14,7 +14,7 @@ const { AuthClient } = require('./services/auth');
 const redisClient = redis.createClient();
 
 if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config();
+  dotenv.config();
 }
 const config = {
   cleanspeak: {
