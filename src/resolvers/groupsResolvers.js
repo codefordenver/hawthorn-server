@@ -7,61 +7,63 @@ const groupsResolvers = {
         .group({
           id: root.id
         })
-        .moderation()
+        .moderation();
     },
     threads(root, args, context, info) {
       return context.prisma
         .group({
           id: root.id
         })
-        .threads({
-          orderBy: "createdAt_DESC",
-          where: {
-            moderation: null
-          }
-        }, info)
+        .threads(
+          {
+            orderBy: 'createdAt_DESC',
+            where: {
+              moderation: null
+            }
+          },
+          info
+        );
     }
   },
   Query: {
     group(root, args, context) {
       return context.prisma.group({
-        id: args.id,
-      })
+        id: args.id
+      });
     },
     groups(root, args, context) {
       return context.prisma.groups({
-        orderBy: "createdAt_DESC",
+        orderBy: 'createdAt_DESC',
         where: {
           moderation: null
-        },
-      })
-    },
+        }
+      });
+    }
   },
   Mutation: {
     createGroup(root, args, context) {
-      let group = {
+      const group = {
         name: args.name,
-        description: args.description,
-      }
-      const groupText = `${args.name}\n${args.description}`
+        description: args.description
+      };
+      const groupText = `${args.name}\n${args.description}`;
       return filterText(context.config.cleanspeak, groupText).then(function(filter) {
         if (filter === true) {
           return context.prisma.createGroup({
             moderation: {
               create: {
-                status: "TRIGGERED_CONTENT_FILTER"
+                status: 'TRIGGERED_CONTENT_FILTER'
               }
             },
             ...group
-          })
-        } else {
-          return context.prisma.createGroup(group)
+          });
         }
-      })
-    },
+        return context.prisma.createGroup(group);
+      });
+    }
   }
-}
+};
 
 module.exports = {
-  groupsResolvers,
-}
+  groupsResolvers
+};

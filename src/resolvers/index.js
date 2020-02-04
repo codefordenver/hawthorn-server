@@ -4,9 +4,14 @@ const { postsResolvers } = require('./postsResolvers');
 const { threadsResolvers } = require('./threadsResolvers');
 const { usersResolvers } = require('./usersResolvers');
 
-const resolvers = [groupsResolvers, moderationResolvers, postsResolvers,
-  threadsResolvers, usersResolvers];
+const resolvers = [
+  groupsResolvers,
+  moderationResolvers,
+  postsResolvers,
+  threadsResolvers,
+  usersResolvers
+];
 
 module.exports = {
-  resolvers,
+  resolvers
 };

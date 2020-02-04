@@ -7,61 +7,63 @@ const threadsResolvers = {
         .thread({
           id: root.id
         })
-        .group()
+        .group();
     },
     moderation(root, args, context) {
       return context.prisma
         .thread({
           id: root.id
         })
-        .moderation()
+        .moderation();
     },
     posts(root, args, context, info) {
       return context.prisma
         .thread({
           id: root.id
         })
-        .posts({
-          orderBy: "createdAt_DESC",
-          where: {
-            moderation: null
-          }
-        }, info)
+        .posts(
+          {
+            orderBy: 'createdAt_DESC',
+            where: {
+              moderation: null
+            }
+          },
+          info
+        );
     }
   },
   Query: {
     thread(root, args, context) {
       return context.prisma.thread({
-        id: args.id,
-      })
-    },
+        id: args.id
+      });
+    }
   },
   Mutation: {
     createThread(root, args, context) {
-      let thread = {
+      const thread = {
         group: {
           connect: { id: args.groupId }
         },
-        title: args.title,
-      }
+        title: args.title
+      };
       return filterText(context.config.cleanspeak, args.title).then(function(filter) {
         if (filter === true) {
           return context.prisma.createThread({
             moderation: {
               create: {
-                status: "TRIGGERED_CONTENT_FILTER"
+                status: 'TRIGGERED_CONTENT_FILTER'
               }
             },
             ...thread
-          })
-        } else {
-          return context.prisma.createThread(thread)
+          });
         }
-      })
-    },
+        return context.prisma.createThread(thread);
+      });
+    }
   }
-}
+};
 
 module.exports = {
-  threadsResolvers,
-}
+  threadsResolvers
+};

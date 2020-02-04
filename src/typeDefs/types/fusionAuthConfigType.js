@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const fusionAuthConfigType = gql`
   type FusionAuthConfig {
@@ -7,8 +7,8 @@ const fusionAuthConfigType = gql`
     redirectUri: String!
     tenantId: String!
   }
-`
+`;
 
 module.exports = {
-  fusionAuthConfigType,
-}
+  fusionAuthConfigType
+};

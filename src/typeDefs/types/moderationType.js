@@ -1,8 +1,8 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const moderationType = gql`
   enum ModerationStatus {
-    TRIGGERED_CONTENT_FILTER,
+    TRIGGERED_CONTENT_FILTER
     APPROVED_BY_MODERATOR
   }
 
@@ -13,8 +13,8 @@ const moderationType = gql`
 
     status: ModerationStatus!
   }
-`
+`;
 
 module.exports = {
-  moderationType,
-}
+  moderationType
+};

@@ -7,42 +7,41 @@ const postsResolvers = {
         .post({
           id: root.id
         })
-        .moderation()
+        .moderation();
     },
     thread(root, args, context) {
       return context.prisma
         .post({
           id: root.id
         })
-        .thread()
+        .thread();
     }
   },
   Mutation: {
     createPost(root, args, context) {
-      let post = {
+      const post = {
         content: args.content,
         thread: {
           connect: { id: args.threadId }
-        },
-      }
+        }
+      };
       return filterText(context.config.cleanspeak, args.content).then(function(filter) {
         if (filter === true) {
           return context.prisma.createPost({
             moderation: {
               create: {
-                status: "TRIGGERED_CONTENT_FILTER"
+                status: 'TRIGGERED_CONTENT_FILTER'
               }
             },
             ...post
-          })
-        } else {
-          return context.prisma.createPost(post)
+          });
         }
-      })
-    },
+        return context.prisma.createPost(post);
+      });
+    }
   }
-}
+};
 
 module.exports = {
-  postsResolvers,
-}
+  postsResolvers
+};

@@ -1,27 +1,26 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var prisma_lib_1 = require("prisma-client-lib");
-var typeDefs = require("./prisma-schema").typeDefs;
+Object.defineProperty(exports, '__esModule', { value: true });
+const prisma_lib_1 = require('prisma-client-lib');
+const { typeDefs } = require('./prisma-schema');
 
-var models = [
+const models = [
   {
-    name: "ModerationStatus",
+    name: 'ModerationStatus',
     embedded: false
   },
   {
-    name: "Moderation",
+    name: 'Moderation',
     embedded: false
   },
   {
-    name: "Group",
+    name: 'Group',
     embedded: false
   },
   {
-    name: "Post",
+    name: 'Post',
     embedded: false
   },
   {
-    name: "Thread",
+    name: 'Thread',
     embedded: false
   }
 ];

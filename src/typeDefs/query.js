@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const query = gql`
   type Query {
@@ -10,8 +10,8 @@ const query = gql`
     logout: Boolean!
     thread(id: ID!): Thread
   }
-`
+`;
 
 module.exports = {
-  query,
+  query
 };

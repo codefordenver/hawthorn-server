@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const groupType = gql`
   type Group {
@@ -11,8 +11,8 @@ const groupType = gql`
     moderation: Moderation
     threads: [Thread!]!
   }
-`
+`;
 
 module.exports = {
-  groupType,
-}
+  groupType
+};

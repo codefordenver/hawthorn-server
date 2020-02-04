@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const userType = gql`
   type User {
@@ -9,8 +9,8 @@ const userType = gql`
     imageUrl: String!
     username: String!
   }
-`
+`;
 
 module.exports = {
-  userType,
-}
+  userType
+};

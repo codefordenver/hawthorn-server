@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const postType = gql`
   scalar DateTime
@@ -11,8 +11,8 @@ const postType = gql`
     moderation: Moderation
     thread: Thread!
   }
-`
+`;
 
 module.exports = {
-  postType,
-}
+  postType
+};

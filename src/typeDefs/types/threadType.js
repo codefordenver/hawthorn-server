@@ -1,4 +1,4 @@
-const gql = require('graphql-tag')
+const gql = require('graphql-tag');
 
 const threadType = gql`
   type Thread {
@@ -11,8 +11,8 @@ const threadType = gql`
     moderation: Moderation
     title: String!
   }
-`
+`;
 
 module.exports = {
-  threadType,
-}
+  threadType
+};

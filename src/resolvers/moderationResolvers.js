@@ -1,8 +1,7 @@
 const moderationResolvers = {
-  Moderation: {
-  },
-}
+  Moderation: {}
+};
 
 module.exports = {
-  moderationResolvers,
-}
+  moderationResolvers
+};
