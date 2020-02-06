@@ -5,6 +5,7 @@ const userType = gql`
     id: String!
     email: String
     firstName: String
+    groups: [Group!]!
     lastName: String
     imageUrl: String!
     username: String!

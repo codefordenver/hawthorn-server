@@ -2,13 +2,13 @@ const { getUser } = require('../services/auth')
 
 const usersResolvers = {
   User: {
-    // Fields map to the fields returned from FusionAuth
+    // Delegate to authClient.getUser
   },
   Query: {
     async account(root, args, context) {
+      context.authClient.requiresAuthentication(context.request.session)
       // Return the full user if the passed userId belongs to the currently logged in user
-      if (context.request.session && context.request.session.userId
-          && context.request.session.userId === args.userId ) {
+      if (context.request.session.userId === args.userId ) {
          return context.authClient.getUser(context.request.session.userId)
       }
       return null
