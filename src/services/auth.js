@@ -1,13 +1,30 @@
-const { AuthenticationError, ForbiddenError } = require('apollo-server')
+const { AuthenticationError, ForbiddenError, UserInputError } = require('apollo-server')
 const { FusionAuthClient } = require('fusionauth-node-client')
 
 class AuthClient {
   constructor(fusionAuthConfig) {
     this.fusionAuthConfig = { ...fusionAuthConfig }
+    // Create FusionAuth client and set the Tenant Id on the client to scope
+    //  requests to a specific Tenant
     this.client = new FusionAuthClient(
         fusionAuthConfig.apiKey,
         fusionAuthConfig.endpoint
     )
+    .setTenantId(this.fusionAuthConfig.tenantId)
+  }
+
+  async addUserToGroup(groupId, userId) {
+    const requestBody = {
+      "members": {
+        [groupId]: [{
+          "userId": userId
+        }]
+      }
+    }
+    return this.client.createGroupMembers(requestBody)
+      .catch(error => {
+        throw new Error("Unable to add user to group", error)
+      })
   }
 
   config() {
@@ -19,12 +36,50 @@ class AuthClient {
     }
   }
 
-  getUser(id) {
-    return this.client.retrieveUser(id).then(
-      clientResponse => clientResponse.successResponse.user
+  async createGroup(name, description, userId, isPrivate) {
+    const requestBody = {
+      "group": {
+        "data": {
+          "admins": [userId],
+          "description": description,
+          "isPrivate": isPrivate
+        },
+        "name": name
+      }
+    }
+    return this.client.createGroup(null, requestBody).then(
+      clientResponse => this._normalizeGroup(clientResponse)
+    ).catch(error => {
+      this._handleError(error)
+    })
+  }
+
+  getGroup(id) {
+    return this.client.retrieveGroup(id).then(
+      clientResponse => this._normalizeGroup(clientResponse)
     )
     .catch(error => {
       throw new Error("Unexpected server error " + error)
+    })
+  }
+
+  getUser(id) {
+    return this.client.retrieveUser(id).then(
+      clientResponse => {
+        let groups = []
+        if (clientResponse.successResponse.user.memberships) {
+          clientResponse.successResponse.user.memberships.forEach(membership => {
+            groups.push(this.getGroup(membership.groupId))
+          })
+        }
+        return {
+          ...clientResponse.successResponse.user,
+          groups: groups
+        }
+      }
+    )
+    .catch(error => {
+      throw new Error("Unexpected server error ", error)
     })
   }
 
@@ -68,26 +123,20 @@ class AuthClient {
 
     return this.getUser(body.userId)
   }
+
   // =======================================
-  // Role authorization validation
+  // Validate the user is logged in
   //
   // throws an AuthenticationError when the user must be logged in to access the requested resource
-  // throws a ForbiddenError when the user must be logged in to access the requested resource
   // =======================================
-  requiresAuthentication(decodedJWT, role) {
-    if (decodedJWT === null) {
-      throw new AuthenticationError('You must be logged in for that');
+  requiresAuthentication(session) {
+    if (session && session.userId) {
+      return
     }
-    if (!decodedJWT.active) {
-      throw new AuthenticationError('Your session expired, please log back in');
-    }
-    if (decodedJWT.roles.indexOf(role) === -1) {
-      throw new ForbiddenError('You cannot see that')
-    }
+    throw new AuthenticationError('You must be logged in for that');
   }
 
   async register(email, password, username) {
-    const randomImageUrl = `https://api.adorable.io/avatars/50/${Math.round(Math.random() * 10000000)}.png`
     const registerEndpoint = `${this.fusionAuthConfig.endpoint}/api/user/registration`
     const postBody = {
     	"registration": {
@@ -95,7 +144,7 @@ class AuthClient {
     	},
     	"user": {
     		"email": `${email}`,
-        "imageUrl": randomImageUrl,
+        "imageUrl": `https://api.adorable.io/avatars/50/${Math.floor(Math.random() * 100000000)}.png`,
     		"password": `${password}`,
     		"username": `${username}`
     	}
@@ -147,6 +196,33 @@ class AuthClient {
     }
 
     return body.access_token
+  }
+
+  _handleError(error) {
+    if (error.errorResponse && error.errorResponse.fieldErrors) {
+      let fieldErrors = []
+      // FusionAuth returns an object of arrays, keyed by the field
+      // Each field can have many validation errors, so need to pull the message off of each one
+      Object.values(error.errorResponse.fieldErrors).forEach(fieldResult =>  {
+        fieldResult.forEach(validationError => {
+          fieldErrors.push(validationError.message)
+        })
+      })
+      throw new UserInputError(
+        "Validation error",
+        { fieldErrors }
+      )
+    }
+    throw new Error("Unexpected server error " + JSON.stringify(error))
+  }
+
+  _normalizeGroup(clientResponse) {
+    return {
+      "id": clientResponse.successResponse.group.id,
+      "description": clientResponse.successResponse.group.data.description,
+      "name": clientResponse.successResponse.group.name,
+      "isPrivate": clientResponse.successResponse.group.data.isPrivate
+    }
   }
 }
 

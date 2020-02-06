@@ -2,13 +2,6 @@ const { filterText, moderationStatus } = require('../services/moderator');
 
 const groupsResolvers = {
   Group: {
-    moderation(root, args, context) {
-      return context.prisma
-        .group({
-          id: root.id
-        })
-        .moderation()
-    },
     threads(root, args, context, info) {
       return context.prisma
         .group({
@@ -24,9 +17,7 @@ const groupsResolvers = {
   },
   Query: {
     group(root, args, context) {
-      return context.prisma.group({
-        id: args.id,
-      })
+      return context.authClient.getGroup(args.id)
     },
     groups(root, args, context) {
       return context.prisma.groups({
@@ -38,26 +29,12 @@ const groupsResolvers = {
     },
   },
   Mutation: {
-    createGroup(root, args, context) {
-      let group = {
-        name: args.name,
-        description: args.description,
-      }
-      const groupText = `${args.name}\n${args.description}`
-      return filterText(context.config.cleanspeak, groupText).then(function(filter) {
-        if (filter === true) {
-          return context.prisma.createGroup({
-            moderation: {
-              create: {
-                status: "TRIGGERED_CONTENT_FILTER"
-              }
-            },
-            ...group
-          })
-        } else {
-          return context.prisma.createGroup(group)
-        }
-      })
+    async createPrivateGroup(root, args, context) {
+      context.authClient.requiresAuthentication(context.request.session)
+      const group = await context.authClient
+        .createGroup(args.name, args.description, context.request.session.userId, true)
+      context.authClient.addUserToGroup(group.id, context.request.session.userId)
+      return group
     },
   }
 }
