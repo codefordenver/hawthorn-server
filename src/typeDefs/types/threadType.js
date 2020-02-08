@@ -6,6 +6,7 @@ const threadType = gql`
     createdAt: DateTime!
     updatedAt: DateTime!
 
+    groupId: String!
     group: Group!
     posts: [Post!]!
     moderation: Moderation

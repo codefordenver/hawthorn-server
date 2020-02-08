@@ -55,8 +55,9 @@ class AuthClient {
   }
 
   getGroup(id) {
-    return this.client.retrieveGroup(id).then(
-      clientResponse => this._normalizeGroup(clientResponse)
+    return this.client.retrieveGroup(id).then((clientResponse) => {
+        return this._normalizeGroup(clientResponse)
+      }
     )
     .catch(error => {
       throw new Error("Unexpected server error " + error)

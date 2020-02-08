@@ -5,7 +5,6 @@ const query = gql`
     account(userId: String!): User
     fusionAuthConfig: FusionAuthConfig!
     group(id: ID!): Group
-    groups: [Group!]!
     login(code: String!): String
     logout: Boolean!
     thread(id: ID!): Thread

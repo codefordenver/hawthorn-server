@@ -13,10 +13,6 @@ var models = [
     embedded: false
   },
   {
-    name: "Group",
-    embedded: false
-  },
-  {
     name: "Post",
     embedded: false
   },

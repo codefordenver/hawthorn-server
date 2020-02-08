@@ -11,17 +11,6 @@ type Moderation {
   status: ModerationStatus!
 }
 
-type Group {
-  id: ID! @id
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
-
-  description: String!
-  moderation: Moderation
-  name: String!
-  threads: [Thread!]!
-}
-
 type Post {
   id: ID! @id
   createdAt: DateTime! @createdAt
@@ -37,7 +26,7 @@ type Thread {
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 
-  group: Group @relation(link: INLINE)
+  groupId: String!
   moderation: Moderation
   posts: [Post!]!
   title: String!
