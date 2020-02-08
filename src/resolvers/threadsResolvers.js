@@ -3,11 +3,7 @@ const { filterText, moderationStatus } = require('../services/moderator');
 const threadsResolvers = {
   Thread: {
     group(root, args, context) {
-      return context.prisma
-        .thread({
-          id: root.id
-        })
-        .group()
+      return context.authClient.getGroup(root.groupId)
     },
     moderation(root, args, context) {
       return context.prisma
@@ -30,21 +26,19 @@ const threadsResolvers = {
     }
   },
   Query: {
-    thread(root, args, context) {
+    thread(root, {id}, context) {
       return context.prisma.thread({
-        id: args.id,
+        id: id,
       })
     },
   },
   Mutation: {
-    createThread(root, args, context) {
+    createThread(root, {groupId, title}, context) {
       let thread = {
-        group: {
-          connect: { id: args.groupId }
-        },
-        title: args.title,
+        groupId: groupId,
+        title: title,
       }
-      return filterText(context.config.cleanspeak, args.title).then(function(filter) {
+      return filterText(context.config.cleanspeak, title).then(function(filter) {
         if (filter === true) {
           return context.prisma.createThread({
             moderation: {
