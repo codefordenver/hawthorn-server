@@ -18,6 +18,9 @@ const groupsResolvers = {
     },
   },
   Mutation: {
+    acceptGroupInvite(roo, args, context) {
+      return true
+    },
     async createPrivateGroup(root, {name, description}, context) {
       context.authClient.requiresAuthentication(context.request.session)
       const group = await context.authClient
@@ -25,6 +28,9 @@ const groupsResolvers = {
       context.authClient.addUserToGroup(group.id, context.request.session.userId)
       return group
     },
+    inviteUserToGroupByEmail(roo, args, context) {
+      return true
+    }
   }
 }
 
