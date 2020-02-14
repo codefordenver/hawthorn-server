@@ -15,8 +15,8 @@ services:
         databases:
           default:
             connector: postgres
-            host: db
-            port: 5432
+            host: ${POSTGRES_HOST}
+            port: ${POSTGRES_PORT}
             user: ${POSTGRES_USER}
             password: ${POSTGRES_PASSWORD}
             migrations: true
