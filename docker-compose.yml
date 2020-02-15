@@ -15,13 +15,15 @@ services:
         databases:
           default:
             connector: postgres
-            host: db
-            port: 5432
+            host: ${POSTGRES_HOST}
+            port: ${POSTGRES_PORT}
             user: ${POSTGRES_USER}
             password: ${POSTGRES_PASSWORD}
+            ssl: ${POSTGRES_SSL}
+            database: ${POSTGRES_DATABASE}
+            connectionLimit: ${POSTGRES_CONNECTION_COUNT}
             migrations: true
             managementSchema: management
-            database: root
 
   db:
     image: postgres:9.6
