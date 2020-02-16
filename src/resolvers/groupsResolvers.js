@@ -18,8 +18,8 @@ const groupsResolvers = {
     },
   },
   Mutation: {
-    acceptGroupInvite(root, args, context) {
-      return true
+    acceptGroupInvite(root, {groupId}, context) {
+      return context.authClient.getGroup(groupId)
     },
     async createPrivateGroup(root, {name, description}, context) {
       context.authClient.requiresAuthentication(context.request.session)
