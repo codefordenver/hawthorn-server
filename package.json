@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sendgrid/mail": "^6.5.2",
     "apollo-server": "^2.9.13",
     "compression": "^1.7.4",
     "connect-redis": "^4.0.3",

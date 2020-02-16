@@ -18,7 +18,7 @@ const groupsResolvers = {
     },
   },
   Mutation: {
-    acceptGroupInvite(roo, args, context) {
+    acceptGroupInvite(root, args, context) {
       return true
     },
     async createPrivateGroup(root, {name, description}, context) {
@@ -28,8 +28,29 @@ const groupsResolvers = {
       context.authClient.addUserToGroup(group.id, context.request.session.userId)
       return group
     },
-    inviteUserToGroupByEmail(roo, args, context) {
-      return true
+    async inviteUserToGroupByEmail(root, {groupId, email}, context) {
+      // TODO -
+      //  - check by email if the user has an account
+      //  - if account
+      //    - add user to unclaimed invite db - same as unregistered users?
+      //    - send email linking to accept invite page for that invite
+      //      - conditional in template to point to claim URL, versus signup prompt
+      //    - group appears on account page, with link to accept invite
+      //  - else
+      //    - add email to unclaimed invite db
+      //    - [x] send email to invite to hawthorn with group name in invite
+      //      - upon registration, user is added as member of all groups they have been invited to
+      // {
+      //   "invites": {
+      //     "trevorcarringtonsmith@gmail.com": ["groupId_1", ..., "groupId_n"],
+      //     "a@a.com": ["groupId_1", ..., "groupId_n"]
+      //   }
+      // }
+      const group = await context.authClient.getGroup(groupId)
+      // TODO - check that group exists
+      // TODO - get fromUsername from context user
+      context.emailClient.sendInvitationToGroup(group.name, email, 'LilPetey')
+      return group
     }
   }
 }

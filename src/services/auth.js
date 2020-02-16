@@ -60,7 +60,7 @@ class AuthClient {
       }
     )
     .catch(error => {
-      throw new Error("Unexpected server error " + error)
+      throw new Error("Unexpected server error " + JSON.stringify(error))
     })
   }
 
@@ -137,12 +137,15 @@ class AuthClient {
     throw new AuthenticationError('You must be logged in for that');
   }
 
-  async register(email, password, username) {
+  async register(email, password, username, sendSetPasswordEmail, skipRegistrationVerification, skipEmailVerification) {
     const registerEndpoint = `${this.fusionAuthConfig.endpoint}/api/user/registration`
     const postBody = {
     	"registration": {
     		"applicationId": `${this.fusionAuthConfig.clientId}`,
     	},
+      "sendSetPasswordEmail": sendSetPasswordEmail,
+      "skipRegistrationVerification": skipRegistrationVerification,
+      "skipVerification": skipEmailVerification,
     	"user": {
     		"email": `${email}`,
         "imageUrl": `https://api.adorable.io/avatars/50/${Math.floor(Math.random() * 100000000)}.png`,

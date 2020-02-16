@@ -9,6 +9,8 @@ const { prisma } = require('./generated/prisma-client')
 const { resolvers } = require('./resolvers')
 const { typeDefs } = require('./typeDefs')
 const { AuthClient } = require('./services/auth')
+const { EmailClient } = require('./services/email')
+const { MockEmailClient } = require('./services/mockEmail')
 
 let RedisStore = require('connect-redis')(session)
 let redisClient = redis.createClient()
@@ -22,6 +24,10 @@ const config = {
     applicationId: process.env.APPLICATION_ID,
     baseUrl: process.env.CLEANSPEAK_BASE_URL
   },
+  email: {
+    apiKey: process.env.SENDGRID_API_KEY,
+    groupInviteTemplateId: process.env.SENDGRID_GROUP_INVITE_TEMPLATE_ID
+  },
   fusionAuth: {
     apiKey: process.env.FUSIONAUTH_API_KEY,
     clientId: process.env.FUSIONAUTH_CLIENT_ID,
@@ -34,6 +40,7 @@ const config = {
 }
 
 const authClient = new AuthClient(config.fusionAuth)
+const emailClient = config.email.apiKey ? new EmailClient(config.email) : new MockEmailClient()
 const sessionSecret = process.env.SESSION_SECRET
 
 const server = new GraphQLServer({
@@ -44,6 +51,7 @@ const server = new GraphQLServer({
       ...request,
       prisma,
       authClient: authClient,
+      emailClient: emailClient,
       config: config,
     }
   },
