@@ -2,7 +2,7 @@ class MockEmailClient {
   constructor() {
   }
 
-  sendInvitationToGroup(groupName, toEmail, fromUserName) {
+  sendInvitationToGroup(groupName, toEmail, customMessage, fromUserName) {
     return
   }
 }

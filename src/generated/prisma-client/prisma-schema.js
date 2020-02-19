@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateModeration {
+/* GraphQL */ `type AggregateExternalGroupInvitation {
+  count: Int!
+}
+
+type AggregateModeration {
   count: Int!
 }
 
@@ -20,6 +24,178 @@ type BatchPayload {
 }
 
 scalar DateTime
+
+type ExternalGroupInvitation {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  accepted: Boolean
+  groupId: String!
+  inviterUserId: String!
+}
+
+type ExternalGroupInvitationConnection {
+  pageInfo: PageInfo!
+  edges: [ExternalGroupInvitationEdge]!
+  aggregate: AggregateExternalGroupInvitation!
+}
+
+input ExternalGroupInvitationCreateInput {
+  id: ID
+  email: String!
+  accepted: Boolean
+  groupId: String!
+  inviterUserId: String!
+}
+
+type ExternalGroupInvitationEdge {
+  node: ExternalGroupInvitation!
+  cursor: String!
+}
+
+enum ExternalGroupInvitationOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  email_ASC
+  email_DESC
+  accepted_ASC
+  accepted_DESC
+  groupId_ASC
+  groupId_DESC
+  inviterUserId_ASC
+  inviterUserId_DESC
+}
+
+type ExternalGroupInvitationPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  email: String!
+  accepted: Boolean
+  groupId: String!
+  inviterUserId: String!
+}
+
+type ExternalGroupInvitationSubscriptionPayload {
+  mutation: MutationType!
+  node: ExternalGroupInvitation
+  updatedFields: [String!]
+  previousValues: ExternalGroupInvitationPreviousValues
+}
+
+input ExternalGroupInvitationSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ExternalGroupInvitationWhereInput
+  AND: [ExternalGroupInvitationSubscriptionWhereInput!]
+  OR: [ExternalGroupInvitationSubscriptionWhereInput!]
+  NOT: [ExternalGroupInvitationSubscriptionWhereInput!]
+}
+
+input ExternalGroupInvitationUpdateInput {
+  email: String
+  accepted: Boolean
+  groupId: String
+  inviterUserId: String
+}
+
+input ExternalGroupInvitationUpdateManyMutationInput {
+  email: String
+  accepted: Boolean
+  groupId: String
+  inviterUserId: String
+}
+
+input ExternalGroupInvitationWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  email: String
+  email_not: String
+  email_in: [String!]
+  email_not_in: [String!]
+  email_lt: String
+  email_lte: String
+  email_gt: String
+  email_gte: String
+  email_contains: String
+  email_not_contains: String
+  email_starts_with: String
+  email_not_starts_with: String
+  email_ends_with: String
+  email_not_ends_with: String
+  accepted: Boolean
+  accepted_not: Boolean
+  groupId: String
+  groupId_not: String
+  groupId_in: [String!]
+  groupId_not_in: [String!]
+  groupId_lt: String
+  groupId_lte: String
+  groupId_gt: String
+  groupId_gte: String
+  groupId_contains: String
+  groupId_not_contains: String
+  groupId_starts_with: String
+  groupId_not_starts_with: String
+  groupId_ends_with: String
+  groupId_not_ends_with: String
+  inviterUserId: String
+  inviterUserId_not: String
+  inviterUserId_in: [String!]
+  inviterUserId_not_in: [String!]
+  inviterUserId_lt: String
+  inviterUserId_lte: String
+  inviterUserId_gt: String
+  inviterUserId_gte: String
+  inviterUserId_contains: String
+  inviterUserId_not_contains: String
+  inviterUserId_starts_with: String
+  inviterUserId_not_starts_with: String
+  inviterUserId_ends_with: String
+  inviterUserId_not_ends_with: String
+  AND: [ExternalGroupInvitationWhereInput!]
+  OR: [ExternalGroupInvitationWhereInput!]
+  NOT: [ExternalGroupInvitationWhereInput!]
+}
+
+input ExternalGroupInvitationWhereUniqueInput {
+  id: ID
+}
 
 scalar Long
 
@@ -163,6 +339,12 @@ input ModerationWhereUniqueInput {
 }
 
 type Mutation {
+  createExternalGroupInvitation(data: ExternalGroupInvitationCreateInput!): ExternalGroupInvitation!
+  updateExternalGroupInvitation(data: ExternalGroupInvitationUpdateInput!, where: ExternalGroupInvitationWhereUniqueInput!): ExternalGroupInvitation
+  updateManyExternalGroupInvitations(data: ExternalGroupInvitationUpdateManyMutationInput!, where: ExternalGroupInvitationWhereInput): BatchPayload!
+  upsertExternalGroupInvitation(where: ExternalGroupInvitationWhereUniqueInput!, create: ExternalGroupInvitationCreateInput!, update: ExternalGroupInvitationUpdateInput!): ExternalGroupInvitation!
+  deleteExternalGroupInvitation(where: ExternalGroupInvitationWhereUniqueInput!): ExternalGroupInvitation
+  deleteManyExternalGroupInvitations(where: ExternalGroupInvitationWhereInput): BatchPayload!
   createModeration(data: ModerationCreateInput!): Moderation!
   updateModeration(data: ModerationUpdateInput!, where: ModerationWhereUniqueInput!): Moderation
   updateManyModerations(data: ModerationUpdateManyMutationInput!, where: ModerationWhereInput): BatchPayload!
@@ -428,6 +610,9 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  externalGroupInvitation(where: ExternalGroupInvitationWhereUniqueInput!): ExternalGroupInvitation
+  externalGroupInvitations(where: ExternalGroupInvitationWhereInput, orderBy: ExternalGroupInvitationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ExternalGroupInvitation]!
+  externalGroupInvitationsConnection(where: ExternalGroupInvitationWhereInput, orderBy: ExternalGroupInvitationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ExternalGroupInvitationConnection!
   moderation(where: ModerationWhereUniqueInput!): Moderation
   moderations(where: ModerationWhereInput, orderBy: ModerationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Moderation]!
   moderationsConnection(where: ModerationWhereInput, orderBy: ModerationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ModerationConnection!
@@ -441,6 +626,7 @@ type Query {
 }
 
 type Subscription {
+  externalGroupInvitation(where: ExternalGroupInvitationSubscriptionWhereInput): ExternalGroupInvitationSubscriptionPayload
   moderation(where: ModerationSubscriptionWhereInput): ModerationSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   thread(where: ThreadSubscriptionWhereInput): ThreadSubscriptionPayload

@@ -34,8 +34,30 @@ const usersResolvers = {
     }
   },
   Mutation: {
-    register(root, args, context) {
-      return context.authClient.register(args.email, args.password, args.username)
+    async register(root, {email, password, username}, context) {
+      const userId = await context.authClient.register(email, password, username)
+
+      // Retrieve any group invitations for this email
+      const groupInvitations = await context.prisma.externalGroupInvitations({
+        where: {
+          email: email
+        }
+      })
+      // Add the user to all of the groups they have been invited to
+      groupInvitations.forEach(async function(invitation){
+        context.authClient.addUserToGroup(invitation.groupId, userId)
+        // Update the invation to mark as accepted
+        await context.prisma.updateExternalGroupInvitation({
+          where: {
+            id: invitation.id
+          },
+          data: {
+            accepted:true
+          }
+        })
+      })
+
+      return userId
     }
   }
 }

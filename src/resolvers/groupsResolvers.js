@@ -28,28 +28,48 @@ const groupsResolvers = {
       context.authClient.addUserToGroup(group.id, context.request.session.userId)
       return group
     },
-    async inviteUserToGroupByEmail(root, {groupId, email}, context) {
-      // TODO -
-      //  - check by email if the user has an account
-      //  - if account
-      //    - add user to unclaimed invite db - same as unregistered users?
-      //    - send email linking to accept invite page for that invite
-      //      - conditional in template to point to claim URL, versus signup prompt
-      //    - group appears on account page, with link to accept invite
-      //  - else
-      //    - add email to unclaimed invite db
-      //    - [x] send email to invite to hawthorn with group name in invite
-      //      - upon registration, user is added as member of all groups they have been invited to
-      // {
-      //   "invites": {
-      //     "trevorcarringtonsmith@gmail.com": ["groupId_1", ..., "groupId_n"],
-      //     "a@a.com": ["groupId_1", ..., "groupId_n"]
-      //   }
-      // }
+    async inviteUserToGroupByEmail(root, {email, groupId, customMessage}, context, info) {
+      // TODO - validate the user is authenticated and belongs to this group
+      // TODO - check that the group exists
       const group = await context.authClient.getGroup(groupId)
-      // TODO - check that group exists
-      // TODO - get fromUsername from context user
-      context.emailClient.sendInvitationToGroup(group.name, email, 'LilPetey')
+      if (!group) {
+        // TODO - validation error
+        //  - may need to check on the group request, error may be thrown in authCLient
+      }
+
+      // Check by email if the user has an account
+      const existingUser = await context.authClient.getUserByEmail(email)
+      if (existingUser) {
+        // TODO -
+        //  - check by email if the user has an account
+        //  - if account
+        //    - add user to unclaimed invite db - same as unregistered users?
+        //    - send email linking to accept invite page for that invite
+        //      - conditional in template to point to claim URL, versus signup prompt
+        //    - group appears on account page, with link to accept invite
+
+        //context.emailClient.sendInvitationToGroup(group.name, email, customMessage, 'LilPetey')
+      } else {
+        // Check if this email already has an invitation to this group
+        const groupInvitations = await context.prisma.externalGroupInvitations({
+          where: {
+            email: email,
+            groupId: groupId
+          }
+        })
+        // Create a new invitation for this email address
+        if (groupInvitations.length == 0) {
+          await context.prisma.createExternalGroupInvitation({
+              email: email,
+              groupId: groupId,
+              // TODO take inviterUserId from context user id
+              inviterUserId: '57ab155a-1893-46b4-ba14-f3f25ca1e147',
+              accepted: false
+          }, info)
+        }
+      }
+
+      //context.emailClient.sendInvitationToGroup(group.name, email, customMessage, 'LilPetey')
       return group
     }
   }

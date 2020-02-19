@@ -7,7 +7,7 @@ class EmailClient {
     this.mail = mail
   }
 
-  sendInvitationToGroup(groupName, toEmail, fromUserName) {
+  sendInvitationToGroup(groupName, toEmail, customMessage, fromUserName) {
     const message = {
       to: toEmail,
       from: 'noreply@hawth.org',
@@ -15,6 +15,7 @@ class EmailClient {
       dynamic_template_data: {
         fromUserName: fromUserName,
         groupName: groupName,
+        customMessage: customMessage,
         Sender_Name: 'Hawthorn',
         Sender_Address: '1576 Sherman St.',
         Sender_City: 'Denver',

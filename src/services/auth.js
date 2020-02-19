@@ -80,6 +80,35 @@ class AuthClient {
       }
     )
     .catch(error => {
+      // If we get a 404, just return null user, otherwise throw an Error
+      if (error.statusCode == 404) {
+        return null
+      }
+
+      throw new Error("Unexpected server error ", error)
+    })
+  }
+
+  getUserByEmail(email) {
+    return this.client.retrieveUserByEmail(email).then(
+      clientResponse => {
+        let groups = []
+        if (clientResponse.successResponse.user.memberships) {
+          clientResponse.successResponse.user.memberships.forEach(membership => {
+            groups.push(this.getGroup(membership.groupId))
+          })
+        }
+        return {
+          ...clientResponse.successResponse.user,
+          groups: groups
+        }
+      }
+    )
+    .catch(error => {
+      // If we get a 404, just return null user, otherwise throw an Error
+      if (error.statusCode == 404) {
+        return null
+      }
       throw new Error("Unexpected server error ", error)
     })
   }

@@ -1,3 +1,14 @@
+type ExternalGroupInvitation {
+  id: ID! @id
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+
+  email: String!
+  accepted: Boolean
+  groupId: String!
+  inviterUserId: String!
+}
+
 enum ModerationStatus {
   TRIGGERED_CONTENT_FILTER,
   APPROVED_BY_MODERATOR
