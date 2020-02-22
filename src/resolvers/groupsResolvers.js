@@ -29,26 +29,23 @@ const groupsResolvers = {
       return group
     },
     async inviteUserToGroupByEmail(root, {email, groupId, customMessage}, context, info) {
+      // TODO take inviterUserId from context user id
+      let inviterUserId = "57ab155a-1893-46b4-ba14-f3f25ca1e147"
       // TODO - validate the user is authenticated and belongs to this group
-      // TODO - check that the group exists
+      //  (context user Id will be inviterUserId)
       const group = await context.authClient.getGroup(groupId)
-      if (!group) {
-        // TODO - validation error
-        //  - may need to check on the group request, error may be thrown in authCLient
-      }
 
       // Check by email if the user has an account
       const existingUser = await context.authClient.getUserByEmail(email)
       if (existingUser) {
+        await context.authClient.inviteUserToGroup(groupId, inviterUserId, null, existingUser.id)
         // TODO -
-        //  - check by email if the user has an account
+        //  - [x] check by email if the user has an account
         //  - if account
-        //    - add user to unclaimed invite db - same as unregistered users?
+        //    - [x] add user to unclaimed invite db - same as unregistered users?
         //    - send email linking to accept invite page for that invite
         //      - conditional in template to point to claim URL, versus signup prompt
         //    - group appears on account page, with link to accept invite
-
-        //context.emailClient.sendInvitationToGroup(group.name, email, customMessage, 'LilPetey')
       } else {
         // Check if this email already has an invitation to this group
         const groupInvitations = await context.prisma.externalGroupInvitations({
@@ -57,15 +54,17 @@ const groupsResolvers = {
             groupId: groupId
           }
         })
-        // Create a new invitation for this email address
+        // Create a new temporary invitation in the Hawthorn DB for this email address
+        // This lets us to easily add them to all groups they have been invited to on registration
         if (groupInvitations.length == 0) {
           await context.prisma.createExternalGroupInvitation({
               email: email,
-              groupId: groupId,
-              // TODO take inviterUserId from context user id
-              inviterUserId: '57ab155a-1893-46b4-ba14-f3f25ca1e147',
-              accepted: false
+              groupId: groupId
           }, info)
+          // TODO - mark FusionAuth Group metadata external invite as accepted on registration
+          // Also update the metadata on the FusionAuth group to add this user as inviterUserId
+          // This allows us to track invitations for both external and internal users
+          await context.authClient.inviteUserToGroup(groupId, inviterUserId, email, null)
         }
       }
 

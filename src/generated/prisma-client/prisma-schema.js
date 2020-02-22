@@ -28,11 +28,8 @@ scalar DateTime
 type ExternalGroupInvitation {
   id: ID!
   createdAt: DateTime!
-  updatedAt: DateTime!
   email: String!
-  accepted: Boolean
   groupId: String!
-  inviterUserId: String!
 }
 
 type ExternalGroupInvitationConnection {
@@ -44,9 +41,7 @@ type ExternalGroupInvitationConnection {
 input ExternalGroupInvitationCreateInput {
   id: ID
   email: String!
-  accepted: Boolean
   groupId: String!
-  inviterUserId: String!
 }
 
 type ExternalGroupInvitationEdge {
@@ -59,26 +54,17 @@ enum ExternalGroupInvitationOrderByInput {
   id_DESC
   createdAt_ASC
   createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
   email_ASC
   email_DESC
-  accepted_ASC
-  accepted_DESC
   groupId_ASC
   groupId_DESC
-  inviterUserId_ASC
-  inviterUserId_DESC
 }
 
 type ExternalGroupInvitationPreviousValues {
   id: ID!
   createdAt: DateTime!
-  updatedAt: DateTime!
   email: String!
-  accepted: Boolean
   groupId: String!
-  inviterUserId: String!
 }
 
 type ExternalGroupInvitationSubscriptionPayload {
@@ -101,16 +87,12 @@ input ExternalGroupInvitationSubscriptionWhereInput {
 
 input ExternalGroupInvitationUpdateInput {
   email: String
-  accepted: Boolean
   groupId: String
-  inviterUserId: String
 }
 
 input ExternalGroupInvitationUpdateManyMutationInput {
   email: String
-  accepted: Boolean
   groupId: String
-  inviterUserId: String
 }
 
 input ExternalGroupInvitationWhereInput {
@@ -136,14 +118,6 @@ input ExternalGroupInvitationWhereInput {
   createdAt_lte: DateTime
   createdAt_gt: DateTime
   createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
   email: String
   email_not: String
   email_in: [String!]
@@ -158,8 +132,6 @@ input ExternalGroupInvitationWhereInput {
   email_not_starts_with: String
   email_ends_with: String
   email_not_ends_with: String
-  accepted: Boolean
-  accepted_not: Boolean
   groupId: String
   groupId_not: String
   groupId_in: [String!]
@@ -174,20 +146,6 @@ input ExternalGroupInvitationWhereInput {
   groupId_not_starts_with: String
   groupId_ends_with: String
   groupId_not_ends_with: String
-  inviterUserId: String
-  inviterUserId_not: String
-  inviterUserId_in: [String!]
-  inviterUserId_not_in: [String!]
-  inviterUserId_lt: String
-  inviterUserId_lte: String
-  inviterUserId_gt: String
-  inviterUserId_gte: String
-  inviterUserId_contains: String
-  inviterUserId_not_contains: String
-  inviterUserId_starts_with: String
-  inviterUserId_not_starts_with: String
-  inviterUserId_ends_with: String
-  inviterUserId_not_ends_with: String
   AND: [ExternalGroupInvitationWhereInput!]
   OR: [ExternalGroupInvitationWhereInput!]
   NOT: [ExternalGroupInvitationWhereInput!]

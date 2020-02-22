@@ -1,12 +1,9 @@
 type ExternalGroupInvitation {
   id: ID! @id
   createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
 
   email: String!
-  accepted: Boolean
   groupId: String!
-  inviterUserId: String!
 }
 
 enum ModerationStatus {

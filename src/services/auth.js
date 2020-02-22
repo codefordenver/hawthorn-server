@@ -60,6 +60,9 @@ class AuthClient {
       }
     )
     .catch(error => {
+      if (error.statusCode === 404) {
+        throw new Error(`Group with id '${id} not found'`)
+      }
       throw new Error("Unexpected server error " + JSON.stringify(error))
     })
   }
@@ -124,6 +127,53 @@ class AuthClient {
         body: new URLSearchParams(formData)
       })
     return response.json();
+  }
+
+  // Add a user to the group's metadata as being invited to the group
+  //
+  // Pass an email if inviting someone who does not yet have an account,
+  //  or the userId of an existing user
+  // return the group
+  async inviteUserToGroup(groupId, inviterUserId, email, userId) {
+    // Retrieve the group
+    return this.client.retrieveGroup(groupId).then((clientResponse) => {
+        if (clientResponse.statusCode == 200) {
+          let group = clientResponse.successResponse.group
+          if (!group.data.invites) {
+            group.data.invites = {
+              "external": [],
+              "internal": []
+            }
+          }
+
+          // Bail early if the user has already been invited to this group
+          if (email) {
+            for (let i in group.data.invites.external) {
+              if (group.data.invites.external[i].email === email) {
+                return this._normalizeGroup(clientResponse)
+              }
+            }
+            group.data.invites.external.push({"email": email, "inviterUserId": inviterUserId})
+          } else if (userId) {
+            for (let i in group.data.invites.internal) {
+              if (group.data.invites.internal[i].userId === userId) {
+                return this._normalizeGroup(clientResponse)
+              }
+            }
+            group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
+          }
+
+          // Update the group with the invite data
+          const requestBody = {"group": group}
+          return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
+            return this._normalizeGroup(updateResponse)
+          })
+        }
+      }
+    )
+    .catch(error => {
+      throw new Error(`Error retrieving group '${groupId}' to invite a user, email '${email}', userId '${userId}', inviterUserId '${inviterUserId}': ` + JSON.stringify(error))
+    })
   }
 
   async login(context, authorizationCode) {

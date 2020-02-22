@@ -232,21 +232,17 @@ export type ModerationStatus =
   | "TRIGGERED_CONTENT_FILTER"
   | "APPROVED_BY_MODERATOR";
 
+export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+
 export type ExternalGroupInvitationOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC"
   | "email_ASC"
   | "email_DESC"
-  | "accepted_ASC"
-  | "accepted_DESC"
   | "groupId_ASC"
-  | "groupId_DESC"
-  | "inviterUserId_ASC"
-  | "inviterUserId_DESC";
+  | "groupId_DESC";
 
 export type ModerationOrderByInput =
   | "id_ASC"
@@ -257,8 +253,6 @@ export type ModerationOrderByInput =
   | "updatedAt_DESC"
   | "status_ASC"
   | "status_DESC";
-
-export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
 export type PostOrderByInput =
   | "id_ASC"
@@ -459,14 +453,6 @@ export interface ExternalGroupInvitationWhereInput {
   createdAt_lte?: Maybe<DateTimeInput>;
   createdAt_gt?: Maybe<DateTimeInput>;
   createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
   email?: Maybe<String>;
   email_not?: Maybe<String>;
   email_in?: Maybe<String[] | String>;
@@ -481,8 +467,6 @@ export interface ExternalGroupInvitationWhereInput {
   email_not_starts_with?: Maybe<String>;
   email_ends_with?: Maybe<String>;
   email_not_ends_with?: Maybe<String>;
-  accepted?: Maybe<Boolean>;
-  accepted_not?: Maybe<Boolean>;
   groupId?: Maybe<String>;
   groupId_not?: Maybe<String>;
   groupId_in?: Maybe<String[] | String>;
@@ -497,20 +481,6 @@ export interface ExternalGroupInvitationWhereInput {
   groupId_not_starts_with?: Maybe<String>;
   groupId_ends_with?: Maybe<String>;
   groupId_not_ends_with?: Maybe<String>;
-  inviterUserId?: Maybe<String>;
-  inviterUserId_not?: Maybe<String>;
-  inviterUserId_in?: Maybe<String[] | String>;
-  inviterUserId_not_in?: Maybe<String[] | String>;
-  inviterUserId_lt?: Maybe<String>;
-  inviterUserId_lte?: Maybe<String>;
-  inviterUserId_gt?: Maybe<String>;
-  inviterUserId_gte?: Maybe<String>;
-  inviterUserId_contains?: Maybe<String>;
-  inviterUserId_not_contains?: Maybe<String>;
-  inviterUserId_starts_with?: Maybe<String>;
-  inviterUserId_not_starts_with?: Maybe<String>;
-  inviterUserId_ends_with?: Maybe<String>;
-  inviterUserId_not_ends_with?: Maybe<String>;
   AND?: Maybe<
     ExternalGroupInvitationWhereInput[] | ExternalGroupInvitationWhereInput
   >;
@@ -534,9 +504,7 @@ export type PostWhereUniqueInput = AtLeastOne<{
 export interface ExternalGroupInvitationCreateInput {
   id?: Maybe<ID_Input>;
   email: String;
-  accepted?: Maybe<Boolean>;
   groupId: String;
-  inviterUserId: String;
 }
 
 export interface PostCreateWithoutThreadInput {
@@ -547,9 +515,7 @@ export interface PostCreateWithoutThreadInput {
 
 export interface ExternalGroupInvitationUpdateInput {
   email?: Maybe<String>;
-  accepted?: Maybe<Boolean>;
   groupId?: Maybe<String>;
-  inviterUserId?: Maybe<String>;
 }
 
 export interface ThreadSubscriptionWhereInput {
@@ -565,9 +531,7 @@ export interface ThreadSubscriptionWhereInput {
 
 export interface ExternalGroupInvitationUpdateManyMutationInput {
   email?: Maybe<String>;
-  accepted?: Maybe<Boolean>;
   groupId?: Maybe<String>;
-  inviterUserId?: Maybe<String>;
 }
 
 export interface PostCreateManyWithoutThreadInput {
@@ -993,89 +957,6 @@ export interface ThreadEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregatePost {
-  count: Int;
-}
-
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface ExternalGroupInvitationConnection {
-  pageInfo: PageInfo;
-  edges: ExternalGroupInvitationEdge[];
-}
-
-export interface ExternalGroupInvitationConnectionPromise
-  extends Promise<ExternalGroupInvitationConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ExternalGroupInvitationEdge>>() => T;
-  aggregate: <T = AggregateExternalGroupInvitationPromise>() => T;
-}
-
-export interface ExternalGroupInvitationConnectionSubscription
-  extends Promise<AsyncIterator<ExternalGroupInvitationConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <
-    T = Promise<AsyncIterator<ExternalGroupInvitationEdgeSubscription>>
-  >() => T;
-  aggregate: <T = AggregateExternalGroupInvitationSubscription>() => T;
-}
-
-export interface PostConnection {
-  pageInfo: PageInfo;
-  edges: PostEdge[];
-}
-
-export interface PostConnectionPromise
-  extends Promise<PostConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<PostEdge>>() => T;
-  aggregate: <T = AggregatePostPromise>() => T;
-}
-
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
-}
-
 export interface ThreadSubscriptionPayload {
   mutation: MutationType;
   node: Thread;
@@ -1099,6 +980,89 @@ export interface ThreadSubscriptionPayloadSubscription
   node: <T = ThreadSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
   previousValues: <T = ThreadPreviousValuesSubscription>() => T;
+}
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostConnection {
+  pageInfo: PageInfo;
+  edges: PostEdge[];
+}
+
+export interface PostConnectionPromise
+  extends Promise<PostConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PostEdge>>() => T;
+  aggregate: <T = AggregatePostPromise>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
+export interface ExternalGroupInvitationConnection {
+  pageInfo: PageInfo;
+  edges: ExternalGroupInvitationEdge[];
+}
+
+export interface ExternalGroupInvitationConnectionPromise
+  extends Promise<ExternalGroupInvitationConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ExternalGroupInvitationEdge>>() => T;
+  aggregate: <T = AggregateExternalGroupInvitationPromise>() => T;
+}
+
+export interface ExternalGroupInvitationConnectionSubscription
+  extends Promise<AsyncIterator<ExternalGroupInvitationConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <
+    T = Promise<AsyncIterator<ExternalGroupInvitationEdgeSubscription>>
+  >() => T;
+  aggregate: <T = AggregateExternalGroupInvitationSubscription>() => T;
 }
 
 export interface Post {
@@ -1142,11 +1106,8 @@ export interface PostNullablePromise
 export interface ExternalGroupInvitation {
   id: ID_Output;
   createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
   email: String;
-  accepted?: Boolean;
   groupId: String;
-  inviterUserId: String;
 }
 
 export interface ExternalGroupInvitationPromise
@@ -1154,11 +1115,8 @@ export interface ExternalGroupInvitationPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
   email: () => Promise<String>;
-  accepted: () => Promise<Boolean>;
   groupId: () => Promise<String>;
-  inviterUserId: () => Promise<String>;
 }
 
 export interface ExternalGroupInvitationSubscription
@@ -1166,11 +1124,8 @@ export interface ExternalGroupInvitationSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   email: () => Promise<AsyncIterator<String>>;
-  accepted: () => Promise<AsyncIterator<Boolean>>;
   groupId: () => Promise<AsyncIterator<String>>;
-  inviterUserId: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ExternalGroupInvitationNullablePromise
@@ -1178,11 +1133,8 @@ export interface ExternalGroupInvitationNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
   email: () => Promise<String>;
-  accepted: () => Promise<Boolean>;
   groupId: () => Promise<String>;
-  inviterUserId: () => Promise<String>;
 }
 
 export interface ModerationEdge {
@@ -1342,11 +1294,8 @@ export interface PostPreviousValuesSubscription
 export interface ExternalGroupInvitationPreviousValues {
   id: ID_Output;
   createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
   email: String;
-  accepted?: Boolean;
   groupId: String;
-  inviterUserId: String;
 }
 
 export interface ExternalGroupInvitationPreviousValuesPromise
@@ -1354,11 +1303,8 @@ export interface ExternalGroupInvitationPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
   email: () => Promise<String>;
-  accepted: () => Promise<Boolean>;
   groupId: () => Promise<String>;
-  inviterUserId: () => Promise<String>;
 }
 
 export interface ExternalGroupInvitationPreviousValuesSubscription
@@ -1366,11 +1312,8 @@ export interface ExternalGroupInvitationPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   email: () => Promise<AsyncIterator<String>>;
-  accepted: () => Promise<AsyncIterator<Boolean>>;
   groupId: () => Promise<AsyncIterator<String>>;
-  inviterUserId: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Thread {
@@ -1506,14 +1449,14 @@ export type ID_Input = string | number;
 export type ID_Output = string;
 
 /*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
-*/
-export type Int = number;
-
-/*
 The `Boolean` scalar type represents `true` or `false`.
 */
 export type Boolean = boolean;
+
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
+*/
+export type Int = number;
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
