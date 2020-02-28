@@ -35,39 +35,26 @@ const groupsResolvers = {
       let inviterUserId = "57ab155a-1893-46b4-ba14-f3f25ca1e147"
       const group = await context.authClient.getGroup(groupId)
 
-      // Check by email if the user has an account
-      const existingUser = await context.authClient.getUserByEmail(email)
-      if (existingUser) {
-        await context.authClient.inviteInternalUserToGroup(groupId, inviterUserId, existingUser.id)
-        // TODO -
-        //  - [x] check by email if the user has an account
-        //  - if account
-        //    - [x] add user to unclaimed invite db - same as unregistered users?
-        //    - send email linking to accept invite page for that invite
-        //      - conditional in template to point to claim URL, versus signup prompt
-        //    - group appears on account page, with link to accept invite
-      } else {
-        // Check if this email already has an invitation to this group
-        const groupInvitations = await context.prisma.externalGroupInvitations({
-          where: {
-            email: email,
-            groupId: groupId
-          }
-        })
-        // Create a new temporary invitation in the Hawthorn DB for this email address
-        // This temporary store enables us to easily add them to all groups they
-        //  have been invited to upon registration
-        if (groupInvitations.length == 0) {
-          await context.prisma.createExternalGroupInvitation({
-              email: email,
-              groupId: groupId
-          }, info)
-          // Also update the metadata on the FusionAuth group to mark this user as invited
-          await context.authClient.inviteExternalUserToGroup(groupId, inviterUserId, email)
+      const existingGroupInvitations = await context.prisma.groupInvitations({
+        where: {
+          email: email,
+          groupId: groupId
         }
+      })
+      // Send an invitation if one does not yet exist for this user : group
+      if (existingGroupInvitations.length == 0) {
+        // Check by email if the user has an account
+        const existingUser = await context.authClient.getUserByEmail(email)
+        await context.prisma.createGroupInvitation({
+          accepted: false,
+          email: email,
+          groupId: groupId,
+          inviterUserId: inviterUserId,
+          userId: existingUser ? existingUser.id : null
+        }, info)
+        // TODO - take fromUserName from context user, axe LilPetey
+        context.emailClient.sendGroupInvitationToUser(group.name, email, existingUser !== null, customMessage, 'LilPetey')
       }
-
-      //context.emailClient.sendInvitationToGroup(group.name, email, customMessage, 'LilPetey')
       return group
     }
   }

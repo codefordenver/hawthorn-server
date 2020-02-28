@@ -7,6 +7,7 @@ const userType = gql`
     firstName: String
     groups: [Group!]!
     lastName: String
+    unacceptedGroupInvitations: [Group!]!
     imageUrl: String!
     username: String!
   }

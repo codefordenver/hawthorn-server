@@ -2,7 +2,23 @@ const { getUser } = require('../services/auth')
 
 const usersResolvers = {
   User: {
-    // Delegate to authClient.getUser
+    // Most fields are handled by authClient.getUser
+
+    async unacceptedGroupInvitations(root, args, context, info) {
+      let groups = []
+      const groupInvitations = await context.prisma.groupInvitations({
+        where: {
+          accepted: false,
+          userId: root.id
+        }
+      })
+      groupInvitations.forEach(async function(invitation){
+        const group = context.authClient.getGroup(invitation.groupId)
+        groups.push(group)
+      })
+
+      return groups
+    }
   },
   Query: {
     async account(root, args, context) {
@@ -38,18 +54,23 @@ const usersResolvers = {
       const userId = await context.authClient.register(email, password, username)
 
       // Retrieve any group invitations for this email
-      const groupInvitations = await context.prisma.externalGroupInvitations({
+      const groupInvitations = await context.prisma.groupInvitations({
         where: {
           email: email
         }
       })
+
       // Add the user to all of the groups they have been invited to
       groupInvitations.forEach(async function(invitation){
         await context.authClient.addUserToGroup(invitation.groupId, userId)
-        await context.authClient.convertExternalUserInGroup(invitation.groupId, userId, email)
-        // Delete the invitation from the Hawthorn database
-        await context.prisma.deleteExternalGroupInvitation({
-          id: invitation.id
+        await context.prisma.updateGroupInvitation({
+          where: {
+            id: invitation.id
+          },
+          data: {
+            accepted: true,
+            userId: userId
+          }
         })
       })
 

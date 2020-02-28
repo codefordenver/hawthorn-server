@@ -54,8 +54,8 @@ class AuthClient {
     })
   }
 
-  getGroup(id) {
-    return this.client.retrieveGroup(id).then((clientResponse) => {
+  async getGroup(id) {
+    return await this.client.retrieveGroup(id).then((clientResponse) => {
         return this._normalizeGroup(clientResponse)
       }
     )
@@ -88,7 +88,7 @@ class AuthClient {
         return null
       }
 
-      throw new Error("Unexpected server error ", error)
+      throw new Error("Unexpected server error " + JSON.stringify(error))
     })
   }
 
@@ -127,82 +127,6 @@ class AuthClient {
         body: new URLSearchParams(formData)
       })
     return response.json();
-  }
-
-  // Add an external user to the group's metadata as being invited to the group
-  // This enables us to count invitations for invitees
-  //  and model the relationship between inviter and invitee
-  //
-  // return the group
-  async inviteExternalUserToGroup(groupId, inviterUserId, email) {
-    // Retrieve the group
-    return this.client.retrieveGroup(groupId).then((clientResponse) => {
-        if (clientResponse.statusCode == 200) {
-          let group = clientResponse.successResponse.group
-          if (!group.data.invites) {
-            group.data.invites = {
-              "external": [],
-              "internal": []
-            }
-          }
-
-          // Only invite this user if they haven't already been invited
-          for (let i in group.data.invites.external) {
-            if (group.data.invites.external[i].email === email) {
-              return this._normalizeGroup(clientResponse)
-            }
-          }
-          group.data.invites.external.push({"email": email, "inviterUserId": inviterUserId})
-
-          // Update the group with the invite data
-          const requestBody = {"group": group}
-          return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
-            return this._normalizeGroup(updateResponse)
-          })
-        }
-      }
-    )
-    .catch(error => {
-      throw new Error(`Error retrieving group '${groupId}' to invite a user, email '${email}', userId '${userId}', inviterUserId '${inviterUserId}': ` + JSON.stringify(error))
-    })
-  }
-
-  // Add an internal user to the group's metadata as being invited to the group
-  // This enables us to count invitations for invitees
-  //  and model the relationship between inviter and invitee
-  //
-  // return the group
-  async inviteInternalUserToGroup(groupId, inviterUserId, userId) {
-    // Retrieve the group
-    return this.client.retrieveGroup(groupId).then((clientResponse) => {
-        if (clientResponse.statusCode == 200) {
-          let group = clientResponse.successResponse.group
-          if (!group.data.invites) {
-            group.data.invites = {
-              "external": [],
-              "internal": []
-            }
-          }
-
-          // Only invite this user if they haven't already been invited
-          for (let i in group.data.invites.internal) {
-            if (group.data.invites.internal[i].userId === userId) {
-              return this._normalizeGroup(clientResponse)
-            }
-          }
-          group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
-
-          // Update the group with the invite data
-          const requestBody = {"group": group}
-          return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
-            return this._normalizeGroup(updateResponse)
-          })
-        }
-      }
-    )
-    .catch(error => {
-      throw new Error(`Error retrieving group '${groupId}' to invite a user, email '${email}', userId '${userId}', inviterUserId '${inviterUserId}': ` + JSON.stringify(error))
-    })
   }
 
   async login(context, authorizationCode) {
@@ -306,32 +230,6 @@ class AuthClient {
     }
 
     return body.access_token
-  }
-
-  async convertExternalUserInGroup(groupId, userId, email) {
-    // Retrieve the group
-    return this.client.retrieveGroup(groupId).then((clientResponse) => {
-      if (clientResponse.statusCode == 200) {
-        let group = clientResponse.successResponse.group
-        let inviterUserId = null
-        // Remove the external invitation
-        for (let i in group.data.invites.external) {
-          if (group.data.invites.external[i].email === email) {
-            inviterUserId = group.data.invites.external[i].inviterUserId
-            group.data.invites.external.splice(i, 1)
-            break
-          }
-        }
-
-        group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
-
-        // Update the group with the converted invite data
-        const requestBody = {"group": group}
-        return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
-          return this._normalizeGroup(updateResponse)
-        })
-      }
-    })
   }
 
   _handleError(error) {
