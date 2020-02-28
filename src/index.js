@@ -79,20 +79,24 @@ server.express.use(async function(req, res, next) {
   if (jwt === null) {
     next()
   }
-  let decodedJWT = await authClient.introspect(jwt);
+  let decodedJWT = await authClient.introspect(jwt)
   if (decodedJWT.error != null) {
+    req.session.destroy()
     throw new Error(decodedJWT.error_description)
   }
 
   // Refresh the access token on the session if it has expired
   if (!decodedJWT.active && req.session.refreshToken) {
     const refreshedJwt = await authClient.refreshAccessToken(req.session.refreshToken)
-    if (refreshedJwt === null) {
-      next()
+    if (!refreshedJwt) {
+      req.session.destroy()
+      throw new AuthenticationError('Your session expired, please log back in')
     }
+
     req.session.jwt = refreshedJwt
-    decodedJWT = await authClient.introspect(refreshedJwt);
+    decodedJWT = await authClient.introspect(refreshedJwt)
     if (decodedJWT.error != null) {
+      req.session.destroy()
       throw new Error(decodedJWT.error_description)
     }
   }

@@ -129,12 +129,12 @@ class AuthClient {
     return response.json();
   }
 
-  // Add a user to the group's metadata as being invited to the group
+  // Add an external user to the group's metadata as being invited to the group
+  // This enables us to count invitations for invitees
+  //  and model the relationship between inviter and invitee
   //
-  // Pass an email if inviting someone who does not yet have an account,
-  //  or the userId of an existing user
   // return the group
-  async inviteUserToGroup(groupId, inviterUserId, email, userId) {
+  async inviteExternalUserToGroup(groupId, inviterUserId, email) {
     // Retrieve the group
     return this.client.retrieveGroup(groupId).then((clientResponse) => {
         if (clientResponse.statusCode == 200) {
@@ -146,22 +146,51 @@ class AuthClient {
             }
           }
 
-          // Bail early if the user has already been invited to this group
-          if (email) {
-            for (let i in group.data.invites.external) {
-              if (group.data.invites.external[i].email === email) {
-                return this._normalizeGroup(clientResponse)
-              }
+          // Only invite this user if they haven't already been invited
+          for (let i in group.data.invites.external) {
+            if (group.data.invites.external[i].email === email) {
+              return this._normalizeGroup(clientResponse)
             }
-            group.data.invites.external.push({"email": email, "inviterUserId": inviterUserId})
-          } else if (userId) {
-            for (let i in group.data.invites.internal) {
-              if (group.data.invites.internal[i].userId === userId) {
-                return this._normalizeGroup(clientResponse)
-              }
-            }
-            group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
           }
+          group.data.invites.external.push({"email": email, "inviterUserId": inviterUserId})
+
+          // Update the group with the invite data
+          const requestBody = {"group": group}
+          return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
+            return this._normalizeGroup(updateResponse)
+          })
+        }
+      }
+    )
+    .catch(error => {
+      throw new Error(`Error retrieving group '${groupId}' to invite a user, email '${email}', userId '${userId}', inviterUserId '${inviterUserId}': ` + JSON.stringify(error))
+    })
+  }
+
+  // Add an internal user to the group's metadata as being invited to the group
+  // This enables us to count invitations for invitees
+  //  and model the relationship between inviter and invitee
+  //
+  // return the group
+  async inviteInternalUserToGroup(groupId, inviterUserId, userId) {
+    // Retrieve the group
+    return this.client.retrieveGroup(groupId).then((clientResponse) => {
+        if (clientResponse.statusCode == 200) {
+          let group = clientResponse.successResponse.group
+          if (!group.data.invites) {
+            group.data.invites = {
+              "external": [],
+              "internal": []
+            }
+          }
+
+          // Only invite this user if they haven't already been invited
+          for (let i in group.data.invites.internal) {
+            if (group.data.invites.internal[i].userId === userId) {
+              return this._normalizeGroup(clientResponse)
+            }
+          }
+          group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
 
           // Update the group with the invite data
           const requestBody = {"group": group}
@@ -271,14 +300,38 @@ class AuthClient {
       })
     const body = await response.json();
     if (body.error != null) {
-      // Check if the refresh token expired
-      if (body.error_reason === 'refresh_token_not_found') {
-        throw new AuthenticationError('Your session expired, please log back in');
-      }
-      throw new Error("Error occurred trying to refresh the session:", body.error_description)
+      // This could be an expired token or internal error
+      //  TODO - do we need to differentiate?
+      return null
     }
 
     return body.access_token
+  }
+
+  async convertExternalUserInGroup(groupId, userId, email) {
+    // Retrieve the group
+    return this.client.retrieveGroup(groupId).then((clientResponse) => {
+      if (clientResponse.statusCode == 200) {
+        let group = clientResponse.successResponse.group
+        let inviterUserId = null
+        // Remove the external invitation
+        for (let i in group.data.invites.external) {
+          if (group.data.invites.external[i].email === email) {
+            inviterUserId = group.data.invites.external[i].inviterUserId
+            group.data.invites.external.splice(i, 1)
+            break
+          }
+        }
+
+        group.data.invites.internal.push({"userId": userId, "inviterUserId": inviterUserId})
+
+        // Update the group with the converted invite data
+        const requestBody = {"group": group}
+        return this.client.updateGroup(groupId, requestBody).then((updateResponse) => {
+          return this._normalizeGroup(updateResponse)
+        })
+      }
+    })
   }
 
   _handleError(error) {

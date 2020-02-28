@@ -45,7 +45,8 @@ const usersResolvers = {
       })
       // Add the user to all of the groups they have been invited to
       groupInvitations.forEach(async function(invitation){
-        context.authClient.addUserToGroup(invitation.groupId, userId)
+        await context.authClient.addUserToGroup(invitation.groupId, userId)
+        await context.authClient.convertExternalUserInGroup(invitation.groupId, userId, email)
         // Delete the invitation from the Hawthorn database
         await context.prisma.deleteExternalGroupInvitation({
           id: invitation.id

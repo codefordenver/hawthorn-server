@@ -25,20 +25,20 @@ const groupsResolvers = {
       context.authClient.requiresAuthentication(context.request.session)
       const group = await context.authClient
         .createGroup(name, description, context.request.session.userId, true)
+
       context.authClient.addUserToGroup(group.id, context.request.session.userId)
       return group
     },
     async inviteUserToGroupByEmail(root, {email, groupId, customMessage}, context, info) {
+      // TODO - validate the user making the request is authenticated and belongs to this group
       // TODO take inviterUserId from context user id
       let inviterUserId = "57ab155a-1893-46b4-ba14-f3f25ca1e147"
-      // TODO - validate the user is authenticated and belongs to this group
-      //  (context user Id will be inviterUserId)
       const group = await context.authClient.getGroup(groupId)
 
       // Check by email if the user has an account
       const existingUser = await context.authClient.getUserByEmail(email)
       if (existingUser) {
-        await context.authClient.inviteUserToGroup(groupId, inviterUserId, null, existingUser.id)
+        await context.authClient.inviteInternalUserToGroup(groupId, inviterUserId, existingUser.id)
         // TODO -
         //  - [x] check by email if the user has an account
         //  - if account
@@ -55,16 +55,15 @@ const groupsResolvers = {
           }
         })
         // Create a new temporary invitation in the Hawthorn DB for this email address
-        // This lets us to easily add them to all groups they have been invited to on registration
+        // This temporary store enables us to easily add them to all groups they
+        //  have been invited to upon registration
         if (groupInvitations.length == 0) {
           await context.prisma.createExternalGroupInvitation({
               email: email,
               groupId: groupId
           }, info)
-          // TODO - mark FusionAuth Group metadata external invite as accepted on registration
-          // Also update the metadata on the FusionAuth group to add this user as inviterUserId
-          // This allows us to track invitations for both external and internal users
-          await context.authClient.inviteUserToGroup(groupId, inviterUserId, email, null)
+          // Also update the metadata on the FusionAuth group to mark this user as invited
+          await context.authClient.inviteExternalUserToGroup(groupId, inviterUserId, email)
         }
       }
 
