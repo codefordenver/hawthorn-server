@@ -18,8 +18,25 @@ const groupsResolvers = {
     },
   },
   Mutation: {
-    acceptGroupInvite(root, {groupId}, context) {
-      return context.authClient.getGroup(groupId)
+    async acceptGroupInvite(root, {invitationId}, context) {
+      context.authClient.requiresAuthentication(context.request.session)
+      // Verify the invitation belongs to the authenticated user
+      const invitation = await context.prisma.groupInvitation({ id: invitationId })
+      if (!invitation.userId || invitation.userId !== context.request.session.userId) {
+        throw new Error("Invitation [" + invitationId + "] is not able to be accepted by user [" + context.request.session.userId + "]")
+      }
+
+      await context.authClient.addUserToGroup(invitation.groupId, context.request.session.userId)
+      await context.prisma.updateGroupInvitation({
+        where: {
+          id: invitationId
+        },
+        data: {
+          accepted: true
+        }
+      })
+
+      return context.authClient.getGroup(invitation.groupId)
     },
     async createPrivateGroup(root, {name, description}, context) {
       context.authClient.requiresAuthentication(context.request.session)
@@ -30,9 +47,20 @@ const groupsResolvers = {
       return group
     },
     async inviteUserToGroupByEmail(root, {email, groupId, customMessage}, context, info) {
-      // TODO - validate the user making the request is authenticated and belongs to this group
-      // TODO take inviterUserId from context user id
-      let inviterUserId = "57ab155a-1893-46b4-ba14-f3f25ca1e147"
+      context.authClient.requiresAuthentication(context.request.session)
+      // Validate the user making the request belongs to this group
+      let sessionUser = await context.authClient.getUser(context.request.session.userId)
+      let belongsToGroup = false
+      sessionUser.groups.forEach(function(group){
+        if (group.id === groupId){
+          belongsToGroup = true
+          break
+        }
+      })
+      if (!belongsToGroup) {
+        throw new Error("User [" + context.request.session.userId + "] is not able to invite [" + email + "] to Group [" + groupId + "]")
+      }
+
       const group = await context.authClient.getGroup(groupId)
 
       const existingGroupInvitations = await context.prisma.groupInvitations({
@@ -49,11 +77,10 @@ const groupsResolvers = {
           accepted: false,
           email: email,
           groupId: groupId,
-          inviterUserId: inviterUserId,
+          inviterUserId: context.request.session.userId,
           userId: existingUser ? existingUser.id : null
         }, info)
-        // TODO - take fromUserName from context user, axe LilPetey
-        context.emailClient.sendGroupInvitationToUser(group.name, email, existingUser !== null, customMessage, 'LilPetey')
+        context.emailClient.sendGroupInvitationToUser(group.name, email, existingUser !== null, customMessage, sessionUser.username)
       }
       return group
     }
