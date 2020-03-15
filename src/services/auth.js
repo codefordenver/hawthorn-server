@@ -54,13 +54,16 @@ class AuthClient {
     })
   }
 
-  getGroup(id) {
-    return this.client.retrieveGroup(id).then((clientResponse) => {
+  async getGroup(id) {
+    return await this.client.retrieveGroup(id).then((clientResponse) => {
         return this._normalizeGroup(clientResponse)
       }
     )
     .catch(error => {
-      throw new Error("Unexpected server error " + error)
+      if (error.statusCode === 404) {
+        throw new Error(`Group with id '${id} not found'`)
+      }
+      throw new Error("Unexpected server error " + JSON.stringify(error))
     })
   }
 
@@ -80,6 +83,35 @@ class AuthClient {
       }
     )
     .catch(error => {
+      // If we get a 404, just return null user, otherwise throw an Error
+      if (error.statusCode == 404) {
+        return null
+      }
+
+      throw new Error("Unexpected server error " + JSON.stringify(error))
+    })
+  }
+
+  getUserByEmail(email) {
+    return this.client.retrieveUserByEmail(email).then(
+      clientResponse => {
+        let groups = []
+        if (clientResponse.successResponse.user.memberships) {
+          clientResponse.successResponse.user.memberships.forEach(membership => {
+            groups.push(this.getGroup(membership.groupId))
+          })
+        }
+        return {
+          ...clientResponse.successResponse.user,
+          groups: groups
+        }
+      }
+    )
+    .catch(error => {
+      // If we get a 404, just return null user, otherwise throw an Error
+      if (error.statusCode == 404) {
+        return null
+      }
       throw new Error("Unexpected server error ", error)
     })
   }
@@ -137,12 +169,15 @@ class AuthClient {
     throw new AuthenticationError('You must be logged in for that');
   }
 
-  async register(email, password, username) {
+  async register(email, password, username, sendSetPasswordEmail, skipRegistrationVerification, skipEmailVerification) {
     const registerEndpoint = `${this.fusionAuthConfig.endpoint}/api/user/registration`
     const postBody = {
     	"registration": {
     		"applicationId": `${this.fusionAuthConfig.clientId}`,
     	},
+      "sendSetPasswordEmail": sendSetPasswordEmail,
+      "skipRegistrationVerification": skipRegistrationVerification,
+      "skipVerification": skipEmailVerification,
     	"user": {
     		"email": `${email}`,
         "imageUrl": `https://api.adorable.io/avatars/50/${Math.floor(Math.random() * 100000000)}.png`,
@@ -189,11 +224,9 @@ class AuthClient {
       })
     const body = await response.json();
     if (body.error != null) {
-      // Check if the refresh token expired
-      if (body.error_reason === 'refresh_token_not_found') {
-        throw new AuthenticationError('Your session expired, please log back in');
-      }
-      throw new Error("Error occurred trying to refresh the session:", body.error_description)
+      // This could be an expired token or internal error
+      //  TODO - do we need to differentiate?
+      return null
     }
 
     return body.access_token

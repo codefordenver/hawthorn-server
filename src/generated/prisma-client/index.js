@@ -5,6 +5,14 @@ var typeDefs = require("./prisma-schema").typeDefs;
 
 var models = [
   {
+    name: "ExternalGroupInvitation",
+    embedded: false
+  },
+  {
+    name: "GroupInvitation",
+    embedded: false
+  },
+  {
     name: "ModerationStatus",
     embedded: false
   },
